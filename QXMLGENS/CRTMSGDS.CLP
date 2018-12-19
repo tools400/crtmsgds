@@ -33,6 +33,11 @@
                           XTOSRCF(QCRTMSGDS ) XOBJTYPE(*FILE  ) +
                           XGENCRT(*NO ) XPARAM(*BLANK)
 
+             XMLGENMBR  XMBR(A_README  ) XMBRATR(TXT   ) +
+                          XFROMSRCF(QCRTMSGDS ) XFROMSRCL(TOOLS400) +
+                          XTOSRCF(QCRTMSGDS ) XOBJTYPE(*FILE  ) +
+                          XGENCRT(*NO ) XPARAM(*BLANK)
+
              XMLGENMBR  XMBR(COPYRIGHT ) XMBRATR(RPGLE ) +
                           XFROMSRCF(QCRTMSGDS ) XFROMSRCL(TOOLS400) +
                           XTOSRCF(QCRTMSGDS ) XOBJTYPE(*CMD    ) +
