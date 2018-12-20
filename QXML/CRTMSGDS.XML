@@ -1289,7 +1289,7 @@ mbrtext =  "CRTMSGDS - Installer                              "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
      /* =================================================================== */
      /*                                                                     */
@@ -1487,7 +1487,7 @@ mbrtext =  "MSG: USR0001 - USR0002                            "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
      /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
@@ -1557,7 +1557,7 @@ mbrtext =  "MSG: USR0001 - USR0002                            "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
      /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
@@ -1627,7 +1627,7 @@ mbrtext =  "CRTMSGDS Readme                                   "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
 CRTMSGDS - A Tools/400 Utility
 ------------------------------
@@ -1662,7 +1662,7 @@ mbrtext =  "Copyright information                             "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
       /if not defined(COPYRIGHT_DSPEC)
      H COPYRIGHT('V1.12 - 20.12.2018 - mailto:thomas.raddatz@tools400.de')
@@ -1685,7 +1685,7 @@ mbrtext =  "Create Message Data Structure - Ger               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
 /* =================================================================== */
 /*                                                                     */
@@ -1871,7 +1871,7 @@ mbrtext =  "Create Message Data Structure - Eng               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
 /* =================================================================== */
 /*                                                                     */
@@ -2058,7 +2058,7 @@ mbrtext =  "Create Message Data Structure - CPP               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
 /* =================================================================== */
 /*                                                                     */
@@ -2570,7 +2570,7 @@ mbrtext =  "Create Message Data Structure - Ger               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
 .*=====================================================================*
 .*                                                                     *
@@ -2944,7 +2944,7 @@ mbrtext =  "Create Message Data Structure - Eng               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
 .*=====================================================================*
 .*                                                                     *
@@ -3318,7 +3318,7 @@ mbrtext =  "Create Message Data Structure                     "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
       * =================================================================== *
       *                                                                     *
@@ -3572,7 +3572,7 @@ mbrtext =  "Create Message Data Structure                     "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
       * =================================================================== *
       *                                                                     *
@@ -5513,7 +5513,7 @@ mbrtext =  "H-Specifications                                  "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "01141">
+srccssid=  "00273">
 <copysrc><![CDATA[
      H DEBUG
      H OPTION(*SRCSTMT : *NODEBUGIO)
