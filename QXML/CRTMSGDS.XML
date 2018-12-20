@@ -51,7 +51,7 @@
       appblddate CDATA #REQUIRED
      >
      ]>
-<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate="12/19/2018">
+<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate="12/20/2018">
 <install_instructions><![CDATA[
      *----------------------------------------------------------------      ------
      *  1. Upload entire XML to your AS/400 to a source file 112 long, into any mbr
@@ -1316,7 +1316,7 @@ srccssid=  "01141">
      /* =================================================================== */
      /*  History:                                                           */
      /*                                                                     */
-     /*  Datum       Name          Ã nderung                                 */
+     /*  Datum       Name          Änderung                                 */
      /*  ----------  ------------  ---------------------------------------  */
      /*                                                                     */
      /* =================================================================== */
@@ -1490,7 +1490,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
      /* &4-Member &3 in File &2/&1 already exists.                  */
      /* ----------------------------------------------------------- */
 
@@ -1519,7 +1519,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
      /* &4-Member &3 in File &2/&1 created.                         */
      /* ----------------------------------------------------------- */
 
@@ -1560,7 +1560,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
      /* &4-Teildatei &3 in Datei &2/&1 existiert bereits.           */
      /* ----------------------------------------------------------- */
 
@@ -1589,7 +1589,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
      /* &4-Teildatei &3 in Datei &2/&1 erstellt.                    */
      /* ----------------------------------------------------------- */
 
@@ -1665,13 +1665,13 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
       /if not defined(COPYRIGHT_DSPEC)
-     H COPYRIGHT('V1.11 - 30.10.2017 - mailto:thomas.raddatz@tools400.de')
+     H COPYRIGHT('V1.12 - 20.12.2018 - mailto:thomas.raddatz@tools400.de')
       /eof
       /endif
      D CRTMSGDS_VERSION...
-     D                 C                   '1.11'
+     D                 C                   '1.12'
      D CRTMSGDS_DATE...
-     D                 C                   '30.10.2017'
+     D                 C                   '20.12.2018'
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
@@ -1710,7 +1710,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name          Ã nderung                                 */
+/*  Datum       Name          Änderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*                                                                     */
 /* =================================================================== */
@@ -1896,7 +1896,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name          Ã nderung                                 */
+/*  Datum       Name          Änderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*                                                                     */
 /* =================================================================== */
@@ -2082,7 +2082,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name          Ã nderung                                 */
+/*  Datum       Name          Änderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*  07.09.2001  Th.Raddatz    Fixed that REPLACE(*NO) appends source   */
 /*                            if member does already exist.            */
@@ -2182,7 +2182,7 @@ srccssid=  "01141">
              CHGVAR     VAR(&MSGFILE   ) VALUE(%SST(&MSGF  1 10))
 
 /* ---------------------------- */
-/* prÃ¼fen, Msg Datei vorhanden  */
+/* prüfen, Msg Datei vorhanden  */
 /* ---------------------------- */
              CHKOBJ     OBJ(&MSGLIB/&MSGFILE) OBJTYPE(*MSGF)
 
@@ -2208,7 +2208,7 @@ srccssid=  "01141">
                           RTNLIB(&CPYLIB)
 
 /* ---------------------------- */
-/* prÃ¼fen, Cpy Datei vorhanden  */
+/* prüfen, Cpy Datei vorhanden  */
 /* ---------------------------- */
              CHKOBJ     OBJ(&CPYLIB/&CPYFILE) OBJTYPE(*FILE)
 
@@ -2250,7 +2250,7 @@ srccssid=  "01141">
                ENDDO
 
 /* ---------------------------- */
-/* PrÃ¼fen, ob VON ein exis-     */
+/* Prüfen, ob VON ein exis-     */
 /* tierende MSGID ist, wenn     */
 /* nicht, die folgende er-      */
 /* mitteln                      */
@@ -2268,7 +2268,7 @@ srccssid=  "01141">
 
 /* ---------------------------- */
 /* Wenn BIS = '*LAST'           */
-/* dann den hÃ¶chsten Sortier-   */
+/* dann den hächsten Sortier-   */
 /* begriff in BIS bringen       */
 /* ---------------------------- */
                IF         COND(&MSGIDBIS *EQ '*LAST') THEN(DO)
@@ -2282,7 +2282,7 @@ srccssid=  "01141">
 LOOP:
 
 /* ---------------------------- */
-/* PrÃ¼fen auf Schleifenende     */
+/* Prüfen auf Schleifenende     */
 /* ---------------------------- */
              IF         COND(&MSGID *NE '       ') THEN(DO)
                IF         COND(&MSGID *GT &MSGIDBIS) THEN(DO)
@@ -2295,7 +2295,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/*  Ermitteln der nÃ¤chsten      */
+/*  Ermitteln der nächsten      */
 /*  Nachrichten-ID              */
 /* ---------------------------- */
              CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
@@ -2378,7 +2378,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/*  PrÃ¼fen, ob Member vorhanden */
+/*  Prüfen, ob Member vorhanden */
 /* ---------------------------- */
              CHGVAR     VAR(&MBREXIST  ) VALUE('*EXIST    ')
              CHKOBJ     OBJ(&CPYLIB/&CPYFILE) OBJTYPE(*FILE) +
@@ -2406,7 +2406,7 @@ LOOP:
                ENDDO
                ELSE       CMD(DO)
                /* Bei angegebener Teildatei,  */
-               /* nur beim ersten Mal lÃ¶schen */
+               /* nur beim ersten Mal löschen */
                ENDDO
              ENDDO
              ELSE       CMD(DO)
@@ -2435,7 +2435,7 @@ LOOP:
                ENDDO
                ELSE       CMD(DO)
                /* Bei angegebener Teildatei,  */
-               /* nur beim ersten Mal prÃ¼fen  */
+               /* nur beim ersten Mal prüfen  */
                ENDDO
 
              ENDDO
@@ -2500,7 +2500,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/* NÃ¤chste MSG lesen            */
+/* Nächste MSG lesen            */
 /* Wenn es kein weitere MSG     */
 /* gibt (EOF) dann ist der      */
 /* Wert in &MSGID = *BLANK      */
@@ -2595,7 +2595,7 @@ srccssid=  "01141">
 .*=====================================================================*
 .*  History:                                                           *
 .*                                                                     *
-.*  Datum       Name          Ã nderung                                 *
+.*  Datum       Name          Änderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
 .*                                                                     *
 .*=====================================================================*
@@ -2626,21 +2626,21 @@ srccssid=  "01141">
 :IMHELP name='CRTMSGDS/CRTMSGF   '.
 :EHELP.
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r den Befehl
+.* Hilfetext für den Befehl
 .*--------------------------------------------------------------------
 :HELP NAME='CRTMSGDS'.
 Nachrichten-DS erstellen (CRTMSGDS) - Hilfe
 :P.
-Der Befehl CRTMSGDS erstellt eine Datenstruktur fÃ¼r eine
-Nachrichtenbeschreibung. AuÃ erdem ist es mÃ¶glich mit dem Befehl
-CRTMSGDS ein CL Programm, bzw. ein CL-Script fÃ¼r den Befehl RUNCLSTM
-zu erstellen, welches den oder die Erstellungsbefehl(e) fÃ¼r eine
-oder mehrere Nachrichtenbeschreibungen enthÃ¤lt.
+Der Befehl CRTMSGDS erstellt eine Datenstruktur für eine
+Nachrichtenbeschreibung. Außerdem ist es möglich mit dem Befehl
+CRTMSGDS ein CL Programm, bzw. ein CL-Script für den Befehl RUNCLSTM
+zu erstellen, welches den oder die Erstellungsbefehl(e) für eine
+oder mehrere Nachrichtenbeschreibungen enthält.
 .*
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort RANGE
+.* Hilfetext für Schlüsselwort RANGE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/RANGE     '.
 Bereich der Nachrichten-IDs - Hilfe
@@ -2649,7 +2649,7 @@ Bereich der Nachrichten-IDs - Hilfe
 Gibt den Bereich der Nachrichten-IDs in der angegebenen Nachrichtendatei
 an, die verarbeitet werden. Alle Nachrichtenbeschreibungen
 in der bei :HP2.Nachrichtendatei:EHP2. (Parameter MSGF) angebenen
-Nachrichtendatei kÃ¶nnen durch die Angabe *ALL bei
+Nachrichtendatei können durch die Angabe *ALL bei
 diesem Parameter verarbeitet werden.
 :P.
 Ist keine Anfangsnachrichten-ID angegeben, beginnt die Verarbeitung
@@ -2704,7 +2704,7 @@ Parameters angegeben werden.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort MSGF
+.* Hilfetext für Schlüsselwort MSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MSGF'.
 Nachrichtendatei - Hilfe
@@ -2724,15 +2724,15 @@ QCPFMSG.
 Nachrichtenbeschreibungen stammen.
 :EPARML.
 :P.
-GÃ¼ltige Bibliothekswerte sind:
+Gültige Bibliothekswerte sind:
 :P.
 :PARML.
 :PT.:PK DEF.*LIBL:EPK.
 :PD.Alle Bibliotheken in der Bibliotheksliste des Jobs werden
-durchsucht, bis die erste Ã bereinstimmung gefunden wird.
+durchsucht, bis die erste Übereinstimmung gefunden wird.
 :PT.:PV.*CURLIB:EPV.
-:PD.Die Nachrichtendatei wird in der aktuellen Bibliothek fÃ¼r den Job
-gesucht. EnthÃ¤lt die Bibliotheksliste keinen aktuellen
+:PD.Die Nachrichtendatei wird in der aktuellen Bibliothek für den Job
+gesucht. Enthält die Bibliotheksliste keinen aktuellen
 Bibliothekseintrag, wird QGPL benutzt.
 :PT.:PV.Bibliotheksname:EPV.
 :PD.Bibliothek angeben, in der sich die Nachrichtendatei befindet.
@@ -2741,7 +2741,7 @@ Bibliothekseintrag, wird QGPL benutzt.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort FILE
+.* Hilfetext für Schlüsselwort FILE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/FILE'.
 Datei - Hilfe
@@ -2761,15 +2761,15 @@ abgelegt.
 werden soll.
 :EPARML.
 :P.
-GÃ¼ltige Bibliothekswerte sind:
+Gültige Bibliothekswerte sind:
 :P.
 :PARML.
 :PT.:PK DEF.*LIBL:EPK.
 :PD.Alle Bibliotheken in der Bibliotheksliste des Jobs werden
-durchsucht, bis die erste Ã bereinstimmung gefunden wird.
+durchsucht, bis die erste Übereinstimmung gefunden wird.
 :PT.:PV.*CURLIB:EPV.
-:PD.Die Quellendatei wird in der aktuellen Bibliothek fÃ¼r den Job
-gesucht. EnthÃ¤lt die Bibliotheksliste keinen aktuellen
+:PD.Die Quellendatei wird in der aktuellen Bibliothek für den Job
+gesucht. Enthält die Bibliotheksliste keinen aktuellen
 Bibliothekseintrag, wird QGPL benutzt.
 :PT.:PV.Bibliotheksname:EPV.
 :PD.Bibliothek angeben, in der sich die Quellendatei befindet.
@@ -2778,15 +2778,15 @@ Bibliothekseintrag, wird QGPL benutzt.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort MBR
+.* Hilfetext für Schlüsselwort MBR
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MBR'.
 Teildatei - Hilfe
 :XH3.Teildatei (MBR)
 :P.
-Angeben, wie die Quellenteildatei heiÃ en soll. Wird in diesem Parameter
-*GEN angegeben, so wird fÃ¼r jede verarbeitete Nachrichten-ID eine
-separate Quellenteildatei erstellt. Wird hingegen ein Name fÃ¼r die
+Angeben, wie die Quellenteildatei heißen soll. Wird in diesem Parameter
+*GEN angegeben, so wird für jede verarbeitete Nachrichten-ID eine
+separate Quellenteildatei erstellt. Wird hingegen ein Name für die
 Quellenteildatei vorgegeben, so werden alle verarbeiteten Nachrichten-IDs
 in diese Quellenteildatei abgelegt.
 .*
@@ -2803,7 +2803,7 @@ generiert.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort REPLACE
+.* Hilfetext für Schlüsselwort REPLACE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/REPLACE'.
 Bestehende Teildatei ersetzen - Hilfe
@@ -2824,7 +2824,7 @@ vorhanden ist. Der Inhalt der Quellenteildatei geht verloren.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort TYPE
+.* Hilfetext für Schlüsselwort TYPE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/TYPE'.
 Zu generierende Sourceart - Hilfe
@@ -2836,11 +2836,11 @@ Angeben, welche Art von Quellcode generiert werden soll.
 .*
 :PARML.
 :PT.:PK DEF.*ILERPG:EPK.
-:PD.Es wird eine Datenstruktur fÃ¼r RPG-IV erstellt.
+:PD.Es wird eine Datenstruktur für RPG-IV erstellt.
 :PT.:PV.*RPG:EPV.
-:PD.Es wird eine Datenstruktur fÃ¼r RPG-III erstellt.
+:PD.Es wird eine Datenstruktur für RPG-III erstellt.
 :PT.:PV.*C:EPV.
-:PD.Es wird eine Datenstruktur fÃ¼r C erstellt.
+:PD.Es wird eine Datenstruktur für C erstellt.
 :PT.:PV.*CLP:EPV.
 :PD.Es wird ein CL-Programm erstellt.
 :PT.:PV.*CLLE:EPV.
@@ -2852,7 +2852,7 @@ Angeben, welche Art von Quellcode generiert werden soll.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort DEFINE
+.* Hilfetext für Schlüsselwort DEFINE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/DEFINE'.
 DEFINE-Bestimmungen generieren - Hilfe
@@ -2875,7 +2875,7 @@ Parameter kann nur dann angegeben werden, wenn bei
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort CRTMSGF
+.* Hilfetext für Schlüsselwort CRTMSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/CRTMSGF'.
 CRTMSGF-Befehl generieren - Hilfe
@@ -2927,7 +2927,7 @@ Dieser Parameter ist optional.
 .*=====================================
 :HELP NAME='COM/VALUES'.
 :P.
-MÃ¶gliche Werte sind:
+Mögliche Werte sind:
 :EHELP.
 .*
 :EPNLGRP.
@@ -2969,7 +2969,7 @@ srccssid=  "01141">
 .*=====================================================================*
 .*  History:                                                           *
 .*                                                                     *
-.*  Datum       Name          Ã nderung                                 *
+.*  Datum       Name          Änderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
 .*                                                                     *
 .*=====================================================================*
@@ -3000,7 +3000,7 @@ srccssid=  "01141">
 :IMHELP name='CRTMSGDS/CRTMSGF   '.
 :EHELP.
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r den Befehl
+.* Hilfetext für den Befehl
 .*--------------------------------------------------------------------
 :HELP NAME='CRTMSGDS'.
 Create Message Data Structure (CRTMSGDS) - Help
@@ -3014,7 +3014,7 @@ the message description.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort RANGE
+.* Hilfetext für Schlüsselwort RANGE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/RANGE     '.
 Range of message identifiers - Help
@@ -3081,7 +3081,7 @@ element of this parameter.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort MSGF
+.* Hilfetext für Schlüsselwort MSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MSGF'.
 Message file - Help
@@ -3118,7 +3118,7 @@ the library list, QGPL is used.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort FILE
+.* Hilfetext für Schlüsselwort FILE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/FILE'.
 File - Help
@@ -3154,7 +3154,7 @@ the library list, QGPL is used.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort MBR
+.* Hilfetext für Schlüsselwort MBR
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MBR'.
 Member - Help
@@ -3178,7 +3178,7 @@ of the CRTMSGDS command.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort REPLACE
+.* Hilfetext für Schlüsselwort REPLACE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/REPLACE'.
 Replace member - Help
@@ -3200,7 +3200,7 @@ by the command instead.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort TYPE
+.* Hilfetext für Schlüsselwort TYPE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/TYPE'.
 Source type - Help
@@ -3228,7 +3228,7 @@ Specifies the type of source that is produced by the CRTMSGDS command.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort DEFINE
+.* Hilfetext für Schlüsselwort DEFINE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/DEFINE'.
 Add DEFINE specifications - Help
@@ -3250,7 +3250,7 @@ or not. The value for this parameter can only be specified if
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort CRTMSGF
+.* Hilfetext für Schlüsselwort CRTMSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/CRTMSGF'.
 Add CRTMSGF command - Help
@@ -3343,9 +3343,9 @@ srccssid=  "01141">
       *=====================================================================*
       *  History:                                                           *
       *                                                                     *
-      *  Datum       Name          Ã nderung                                 *
+      *  Datum       Name          Änderung                                 *
       *  ----------  ------------  ---------------------------------------  *
-      *  10.01.2003  Th.Raddatz    Removed special character Â§ from source. *
+      *  10.01.2003  Th.Raddatz    Removed special character Ä from source. *
       *                                                                     *
       * =================================================================== *
       * >>PRE-COMPILER<<                                                    *
@@ -3356,6 +3356,7 @@ srccssid=  "01141">
       *                                                                     *
       *   >>COMPILE<<                                                       *
       *     >>PARM<< DBGVIEW(*LIST);                                        *
+      *     >>PARM<< OPTION(*EVENTF);                                       *
       *   >>END-COMPILE<<                                                   *
       *                                                                     *
       *   >>LINK<<                                                          *
@@ -3372,7 +3373,7 @@ srccssid=  "01141">
       * =================================================================== *
       *
       *------------------------------------------------------------*
-      *  allg. Feldbeschreibungen fÃ¼r API
+      *  allg. Feldbeschreibungen für API
       *------------------------------------------------------------*
       *
      D                 DS
@@ -3500,7 +3501,7 @@ srccssid=  "01141">
      C                   PARM                    P#CCSC
      C                   PARM                    P#CCSR
       *
-      * prÃ¼fen, Aufruf OK
+      * prüfen, Aufruf OK
      C     *IN99         IFEQ      *ON
      C                   MOVEL(P)  'CPF9897'     XERRID
      C                   MOVEL(P)  'Aufruf '     XERRDT
@@ -3532,7 +3533,7 @@ srccssid=  "01141">
       *
      C     FIRST         BEGSR
       *
-      * RÃ¼ckgabeparameter initialisieren
+      * Rückgabeparameter initialisieren
      C                   MOVEL     *BLANK        XMSG                           MSGID
      C                   MOVEL     *BLANK        XERRID                         Error-ID
      C                   MOVEL     *BLANK        XERRDT                         Error-Data
@@ -3596,10 +3597,10 @@ srccssid=  "01141">
       *=====================================================================*
       *  History:                                                           *
       *                                                                     *
-      *  Datum       Name          Ã nderung                                 *
+      *  Datum       Name          Änderung                                 *
       *  ----------  ------------  ---------------------------------------  *
       *  07.09.2001  Th.Raddatz    Fixed a bug when field length is *ZEROS. *
-      *  10.01.2003  Th.Raddatz    Removed special character Â§ from source. *
+      *  10.01.2003  Th.Raddatz    Removed special character Ä from source. *
       *  08.03.2005  Th.Raddatz    Fixed problem that trailing blanks of    *
       *                            message help text were dropped.          *
       *  21.06.2005  Th.Raddatz    Renamed XMSGT to XMBRT to avoid          *
@@ -3607,10 +3608,10 @@ srccssid=  "01141">
       *                            Increment cL within RPLHPN to fix bug    *
       *                            that message text was truncated.         *
       *  18.04.2008  Th.Raddatz    Datenstruktur MS0300 von 1024 auf 8192   *
-      *                            Byte vergrÃ¶Ã ert.                         *
+      *                            Byte vergrößert.                         *
       *  26.01.2009  Th.Raddatz    Code des generierten CLP Programms       *
-      *                            geÃ¤ndert. Bibliothek kann jetzt als      *
-      *                            optionaler Parameter Ã¼bergeben werden.   *
+      *                            geändert. Bibliothek kann jetzt als      *
+      *                            optionaler Parameter übergeben werden.   *
       *                            Befehlsparameter TYPE um Auswahl         *
       *                            *CLLE erweitert.                         *
       *  06.10.2009  Th.Raddatz    Replaced special character '#' by        *
@@ -3654,6 +3655,7 @@ srccssid=  "01141">
       *   >>LINK<<                                                          *
       *     >>PARM<< DFTACTGRP(*NO);                                        *
       *     >>PARM<< ACTGRP(*CALLER );                                      *
+      *     >>PARM<< OPTION(*EVENTF);                                       *
       *   >>END-LINK<<                                                      *
       *                                                                     *
       *   >>EXECUTE<<                                                       *
@@ -3701,7 +3703,7 @@ srccssid=  "01141">
      D tmpStr          S             80A   varying
       *
       *------------------------------------------------------------*
-      *  Datensatzbeschreibung fÃ¼r Sourcen
+      *  Datensatzbeschreibung für Sourcen
       *------------------------------------------------------------*
       *
      D FSRC            DS
@@ -3732,7 +3734,7 @@ srccssid=  "01141">
      D                 PR            20A
       *
       *------------------------------------------------------------*
-      *  allg. Feldbeschreibungen fÃ¼r API
+      *  allg. Feldbeschreibungen für API
       *------------------------------------------------------------*
       *
      D                 DS
@@ -3832,7 +3834,7 @@ srccssid=  "01141">
      D  D#INBR                 4      7    INZ
      D  D#IORD                 8      8    INZ
      D  D#EXT                  8     12    INZ
-      * LÃ¤nge der Datenstruktur binÃ¤r
+      * Länge der Datenstruktur binär
      D                 DS
      D  D#DSLX                 1      4    INZ
      D  D#DSLG                 1      4  0 INZ
@@ -3940,7 +3942,7 @@ srccssid=  "01141">
      C                   PARM                    P#MSFC                         Ret Form Cha
      C                   PARM                    ERRCOD
       *
-      * prÃ¼fen, Aufruf OK
+      * prüfen, Aufruf OK
      C     *IN99         IFEQ      *ON
      C                   MOVEL(P)  'CPF9897'     XERRID
      C                   MOVEL(P)  'Aufruf '     XERRDT
@@ -3959,26 +3961,26 @@ srccssid=  "01141">
      C                   GOTO      ENDE
      C                   ENDIF
       *
-      * Default Reply rauslÃ¶sen
+      * Default Reply rauslösen
      C     M3LGDR        IFGT      *ZERO
      C     OFS           ADD       M3OFDR        O
      C     M3LGDR        SUBST     MS0300:O      D#DRPL
      C                   ENDIF
       *
-      * Messagetext rauslÃ¶sen
+      * Messagetext rauslösen
      C     M3LGMR        IFGT      *ZERO
      C     OFS           ADD       M3OFMG        O
      C     M3LGMR        SUBST     MS0300:O      D#MSGT
      C                   ENDIF
      C                   MOVEL(P)  D#MSGT        XMBRT
       *
-      * Messagehelp rauslÃ¶sen
+      * Messagehelp rauslösen
      C     M3LGMH        IFGT      *ZERO
      C     OFS           ADD       M3OFMH        O
      C     M3LGMH        SUBST     MS0300:O      D#MSGH
      C                   ENDIF
       *
-      * Ersetzungsvariable rauslÃ¶sen
+      * Ersetzungsvariable rauslösen
      C     M3LGVF        IFGT      *ZERO
      C     OFS           ADD       M3OFVF        O
      C     M3LGVF        SUBST     MS0300:O      D#SUBV
@@ -3989,7 +3991,7 @@ srccssid=  "01141">
       *
      C     ENDE          TAG
       *
-      * Datei schlieÃ en
+      * Datei schließen
      C                   CLOSE     SRC
       *
      C                   RETURN
@@ -4023,7 +4025,7 @@ srccssid=  "01141">
       *
       * *SCRIPT wie *CLP verarbeiten, nur einzelne Zeilen rauslassen
      C     XGENA         WHENEQ    '*SCRIPT'
-      * Ersatzvariablen fÃ¼r RUNCLSTM setzen
+      * Ersatzvariablen für RUNCLSTM setzen
      C                   MOVEL(P)  XMSGL         R#MSGL                         Msg-Lib
      C                   MOVEL(P)  XMSGF         R#MSGF                         Msg-File
      C                   MOVEL(P)  '&LI'         XMSGL                          Msg-Lib
@@ -4064,15 +4066,15 @@ srccssid=  "01141">
      C                   MOVEL(P)  RPG(3)        SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile fÃ¼r Datenstrukturfelder erstellen
+      * Zeile für Datenstrukturfelder erstellen
      C                   EXSR      RPGFLD
-      * Zeile mit GesamtlÃ¤nge der Datenstruktur
+      * Zeile mit Gesamtlänge der Datenstruktur
      C                   EXSR      RPGLNG
       *
      C                   ENDSR
       *
       ******************************************************
-      * VRPG4    generieren Source fÃ¼r ILE-RPG
+      * VRPG4    generieren Source für ILE-RPG
       ******************************************************
       *
      C     VRPG4         BEGSR
@@ -4099,9 +4101,9 @@ srccssid=  "01141">
      C                   MOVEL(P)  IRPG(3)       SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile fÃ¼r Datenstrukturfelder erstellen
+      * Zeile für Datenstrukturfelder erstellen
      C                   EXSR      RPG4FLD
-      * Zeile mit GesamtlÃ¤nge der Datenstruktur
+      * Zeile mit Gesamtlänge der Datenstruktur
      C                   EXSR      IPGLNG
       * Kommentarzeile nur Stern
      C                   MOVEL(P)  IRPG(3)       SRCDTA
@@ -4126,7 +4128,7 @@ srccssid=  "01141">
      C                   MOVEL(P)  IRPG(11)      SRCDTA                         18
      C                   EXSR      WRTLINE
       *
-      * Ermitteln Namen fÃ¼r Define
+      * Ermitteln Namen für Define
      C                   EXSR      EMDEFN
       *
       * /IF NOT DEFINED(msgid_MSG)
@@ -4183,7 +4185,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * VCLP     generieren Source fÃ¼r CLP-PROGRAMM
+      * VCLP     generieren Source für CLP-PROGRAMM
       ******************************************************
       *
      C     VCLP          BEGSR
@@ -4359,13 +4361,13 @@ srccssid=  "01141">
      C                   CAT       '+':1         SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile fÃ¼r Datenstrukturfelder erstellen
+      * Zeile für Datenstrukturfelder erstellen
      C                   EXSR      ICLFLD
       *
      C                   ENDSR
       *
       ******************************************************
-      * VC       generieren Source fÃ¼r C-Programme
+      * VC       generieren Source für C-Programme
       ******************************************************
       *
      C     VC            BEGSR
@@ -4393,7 +4395,7 @@ srccssid=  "01141">
      C                   MOVEL(P)  *BLANKS       SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile fÃ¼r Datenstrukturfelder erstellen
+      * Zeile für Datenstrukturfelder erstellen
      C                   EXSR      ICFLD
       *
       * DEFINE-Rahmen 2
@@ -4446,7 +4448,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * ICFLD  Zeilen fÃ¼r Felddefinitionen generieren
+      * ICFLD  Zeilen für Felddefinitionen generieren
       ******************************************************
       *
      C     ICFLD         BEGSR
@@ -4456,7 +4458,7 @@ srccssid=  "01141">
      C                   EXSR      WRTLINE
       *
       * Anzahl der MSG-Variablen bestimmen
-      * (LÃ¤nge des kpl. Variablenbereichs / LÃ¤nge einer Variablestruktur)
+      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
      C                   EXSR      GETANZ
       *
      C     P#MANZ        IFLE      *ZEROS
@@ -4476,13 +4478,13 @@ srccssid=  "01141">
      C                   Z-ADD     1             OF
      C     1             DO        P#MANZ        A
       *
-      * einen Variableninformationsblock aus groÃ en Block herausschneiden
+      * einen Variableninformationsblock aus großem Block herausschneiden
      C                   EXSR      CUTVAR
       *
       * Zeilenschablone vorbereiten
      C                   EVAL      SRCDTA = c(6)
       *
-      * prÃ¼fen, ob Datentyp korrekt, sonst Fehler
+      * prüfen, ob Datentyp korrekt, sonst Fehler
      C                   EXSR      CHKTYP
       *
       * Feldnamen zusammenbauen
@@ -4528,7 +4530,7 @@ srccssid=  "01141">
       *
      C                   IF        P#FLDL = 0
      C                   EVAL      %SUBST(SRCDTA: 2: 2) = '/*'
-     C                   EVAL      %SUBST(SRCDTA:40: 9) = 'LÃ¤nge = 0'
+     C                   EVAL      %SUBST(SRCDTA:40: 9) = 'Length = 0'
      C                   EVAL      %SUBST(SRCDTA:50: 2) = '*/'
      C                   ENDIF
       *
@@ -4547,7 +4549,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * RPGFLD Zeilen fÃ¼r Felddefinitionen generieren
+      * RPGFLD Zeilen für Felddefinitionen generieren
       ******************************************************
       *
      C     RPGFLD        BEGSR
@@ -4560,7 +4562,7 @@ srccssid=  "01141">
      C                   EXSR      WRTLINE
       *
       * Anzahl der MSG-Variablen bestimmen
-      * (LÃ¤nge des kpl. Variablenbereichs / LÃ¤nge einer Variablestruktur)
+      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
      C                   EXSR      GETANZ
       *
      C     P#MANZ        IFLE      *ZEROS
@@ -4574,13 +4576,13 @@ srccssid=  "01141">
      C                   Z-ADD     1             OD
      C     1             DO        P#MANZ        A
       *
-      * einen Variableninformationsblock aus groÃ en Block herausschneiden
+      * einen Variableninformationsblock aus großen Block herausschneiden
      C                   EXSR      CUTVAR
       *
       * Zeilenschablone vorbereiten
      C                   MOVEA(P)  RPG(12)       TXT
       *
-      * prÃ¼fen, ob Datentyp korrekt, sonst Fehler
+      * prüfen, ob Datentyp korrekt, sonst Fehler
      C                   EXSR      CHKTYP
       *
       * Feldnamen zusammenbauen
@@ -4600,23 +4602,23 @@ srccssid=  "01141">
      C                   MOVEA     F#TYP         TXT(43)
      C                   MOVEA     D#DEC         TXT(52)
       *
-      * Feld hat LÃ¤nge 0
+      * Feld hat Länge 0
      C                   IF        P#FLDP = 0
      C                   MOVEA     ' * '         TXT(6)
      C                   Z-ADD     *ZEROS        D#OD
      C                   MOVEA     D#POS         TXT(44)
      C                   MOVEA     D#POS         TXT(48)
-     C                   MOVEA     'LÃ¤nge = 0'   TXT(61)
+     C                   MOVEA     'Length = 0'  TXT(61)
      C                   ELSE
       *
       * VON-Position
-     C                   Z-ADD     OD            D#OD                           fÃ¼llen D#POS
+     C                   Z-ADD     OD            D#OD                           füllen D#POS
      C                   MOVEA     D#POS         TXT(44)
      C                   ADD       P#FLDP        OD
      C                   SUB       1             OD
       *
       * BIS-Position
-     C                   Z-ADD     OD            D#OD                           fÃ¼llen D#POS
+     C                   Z-ADD     OD            D#OD                           füllen D#POS
      C                   MOVEA     D#POS         TXT(48)
      C                   Z-ADD     D#OD          D#DSLG
      C                   ADD       1             OD
@@ -4633,7 +4635,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * RPGLNG Zeile mit LÃ¤nge der Datenstruktur absetzen
+      * RPGLNG Zeile mit Länge der Datenstruktur absetzen
       ******************************************************
       *
      C     RPGLNG        BEGSR
@@ -4643,10 +4645,10 @@ srccssid=  "01141">
      C                   MOVEA(P)  TXT           SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile mit DatenstrukturlÃ¤nge anlegen
+      * Zeile mit Datenstrukturlänge anlegen
      C                   MOVEA(P)  RPG(13)       TXT
       *
-      * StrukturlÃ¤nge wegschreiben
+      * Strukturlänge wegschreiben
      C                   MOVEA     D#DSLX        TXT(21)
       *
       * Feldnamen zusammenbauen
@@ -4662,7 +4664,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * RPG4FLD - Zeilen fÃ¼r Felddefinitionen generieren ILE
+      * RPG4FLD - Zeilen für Felddefinitionen generieren ILE
       ******************************************************
       *
      C     RPG4FLD       BEGSR
@@ -4674,7 +4676,7 @@ srccssid=  "01141">
      C                   EXSR      WRTLINE
       *
       * Anzahl der MSG-Variablen bestimmen
-      * (LÃ¤nge des kpl. Variablenbereichs / LÃ¤nge einer Variablestruktur)
+      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
      C                   EXSR      GETANZ
       *
      C     P#MANZ        IFLE      *ZEROS
@@ -4689,13 +4691,13 @@ srccssid=  "01141">
      C                   Z-ADD     *ZERO         D#DSLG
      C     1             DO        P#MANZ        A
       *
-      * einen Variableninformationsblock aus groÃ en Block herausschneiden
+      * einen Variableninformationsblock aus großen Block herausschneiden
      C                   EXSR      CUTVAR
       *
       * Zeilenschablone vorbereiten - ILE
      C                   MOVEA(P)  IRPG(5)       TXT                            12
       *
-      * prÃ¼fen, ob Datentyp korrekt, sonst Fehler
+      * prüfen, ob Datentyp korrekt, sonst Fehler
      C                   EXSR      CHKTYP
       *
       * Feldnamen zusammenbauen
@@ -4726,7 +4728,7 @@ srccssid=  "01141">
      C                   ENDIF
       * ... Dezimalstellen
      C                   MOVEA     D#DEC         TXT(42)
-      * ... Bei BinÃ¤r (==> RPG-Integer = I) die LÃ¤nge anpassen
+      * ... Bei Binär (==> RPG-Integer = I) die Länge anpassen
      C     F#TYP         IFEQ      'B'
      C                   SELECT
      C     P#FLDL        WHENGE    10
@@ -4737,14 +4739,14 @@ srccssid=  "01141">
      C                   Z-ADD     5             P#FLDL
      C                   ENDSL
      C                   ENDIF
-      * ... FeldlÃ¤nge
+      * ... Feldlänge
      C                   IF        P#FLDP = *ZEROS
      C                   MOVEA     ' *'          TXT(6)
-     C                   Z-ADD     *ZEROS        D#OD                           fÃ¼llen D#POS
+     C                   Z-ADD     *ZEROS        D#OD                           füllen D#POS
      C                   MOVEA     D#POS         TXT(36)
-     C                   MOVEA     'LÃ¤nge = 0'   TXT(58)
+     C                   MOVEA     'Length = 0'  TXT(58)
      C                   ELSE
-     C                   Z-ADD     P#FLDL        D#OD                           fÃ¼llen D#POS
+     C                   Z-ADD     P#FLDL        D#OD                           füllen D#POS
      C                   ADD       P#FLDP        D#DSLG
      C                   MOVEA     D#POS         TXT(36)
      C                   ENDIF
@@ -4760,7 +4762,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * IPGLNG Zeile mit LÃ¤nge der Datenstruktur absetzen
+      * IPGLNG Zeile mit Länge der Datenstruktur absetzen
       ******************************************************
       *
      C     IPGLNG        BEGSR
@@ -4768,7 +4770,7 @@ srccssid=  "01141">
       * Zeile mit Datenstrukturdefinition (nur DS, unbenannt)
      C                   MOVEA(P)  IRPG(6)       TXT                            13
       *
-      * StrukturlÃ¤nge wegschreiben
+      * Strukturlänge wegschreiben
      C                   MOVEA     D#DSLX        TXT(48)
       *
       * Feldnamen zusammenbauen
@@ -4784,16 +4786,16 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * ICLFLD Zeilen fÃ¼r Felddefinitionen generieren CLP
+      * ICLFLD Zeilen für Felddefinitionen generieren CLP
       ******************************************************
       *
      C     ICLFLD        BEGSR
       *
-      * Startposition fÃ¼r SchlÃ¼sselworte
+      * Startposition für Schlüsselworte
      C                   Z-ADD     16            #P                5 0
-      * Startposition fÃ¼r eingerÃ¼ckte Werte
+      * Startposition für eingerückte Werte
      C                   Z-ADD     21            #Z                5 0
-      * Startposition fÃ¼r Nachrichtentexte
+      * Startposition für Nachrichtentexte
      C                   Z-ADD     1             #Z1               5 0
       * Arbeitsfeld
      C                   Z-ADD     *ZEROS        cS                5 0
@@ -4871,7 +4873,7 @@ srccssid=  "01141">
      C                   EXSR      WRTLINE
       *
       * Anzahl der MSG-Variablen bestimmen
-      * (LÃ¤nge des kpl. Variablenbereichs / LÃ¤nge einer Variablestruktur)
+      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
      C                   EXSR      GETANZ
       *
      C     P#MANZ        IFLE      *ZEROS
@@ -4894,10 +4896,10 @@ srccssid=  "01141">
       *
      C                   EVAL      %SUBST(SRCDTA: #Z: 1) = '('
       *
-      * einen Variableninformationsblock aus groÃ en Block herausschneiden
+      * einen Variableninformationsblock aus großen Block herausschneiden
      C                   EXSR      CUTVAR
       *
-      * prÃ¼fen, ob Datentyp korrekt, sonst Fehler
+      * prüfen, ob Datentyp korrekt, sonst Fehler
      C                   EXSR      CHKTYP
       *
       * Dezimalstellen oder *BLANK ...
@@ -4917,8 +4919,8 @@ srccssid=  "01141">
      C                   OTHER
      C                   CAT       M3FTYP:0      SRCDTA
      C                   ENDSL
-      * ... FeldlÃ¤nge
-     C                   Z-ADD     P#FLDL        D#OD                           fÃ¼llen D#POS
+      * ... Feldlänge
+     C                   Z-ADD     P#FLDL        D#OD
      C                   CAT       D#POS:1       SRCDTA
       * ... Dezimalstellen
      C                   CAT       D#DEC:1       SRCDTA
@@ -5000,7 +5002,7 @@ srccssid=  "01141">
      C     #Y            IFLE      *ZEROS
       *  Nichts weiter zu tun ...
      C                   ELSE
-      *  Zweite "HÃ¤lfte" retten ...
+      *  Zweite "Hälfte" retten ...
      C                   ADD       1             #Y
      C     #Y            IFLE      8192
      C                   SUBST     #TEXT:#Y      #TEMP
@@ -5040,11 +5042,11 @@ srccssid=  "01141">
       *
      C     #TEXT         DOWNE     *BLANKS
       *
-      *  Ã bertragen Nachrichtentext in Datenzeile
+      *  Übertragen Nachrichtentext in Datenzeile
      C                   Z-ADD     1             #S                5 0
      C     #L            SUBST(P)  #TEXT:#S      SRCDTA
       *
-      *  Entfernen Ã¼bertragene Zeichen aus Nachrichtentext
+      *  Entfernen übertragene Zeichen aus Nachrichtentext
      C                   ADD       #L            #S
      C     #S            IFLE      8192
      C                   SUBST(P)  #TEXT:#S      #TEXT
@@ -5052,7 +5054,7 @@ srccssid=  "01141">
      C                   MOVEL(P)  *BLANKS       #TEXT
      C                   ENDIF
       *
-      *  AnfÃ¼gen Fortsetzungszeichen
+      *  Anfügen Fortsetzungszeichen
      C                   MOVEA     SRCDTA        TXT(#Z1)
      C     #Z1           ADD       #L            #X
       *
@@ -5071,7 +5073,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * OPNBRK   - Ã ffnen Klammer (Open bracket)
+      * OPNBRK   - Öffnen Klammer (Open bracket)
       ******************************************************
       *
      C     OPNBRK        BEGSR
@@ -5081,7 +5083,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * CLSBRK   - SchlieÃ en Klammer (Close bracket)
+      * CLSBRK   - Schließen Klammer (Close bracket)
       ******************************************************
       *
      C     CLSBRK        BEGSR
@@ -5091,7 +5093,7 @@ srccssid=  "01141">
      C                   ENDSR
       *
       ******************************************************
-      * CHKTYP   - PrÃ¼fen Datentyp
+      * CHKTYP   - Prüfen Datentyp
       ******************************************************
       *
      C     CHKTYP        BEGSR
@@ -5129,7 +5131,7 @@ srccssid=  "01141">
       *
       ******************************************************
       * CUTVAR   - Herausschneiden eines Variablen-
-      *            informationsblock aus groÃ en Block
+      *            informationsblock aus großem Block
       ******************************************************
       *
      C     CUTVAR        BEGSR
@@ -5147,7 +5149,7 @@ srccssid=  "01141">
       *
      C     GETDEZ        BEGSR
       *
-      * FeldlÃ¤nge laut MSGD
+      * Feldlänge laut MSGD
      C                   Z-ADD     M3FLGD        P#FLDL
      C                   Z-ADD     M3FLGD        P#FLDP
       *
@@ -5167,7 +5169,7 @@ srccssid=  "01141">
       *
      C     M3FTYP        WHENEQ    '*DEC'
      C                   Z-ADD     M3FFSZ        D#DPS
-      *          die FeldlÃ¤nge fÃ¼r gepackt errechnen
+      *          die Feldlänge für gepackt errechnen
      C     P#FLDL        DIV       2             P#FLDP
      C                   ADD       1             P#FLDP
      C                   MOVEL     'P'           F#TYP
@@ -5221,10 +5223,10 @@ srccssid=  "01141">
       *
      C     FIRST         BEGSR
       *
-      * Datei Ã¶ffnen
+      * Datei öffnen
      C                   OPEN      SRC
       *
-      * RÃ¼ckgabeparameter initialisieren
+      * Rückgabeparameter initialisieren
      C                   MOVEL     *BLANK        XMBRT                          Msgtext
      C                   MOVEL     *BLANK        XERRID                         Error-ID
      C                   MOVEL     *BLANK        XERRDT                         Error-Data
@@ -5234,13 +5236,13 @@ srccssid=  "01141">
       * Stelle in RTVM0300 ab der variabler Teil beginnt
      C                   Z-ADD     105           R#OFF3                         Offset in DS
       *
-      * laufender ZÃ¤hler fÃ¼r Offsets
+      * laufender Zähler für Offsets
      C                   Z-ADD     *ZERO         O
       *
-      * laufender ZÃ¤hler Variablenverarbeitung
+      * laufender Zähler Variablenverarbeitung
      C                   Z-ADD     *ZERO         A
       *
-      * Empfangsvariablen fÃ¼r variablen Teil initialisieren
+      * Empfangsvariablen für variablen Teil initialisieren
      C                   MOVEL(P)  *BLANK        D#DRPL
      C                   MOVEL(P)  *BLANK        D#MSGT
      C                   MOVEL(P)  *BLANK        D#MSGH
@@ -5249,7 +5251,7 @@ srccssid=  "01141">
      C                   Z-ADD     *ZERO         P#MANZ
       * MSGID in Zerlegungsstruktur bringen
      C                   MOVEL(P)  XMSGI         D#MSID
-      * LÃ¤nge der Msg-Variablen
+      * Länge der Msg-Variablen
      C                   Z-ADD     *ZERO         P#FLDL
      C                   Z-ADD     *ZERO         P#FLDP
       * Rest bei Division
@@ -5291,27 +5293,27 @@ srccssid=  "01141">
       * Stelle in RTVM0300 ab der variabler Teil beginnt
      C                   Z-ADD     R#OFF3        R#OFF3            4 0          Offset in DS
       *
-      * laufender ZÃ¤hler fÃ¼r Offsets
+      * laufender Zähler für Offsets
      C                   Z-ADD     O             O                 4 0
      C                   Z-ADD     OF            OF                3 0
       *
-      * laufender ZÃ¤hler fÃ¼r Positionen in generierter Datenstruktur
+      * laufender Zähler für Positionen in generierter Datenstruktur
      C                   Z-ADD     OD            OD                4 0
       *
-      * laufender ZÃ¤hler Variablenverarbeitung
+      * laufender Zähler Variablenverarbeitung
      C                   Z-ADD     A             A                 4 0
       *
       * Anzahl der Variablen in der MSG
      C                   Z-ADD     P#MANZ        P#MANZ            2 0
       *
-      * LÃ¤nge der Msg-Variablen
+      * Länge der Msg-Variablen
      C                   Z-ADD     P#FLDL        P#FLDL            4 0
      C                   Z-ADD     P#FLDP        P#FLDP            4 0
       *
       * Rest bei Division
      C                   Z-ADD     P#REST        P#REST            3 0
       *
-      * Namen fÃ¼r Define
+      * Namen für Define
      C                   MOVEL     P#DEFN        P#DEFN           20
       *
      C                   ENDSR
@@ -5443,7 +5445,7 @@ srccssid=  "01141">
       /undefine
 **  CLP
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD fÃ¼r Message-ID :                              */
+     /*   Cmd-ADDMSGD für Message-ID :                              */
      /*                                                             */
      /*-------------------------------------------------------------*/
              PGM        PARM(&I_LIB &I_OBJ)
@@ -5455,7 +5457,7 @@ srccssid=  "01141">
              ADDMSGD
              RCLRSC LVL(*)
              ENDPGM
-     /*   Keine Ersatzvariablen definiert!                          */ +
+     /*   No replacement variables defined!                         */ +
              DCL        VAR(&I_LIB     ) TYPE(*CHAR) LEN(10)
              DCL        VAR(&I_OBJ     ) TYPE(*CHAR) LEN(10)
              DCL        VAR(&LIB       ) TYPE(*CHAR) LEN(10)
@@ -5477,7 +5479,7 @@ srccssid=  "01141">
                             TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*ESCAPE)
 **  C
   /* --------------------------------------------------------------------- */
-  /*   Datenstruktur fÃ¼r Message-ID : %%MSGID                              */
+  /*   Data structure for message-ID : %%MSGID                             */
   /*   %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   */
   /* --------------------------------------------------------------------- */
   typedef _Packed struct {

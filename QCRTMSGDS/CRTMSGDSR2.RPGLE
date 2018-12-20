@@ -21,10 +21,10 @@
       *=====================================================================*
       *  History:                                                           *
       *                                                                     *
-      *  Datum       Name          Ã„nderung                                 *
+      *  Datum       Name          Änderung                                 *
       *  ----------  ------------  ---------------------------------------  *
       *  07.09.2001  Th.Raddatz    Fixed a bug when field length is *ZEROS. *
-      *  10.01.2003  Th.Raddatz    Removed special character Â§ from source. *
+      *  10.01.2003  Th.Raddatz    Removed special character Ä from source. *
       *  08.03.2005  Th.Raddatz    Fixed problem that trailing blanks of    *
       *                            message help text were dropped.          *
       *  21.06.2005  Th.Raddatz    Renamed XMSGT to XMBRT to avoid          *
@@ -32,10 +32,10 @@
       *                            Increment cL within RPLHPN to fix bug    *
       *                            that message text was truncated.         *
       *  18.04.2008  Th.Raddatz    Datenstruktur MS0300 von 1024 auf 8192   *
-      *                            Byte vergrÃ¶ÃŸert.                         *
+      *                            Byte vergrößert.                         *
       *  26.01.2009  Th.Raddatz    Code des generierten CLP Programms       *
-      *                            geÃ¤ndert. Bibliothek kann jetzt als      *
-      *                            optionaler Parameter Ã¼bergeben werden.   *
+      *                            geändert. Bibliothek kann jetzt als      *
+      *                            optionaler Parameter übergeben werden.   *
       *                            Befehlsparameter TYPE um Auswahl         *
       *                            *CLLE erweitert.                         *
       *  06.10.2009  Th.Raddatz    Replaced special character '#' by        *
@@ -79,6 +79,7 @@
       *   >>LINK<<                                                          *
       *     >>PARM<< DFTACTGRP(*NO);                                        *
       *     >>PARM<< ACTGRP(*CALLER );                                      *
+      *     >>PARM<< OPTION(*EVENTF);                                       *
       *   >>END-LINK<<                                                      *
       *                                                                     *
       *   >>EXECUTE<<                                                       *
@@ -126,7 +127,7 @@
      D tmpStr          S             80A   varying
       *
       *------------------------------------------------------------*
-      *  Datensatzbeschreibung fÃ¼r Sourcen
+      *  Datensatzbeschreibung für Sourcen
       *------------------------------------------------------------*
       *
      D FSRC            DS
@@ -157,7 +158,7 @@
      D                 PR            20A
       *
       *------------------------------------------------------------*
-      *  allg. Feldbeschreibungen fÃ¼r API
+      *  allg. Feldbeschreibungen für API
       *------------------------------------------------------------*
       *
      D                 DS
@@ -257,7 +258,7 @@
      D  D#INBR                 4      7    INZ
      D  D#IORD                 8      8    INZ
      D  D#EXT                  8     12    INZ
-      * LÃ¤nge der Datenstruktur binÃ¤r
+      * Länge der Datenstruktur binär
      D                 DS
      D  D#DSLX                 1      4    INZ
      D  D#DSLG                 1      4  0 INZ
@@ -365,7 +366,7 @@
      C                   PARM                    P#MSFC                         Ret Form Cha
      C                   PARM                    ERRCOD
       *
-      * prÃ¼fen, Aufruf OK
+      * prüfen, Aufruf OK
      C     *IN99         IFEQ      *ON
      C                   MOVEL(P)  'CPF9897'     XERRID
      C                   MOVEL(P)  'Aufruf '     XERRDT
@@ -384,26 +385,26 @@
      C                   GOTO      ENDE
      C                   ENDIF
       *
-      * Default Reply rauslÃ¶sen
+      * Default Reply rauslösen
      C     M3LGDR        IFGT      *ZERO
      C     OFS           ADD       M3OFDR        O
      C     M3LGDR        SUBST     MS0300:O      D#DRPL
      C                   ENDIF
       *
-      * Messagetext rauslÃ¶sen
+      * Messagetext rauslösen
      C     M3LGMR        IFGT      *ZERO
      C     OFS           ADD       M3OFMG        O
      C     M3LGMR        SUBST     MS0300:O      D#MSGT
      C                   ENDIF
      C                   MOVEL(P)  D#MSGT        XMBRT
       *
-      * Messagehelp rauslÃ¶sen
+      * Messagehelp rauslösen
      C     M3LGMH        IFGT      *ZERO
      C     OFS           ADD       M3OFMH        O
      C     M3LGMH        SUBST     MS0300:O      D#MSGH
      C                   ENDIF
       *
-      * Ersetzungsvariable rauslÃ¶sen
+      * Ersetzungsvariable rauslösen
      C     M3LGVF        IFGT      *ZERO
      C     OFS           ADD       M3OFVF        O
      C     M3LGVF        SUBST     MS0300:O      D#SUBV
@@ -414,7 +415,7 @@
       *
      C     ENDE          TAG
       *
-      * Datei schlieÃŸen
+      * Datei schließen
      C                   CLOSE     SRC
       *
      C                   RETURN
@@ -448,7 +449,7 @@
       *
       * *SCRIPT wie *CLP verarbeiten, nur einzelne Zeilen rauslassen
      C     XGENA         WHENEQ    '*SCRIPT'
-      * Ersatzvariablen fÃ¼r RUNCLSTM setzen
+      * Ersatzvariablen für RUNCLSTM setzen
      C                   MOVEL(P)  XMSGL         R#MSGL                         Msg-Lib
      C                   MOVEL(P)  XMSGF         R#MSGF                         Msg-File
      C                   MOVEL(P)  '&LI'         XMSGL                          Msg-Lib
@@ -489,15 +490,15 @@
      C                   MOVEL(P)  RPG(3)        SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile fÃ¼r Datenstrukturfelder erstellen
+      * Zeile für Datenstrukturfelder erstellen
      C                   EXSR      RPGFLD
-      * Zeile mit GesamtlÃ¤nge der Datenstruktur
+      * Zeile mit Gesamtlänge der Datenstruktur
      C                   EXSR      RPGLNG
       *
      C                   ENDSR
       *
       ******************************************************
-      * VRPG4    generieren Source fÃ¼r ILE-RPG
+      * VRPG4    generieren Source für ILE-RPG
       ******************************************************
       *
      C     VRPG4         BEGSR
@@ -524,9 +525,9 @@
      C                   MOVEL(P)  IRPG(3)       SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile fÃ¼r Datenstrukturfelder erstellen
+      * Zeile für Datenstrukturfelder erstellen
      C                   EXSR      RPG4FLD
-      * Zeile mit GesamtlÃ¤nge der Datenstruktur
+      * Zeile mit Gesamtlänge der Datenstruktur
      C                   EXSR      IPGLNG
       * Kommentarzeile nur Stern
      C                   MOVEL(P)  IRPG(3)       SRCDTA
@@ -551,7 +552,7 @@
      C                   MOVEL(P)  IRPG(11)      SRCDTA                         18
      C                   EXSR      WRTLINE
       *
-      * Ermitteln Namen fÃ¼r Define
+      * Ermitteln Namen für Define
      C                   EXSR      EMDEFN
       *
       * /IF NOT DEFINED(msgid_MSG)
@@ -608,7 +609,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * VCLP     generieren Source fÃ¼r CLP-PROGRAMM
+      * VCLP     generieren Source für CLP-PROGRAMM
       ******************************************************
       *
      C     VCLP          BEGSR
@@ -784,13 +785,13 @@
      C                   CAT       '+':1         SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile fÃ¼r Datenstrukturfelder erstellen
+      * Zeile für Datenstrukturfelder erstellen
      C                   EXSR      ICLFLD
       *
      C                   ENDSR
       *
       ******************************************************
-      * VC       generieren Source fÃ¼r C-Programme
+      * VC       generieren Source für C-Programme
       ******************************************************
       *
      C     VC            BEGSR
@@ -818,7 +819,7 @@
      C                   MOVEL(P)  *BLANKS       SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile fÃ¼r Datenstrukturfelder erstellen
+      * Zeile für Datenstrukturfelder erstellen
      C                   EXSR      ICFLD
       *
       * DEFINE-Rahmen 2
@@ -871,7 +872,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * ICFLD  Zeilen fÃ¼r Felddefinitionen generieren
+      * ICFLD  Zeilen für Felddefinitionen generieren
       ******************************************************
       *
      C     ICFLD         BEGSR
@@ -881,7 +882,7 @@
      C                   EXSR      WRTLINE
       *
       * Anzahl der MSG-Variablen bestimmen
-      * (LÃ¤nge des kpl. Variablenbereichs / LÃ¤nge einer Variablestruktur)
+      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
      C                   EXSR      GETANZ
       *
      C     P#MANZ        IFLE      *ZEROS
@@ -901,13 +902,13 @@
      C                   Z-ADD     1             OF
      C     1             DO        P#MANZ        A
       *
-      * einen Variableninformationsblock aus groÃŸen Block herausschneiden
+      * einen Variableninformationsblock aus großem Block herausschneiden
      C                   EXSR      CUTVAR
       *
       * Zeilenschablone vorbereiten
      C                   EVAL      SRCDTA = c(6)
       *
-      * prÃ¼fen, ob Datentyp korrekt, sonst Fehler
+      * prüfen, ob Datentyp korrekt, sonst Fehler
      C                   EXSR      CHKTYP
       *
       * Feldnamen zusammenbauen
@@ -953,7 +954,7 @@
       *
      C                   IF        P#FLDL = 0
      C                   EVAL      %SUBST(SRCDTA: 2: 2) = '/*'
-     C                   EVAL      %SUBST(SRCDTA:40: 9) = 'LÃ¤nge = 0'
+     C                   EVAL      %SUBST(SRCDTA:40: 9) = 'Length = 0'
      C                   EVAL      %SUBST(SRCDTA:50: 2) = '*/'
      C                   ENDIF
       *
@@ -972,7 +973,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * RPGFLD Zeilen fÃ¼r Felddefinitionen generieren
+      * RPGFLD Zeilen für Felddefinitionen generieren
       ******************************************************
       *
      C     RPGFLD        BEGSR
@@ -985,7 +986,7 @@
      C                   EXSR      WRTLINE
       *
       * Anzahl der MSG-Variablen bestimmen
-      * (LÃ¤nge des kpl. Variablenbereichs / LÃ¤nge einer Variablestruktur)
+      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
      C                   EXSR      GETANZ
       *
      C     P#MANZ        IFLE      *ZEROS
@@ -999,13 +1000,13 @@
      C                   Z-ADD     1             OD
      C     1             DO        P#MANZ        A
       *
-      * einen Variableninformationsblock aus groÃŸen Block herausschneiden
+      * einen Variableninformationsblock aus großen Block herausschneiden
      C                   EXSR      CUTVAR
       *
       * Zeilenschablone vorbereiten
      C                   MOVEA(P)  RPG(12)       TXT
       *
-      * prÃ¼fen, ob Datentyp korrekt, sonst Fehler
+      * prüfen, ob Datentyp korrekt, sonst Fehler
      C                   EXSR      CHKTYP
       *
       * Feldnamen zusammenbauen
@@ -1025,23 +1026,23 @@
      C                   MOVEA     F#TYP         TXT(43)
      C                   MOVEA     D#DEC         TXT(52)
       *
-      * Feld hat LÃ¤nge 0
+      * Feld hat Länge 0
      C                   IF        P#FLDP = 0
      C                   MOVEA     ' * '         TXT(6)
      C                   Z-ADD     *ZEROS        D#OD
      C                   MOVEA     D#POS         TXT(44)
      C                   MOVEA     D#POS         TXT(48)
-     C                   MOVEA     'LÃ¤nge = 0'   TXT(61)
+     C                   MOVEA     'Length = 0'  TXT(61)
      C                   ELSE
       *
       * VON-Position
-     C                   Z-ADD     OD            D#OD                           fÃ¼llen D#POS
+     C                   Z-ADD     OD            D#OD                           füllen D#POS
      C                   MOVEA     D#POS         TXT(44)
      C                   ADD       P#FLDP        OD
      C                   SUB       1             OD
       *
       * BIS-Position
-     C                   Z-ADD     OD            D#OD                           fÃ¼llen D#POS
+     C                   Z-ADD     OD            D#OD                           füllen D#POS
      C                   MOVEA     D#POS         TXT(48)
      C                   Z-ADD     D#OD          D#DSLG
      C                   ADD       1             OD
@@ -1058,7 +1059,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * RPGLNG Zeile mit LÃ¤nge der Datenstruktur absetzen
+      * RPGLNG Zeile mit Länge der Datenstruktur absetzen
       ******************************************************
       *
      C     RPGLNG        BEGSR
@@ -1068,10 +1069,10 @@
      C                   MOVEA(P)  TXT           SRCDTA
      C                   EXSR      WRTLINE
       *
-      * Zeile mit DatenstrukturlÃ¤nge anlegen
+      * Zeile mit Datenstrukturlänge anlegen
      C                   MOVEA(P)  RPG(13)       TXT
       *
-      * StrukturlÃ¤nge wegschreiben
+      * Strukturlänge wegschreiben
      C                   MOVEA     D#DSLX        TXT(21)
       *
       * Feldnamen zusammenbauen
@@ -1087,7 +1088,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * RPG4FLD - Zeilen fÃ¼r Felddefinitionen generieren ILE
+      * RPG4FLD - Zeilen für Felddefinitionen generieren ILE
       ******************************************************
       *
      C     RPG4FLD       BEGSR
@@ -1099,7 +1100,7 @@
      C                   EXSR      WRTLINE
       *
       * Anzahl der MSG-Variablen bestimmen
-      * (LÃ¤nge des kpl. Variablenbereichs / LÃ¤nge einer Variablestruktur)
+      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
      C                   EXSR      GETANZ
       *
      C     P#MANZ        IFLE      *ZEROS
@@ -1114,13 +1115,13 @@
      C                   Z-ADD     *ZERO         D#DSLG
      C     1             DO        P#MANZ        A
       *
-      * einen Variableninformationsblock aus groÃŸen Block herausschneiden
+      * einen Variableninformationsblock aus großen Block herausschneiden
      C                   EXSR      CUTVAR
       *
       * Zeilenschablone vorbereiten - ILE
      C                   MOVEA(P)  IRPG(5)       TXT                            12
       *
-      * prÃ¼fen, ob Datentyp korrekt, sonst Fehler
+      * prüfen, ob Datentyp korrekt, sonst Fehler
      C                   EXSR      CHKTYP
       *
       * Feldnamen zusammenbauen
@@ -1151,7 +1152,7 @@
      C                   ENDIF
       * ... Dezimalstellen
      C                   MOVEA     D#DEC         TXT(42)
-      * ... Bei BinÃ¤r (==> RPG-Integer = I) die LÃ¤nge anpassen
+      * ... Bei Binär (==> RPG-Integer = I) die Länge anpassen
      C     F#TYP         IFEQ      'B'
      C                   SELECT
      C     P#FLDL        WHENGE    10
@@ -1162,14 +1163,14 @@
      C                   Z-ADD     5             P#FLDL
      C                   ENDSL
      C                   ENDIF
-      * ... FeldlÃ¤nge
+      * ... Feldlänge
      C                   IF        P#FLDP = *ZEROS
      C                   MOVEA     ' *'          TXT(6)
-     C                   Z-ADD     *ZEROS        D#OD                           fÃ¼llen D#POS
+     C                   Z-ADD     *ZEROS        D#OD                           füllen D#POS
      C                   MOVEA     D#POS         TXT(36)
-     C                   MOVEA     'LÃ¤nge = 0'   TXT(58)
+     C                   MOVEA     'Length = 0'  TXT(58)
      C                   ELSE
-     C                   Z-ADD     P#FLDL        D#OD                           fÃ¼llen D#POS
+     C                   Z-ADD     P#FLDL        D#OD                           füllen D#POS
      C                   ADD       P#FLDP        D#DSLG
      C                   MOVEA     D#POS         TXT(36)
      C                   ENDIF
@@ -1185,7 +1186,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * IPGLNG Zeile mit LÃ¤nge der Datenstruktur absetzen
+      * IPGLNG Zeile mit Länge der Datenstruktur absetzen
       ******************************************************
       *
      C     IPGLNG        BEGSR
@@ -1193,7 +1194,7 @@
       * Zeile mit Datenstrukturdefinition (nur DS, unbenannt)
      C                   MOVEA(P)  IRPG(6)       TXT                            13
       *
-      * StrukturlÃ¤nge wegschreiben
+      * Strukturlänge wegschreiben
      C                   MOVEA     D#DSLX        TXT(48)
       *
       * Feldnamen zusammenbauen
@@ -1209,16 +1210,16 @@
      C                   ENDSR
       *
       ******************************************************
-      * ICLFLD Zeilen fÃ¼r Felddefinitionen generieren CLP
+      * ICLFLD Zeilen für Felddefinitionen generieren CLP
       ******************************************************
       *
      C     ICLFLD        BEGSR
       *
-      * Startposition fÃ¼r SchlÃ¼sselworte
+      * Startposition für Schlüsselworte
      C                   Z-ADD     16            #P                5 0
-      * Startposition fÃ¼r eingerÃ¼ckte Werte
+      * Startposition für eingerückte Werte
      C                   Z-ADD     21            #Z                5 0
-      * Startposition fÃ¼r Nachrichtentexte
+      * Startposition für Nachrichtentexte
      C                   Z-ADD     1             #Z1               5 0
       * Arbeitsfeld
      C                   Z-ADD     *ZEROS        cS                5 0
@@ -1296,7 +1297,7 @@
      C                   EXSR      WRTLINE
       *
       * Anzahl der MSG-Variablen bestimmen
-      * (LÃ¤nge des kpl. Variablenbereichs / LÃ¤nge einer Variablestruktur)
+      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
      C                   EXSR      GETANZ
       *
      C     P#MANZ        IFLE      *ZEROS
@@ -1319,10 +1320,10 @@
       *
      C                   EVAL      %SUBST(SRCDTA: #Z: 1) = '('
       *
-      * einen Variableninformationsblock aus groÃŸen Block herausschneiden
+      * einen Variableninformationsblock aus großen Block herausschneiden
      C                   EXSR      CUTVAR
       *
-      * prÃ¼fen, ob Datentyp korrekt, sonst Fehler
+      * prüfen, ob Datentyp korrekt, sonst Fehler
      C                   EXSR      CHKTYP
       *
       * Dezimalstellen oder *BLANK ...
@@ -1342,8 +1343,8 @@
      C                   OTHER
      C                   CAT       M3FTYP:0      SRCDTA
      C                   ENDSL
-      * ... FeldlÃ¤nge
-     C                   Z-ADD     P#FLDL        D#OD                           fÃ¼llen D#POS
+      * ... Feldlänge
+     C                   Z-ADD     P#FLDL        D#OD
      C                   CAT       D#POS:1       SRCDTA
       * ... Dezimalstellen
      C                   CAT       D#DEC:1       SRCDTA
@@ -1425,7 +1426,7 @@
      C     #Y            IFLE      *ZEROS
       *  Nichts weiter zu tun ...
      C                   ELSE
-      *  Zweite "HÃ¤lfte" retten ...
+      *  Zweite "Hälfte" retten ...
      C                   ADD       1             #Y
      C     #Y            IFLE      8192
      C                   SUBST     #TEXT:#Y      #TEMP
@@ -1465,11 +1466,11 @@
       *
      C     #TEXT         DOWNE     *BLANKS
       *
-      *  Ãœbertragen Nachrichtentext in Datenzeile
+      *  Übertragen Nachrichtentext in Datenzeile
      C                   Z-ADD     1             #S                5 0
      C     #L            SUBST(P)  #TEXT:#S      SRCDTA
       *
-      *  Entfernen Ã¼bertragene Zeichen aus Nachrichtentext
+      *  Entfernen übertragene Zeichen aus Nachrichtentext
      C                   ADD       #L            #S
      C     #S            IFLE      8192
      C                   SUBST(P)  #TEXT:#S      #TEXT
@@ -1477,7 +1478,7 @@
      C                   MOVEL(P)  *BLANKS       #TEXT
      C                   ENDIF
       *
-      *  AnfÃ¼gen Fortsetzungszeichen
+      *  Anfügen Fortsetzungszeichen
      C                   MOVEA     SRCDTA        TXT(#Z1)
      C     #Z1           ADD       #L            #X
       *
@@ -1496,7 +1497,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * OPNBRK   - Ãffnen Klammer (Open bracket)
+      * OPNBRK   - Öffnen Klammer (Open bracket)
       ******************************************************
       *
      C     OPNBRK        BEGSR
@@ -1506,7 +1507,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * CLSBRK   - SchlieÃŸen Klammer (Close bracket)
+      * CLSBRK   - Schließen Klammer (Close bracket)
       ******************************************************
       *
      C     CLSBRK        BEGSR
@@ -1516,7 +1517,7 @@
      C                   ENDSR
       *
       ******************************************************
-      * CHKTYP   - PrÃ¼fen Datentyp
+      * CHKTYP   - Prüfen Datentyp
       ******************************************************
       *
      C     CHKTYP        BEGSR
@@ -1554,7 +1555,7 @@
       *
       ******************************************************
       * CUTVAR   - Herausschneiden eines Variablen-
-      *            informationsblock aus groÃŸen Block
+      *            informationsblock aus großem Block
       ******************************************************
       *
      C     CUTVAR        BEGSR
@@ -1572,7 +1573,7 @@
       *
      C     GETDEZ        BEGSR
       *
-      * FeldlÃ¤nge laut MSGD
+      * Feldlänge laut MSGD
      C                   Z-ADD     M3FLGD        P#FLDL
      C                   Z-ADD     M3FLGD        P#FLDP
       *
@@ -1592,7 +1593,7 @@
       *
      C     M3FTYP        WHENEQ    '*DEC'
      C                   Z-ADD     M3FFSZ        D#DPS
-      *          die FeldlÃ¤nge fÃ¼r gepackt errechnen
+      *          die Feldlänge für gepackt errechnen
      C     P#FLDL        DIV       2             P#FLDP
      C                   ADD       1             P#FLDP
      C                   MOVEL     'P'           F#TYP
@@ -1646,10 +1647,10 @@
       *
      C     FIRST         BEGSR
       *
-      * Datei Ã¶ffnen
+      * Datei öffnen
      C                   OPEN      SRC
       *
-      * RÃ¼ckgabeparameter initialisieren
+      * Rückgabeparameter initialisieren
      C                   MOVEL     *BLANK        XMBRT                          Msgtext
      C                   MOVEL     *BLANK        XERRID                         Error-ID
      C                   MOVEL     *BLANK        XERRDT                         Error-Data
@@ -1659,13 +1660,13 @@
       * Stelle in RTVM0300 ab der variabler Teil beginnt
      C                   Z-ADD     105           R#OFF3                         Offset in DS
       *
-      * laufender ZÃ¤hler fÃ¼r Offsets
+      * laufender Zähler für Offsets
      C                   Z-ADD     *ZERO         O
       *
-      * laufender ZÃ¤hler Variablenverarbeitung
+      * laufender Zähler Variablenverarbeitung
      C                   Z-ADD     *ZERO         A
       *
-      * Empfangsvariablen fÃ¼r variablen Teil initialisieren
+      * Empfangsvariablen für variablen Teil initialisieren
      C                   MOVEL(P)  *BLANK        D#DRPL
      C                   MOVEL(P)  *BLANK        D#MSGT
      C                   MOVEL(P)  *BLANK        D#MSGH
@@ -1674,7 +1675,7 @@
      C                   Z-ADD     *ZERO         P#MANZ
       * MSGID in Zerlegungsstruktur bringen
      C                   MOVEL(P)  XMSGI         D#MSID
-      * LÃ¤nge der Msg-Variablen
+      * Länge der Msg-Variablen
      C                   Z-ADD     *ZERO         P#FLDL
      C                   Z-ADD     *ZERO         P#FLDP
       * Rest bei Division
@@ -1716,27 +1717,27 @@
       * Stelle in RTVM0300 ab der variabler Teil beginnt
      C                   Z-ADD     R#OFF3        R#OFF3            4 0          Offset in DS
       *
-      * laufender ZÃ¤hler fÃ¼r Offsets
+      * laufender Zähler für Offsets
      C                   Z-ADD     O             O                 4 0
      C                   Z-ADD     OF            OF                3 0
       *
-      * laufender ZÃ¤hler fÃ¼r Positionen in generierter Datenstruktur
+      * laufender Zähler für Positionen in generierter Datenstruktur
      C                   Z-ADD     OD            OD                4 0
       *
-      * laufender ZÃ¤hler Variablenverarbeitung
+      * laufender Zähler Variablenverarbeitung
      C                   Z-ADD     A             A                 4 0
       *
       * Anzahl der Variablen in der MSG
      C                   Z-ADD     P#MANZ        P#MANZ            2 0
       *
-      * LÃ¤nge der Msg-Variablen
+      * Länge der Msg-Variablen
      C                   Z-ADD     P#FLDL        P#FLDL            4 0
      C                   Z-ADD     P#FLDP        P#FLDP            4 0
       *
       * Rest bei Division
      C                   Z-ADD     P#REST        P#REST            3 0
       *
-      * Namen fÃ¼r Define
+      * Namen für Define
      C                   MOVEL     P#DEFN        P#DEFN           20
       *
      C                   ENDSR
@@ -1868,7 +1869,7 @@
       /undefine
 **  CLP
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD fÃ¼r Message-ID :                              */
+     /*   Cmd-ADDMSGD für Message-ID :                              */
      /*                                                             */
      /*-------------------------------------------------------------*/
              PGM        PARM(&I_LIB &I_OBJ)
@@ -1880,7 +1881,7 @@
              ADDMSGD
              RCLRSC LVL(*)
              ENDPGM
-     /*   Keine Ersatzvariablen definiert!                          */ +
+     /*   No replacement variables defined!                         */ +
              DCL        VAR(&I_LIB     ) TYPE(*CHAR) LEN(10)
              DCL        VAR(&I_OBJ     ) TYPE(*CHAR) LEN(10)
              DCL        VAR(&LIB       ) TYPE(*CHAR) LEN(10)
@@ -1902,7 +1903,7 @@
                             TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*ESCAPE)
 **  C
   /* --------------------------------------------------------------------- */
-  /*   Datenstruktur fÃ¼r Message-ID : %%MSGID                              */
+  /*   Data structure for message-ID : %%MSGID                             */
   /*   %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   */
   /* --------------------------------------------------------------------- */
   typedef _Packed struct {

@@ -21,9 +21,9 @@
       *=====================================================================*
       *  History:                                                           *
       *                                                                     *
-      *  Datum       Name          Ã„nderung                                 *
+      *  Datum       Name          Änderung                                 *
       *  ----------  ------------  ---------------------------------------  *
-      *  10.01.2003  Th.Raddatz    Removed special character Â§ from source. *
+      *  10.01.2003  Th.Raddatz    Removed special character Ä from source. *
       *                                                                     *
       * =================================================================== *
       * >>PRE-COMPILER<<                                                    *
@@ -34,6 +34,7 @@
       *                                                                     *
       *   >>COMPILE<<                                                       *
       *     >>PARM<< DBGVIEW(*LIST);                                        *
+      *     >>PARM<< OPTION(*EVENTF);                                       *
       *   >>END-COMPILE<<                                                   *
       *                                                                     *
       *   >>LINK<<                                                          *
@@ -50,7 +51,7 @@
       * =================================================================== *
       *
       *------------------------------------------------------------*
-      *  allg. Feldbeschreibungen fÃ¼r API
+      *  allg. Feldbeschreibungen für API
       *------------------------------------------------------------*
       *
      D                 DS
@@ -178,7 +179,7 @@
      C                   PARM                    P#CCSC
      C                   PARM                    P#CCSR
       *
-      * prÃ¼fen, Aufruf OK
+      * prüfen, Aufruf OK
      C     *IN99         IFEQ      *ON
      C                   MOVEL(P)  'CPF9897'     XERRID
      C                   MOVEL(P)  'Aufruf '     XERRDT
@@ -210,7 +211,7 @@
       *
      C     FIRST         BEGSR
       *
-      * RÃ¼ckgabeparameter initialisieren
+      * Rückgabeparameter initialisieren
      C                   MOVEL     *BLANK        XMSG                           MSGID
      C                   MOVEL     *BLANK        XERRID                         Error-ID
      C                   MOVEL     *BLANK        XERRDT                         Error-Data

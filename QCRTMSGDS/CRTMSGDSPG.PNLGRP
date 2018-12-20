@@ -21,7 +21,7 @@
 .*=====================================================================*
 .*  History:                                                           *
 .*                                                                     *
-.*  Datum       Name          Ã„nderung                                 *
+.*  Datum       Name          Änderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
 .*                                                                     *
 .*=====================================================================*
@@ -52,21 +52,21 @@
 :IMHELP name='CRTMSGDS/CRTMSGF   '.
 :EHELP.
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r den Befehl
+.* Hilfetext für den Befehl
 .*--------------------------------------------------------------------
 :HELP NAME='CRTMSGDS'.
 Nachrichten-DS erstellen (CRTMSGDS) - Hilfe
 :P.
-Der Befehl CRTMSGDS erstellt eine Datenstruktur fÃ¼r eine
-Nachrichtenbeschreibung. AuÃŸerdem ist es mÃ¶glich mit dem Befehl
-CRTMSGDS ein CL Programm, bzw. ein CL-Script fÃ¼r den Befehl RUNCLSTM
-zu erstellen, welches den oder die Erstellungsbefehl(e) fÃ¼r eine
-oder mehrere Nachrichtenbeschreibungen enthÃ¤lt.
+Der Befehl CRTMSGDS erstellt eine Datenstruktur für eine
+Nachrichtenbeschreibung. Außerdem ist es möglich mit dem Befehl
+CRTMSGDS ein CL Programm, bzw. ein CL-Script für den Befehl RUNCLSTM
+zu erstellen, welches den oder die Erstellungsbefehl(e) für eine
+oder mehrere Nachrichtenbeschreibungen enthält.
 .*
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort RANGE
+.* Hilfetext für Schlüsselwort RANGE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/RANGE     '.
 Bereich der Nachrichten-IDs - Hilfe
@@ -75,7 +75,7 @@ Bereich der Nachrichten-IDs - Hilfe
 Gibt den Bereich der Nachrichten-IDs in der angegebenen Nachrichtendatei
 an, die verarbeitet werden. Alle Nachrichtenbeschreibungen
 in der bei :HP2.Nachrichtendatei:EHP2. (Parameter MSGF) angebenen
-Nachrichtendatei kÃ¶nnen durch die Angabe *ALL bei
+Nachrichtendatei können durch die Angabe *ALL bei
 diesem Parameter verarbeitet werden.
 :P.
 Ist keine Anfangsnachrichten-ID angegeben, beginnt die Verarbeitung
@@ -130,7 +130,7 @@ Parameters angegeben werden.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort MSGF
+.* Hilfetext für Schlüsselwort MSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MSGF'.
 Nachrichtendatei - Hilfe
@@ -150,15 +150,15 @@ QCPFMSG.
 Nachrichtenbeschreibungen stammen.
 :EPARML.
 :P.
-GÃ¼ltige Bibliothekswerte sind:
+Gültige Bibliothekswerte sind:
 :P.
 :PARML.
 :PT.:PK DEF.*LIBL:EPK.
 :PD.Alle Bibliotheken in der Bibliotheksliste des Jobs werden
-durchsucht, bis die erste Ãœbereinstimmung gefunden wird.
+durchsucht, bis die erste Übereinstimmung gefunden wird.
 :PT.:PV.*CURLIB:EPV.
-:PD.Die Nachrichtendatei wird in der aktuellen Bibliothek fÃ¼r den Job
-gesucht. EnthÃ¤lt die Bibliotheksliste keinen aktuellen
+:PD.Die Nachrichtendatei wird in der aktuellen Bibliothek für den Job
+gesucht. Enthält die Bibliotheksliste keinen aktuellen
 Bibliothekseintrag, wird QGPL benutzt.
 :PT.:PV.Bibliotheksname:EPV.
 :PD.Bibliothek angeben, in der sich die Nachrichtendatei befindet.
@@ -167,7 +167,7 @@ Bibliothekseintrag, wird QGPL benutzt.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort FILE
+.* Hilfetext für Schlüsselwort FILE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/FILE'.
 Datei - Hilfe
@@ -187,15 +187,15 @@ abgelegt.
 werden soll.
 :EPARML.
 :P.
-GÃ¼ltige Bibliothekswerte sind:
+Gültige Bibliothekswerte sind:
 :P.
 :PARML.
 :PT.:PK DEF.*LIBL:EPK.
 :PD.Alle Bibliotheken in der Bibliotheksliste des Jobs werden
-durchsucht, bis die erste Ãœbereinstimmung gefunden wird.
+durchsucht, bis die erste Übereinstimmung gefunden wird.
 :PT.:PV.*CURLIB:EPV.
-:PD.Die Quellendatei wird in der aktuellen Bibliothek fÃ¼r den Job
-gesucht. EnthÃ¤lt die Bibliotheksliste keinen aktuellen
+:PD.Die Quellendatei wird in der aktuellen Bibliothek für den Job
+gesucht. Enthält die Bibliotheksliste keinen aktuellen
 Bibliothekseintrag, wird QGPL benutzt.
 :PT.:PV.Bibliotheksname:EPV.
 :PD.Bibliothek angeben, in der sich die Quellendatei befindet.
@@ -204,15 +204,15 @@ Bibliothekseintrag, wird QGPL benutzt.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort MBR
+.* Hilfetext für Schlüsselwort MBR
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MBR'.
 Teildatei - Hilfe
 :XH3.Teildatei (MBR)
 :P.
-Angeben, wie die Quellenteildatei heiÃŸen soll. Wird in diesem Parameter
-*GEN angegeben, so wird fÃ¼r jede verarbeitete Nachrichten-ID eine
-separate Quellenteildatei erstellt. Wird hingegen ein Name fÃ¼r die
+Angeben, wie die Quellenteildatei heißen soll. Wird in diesem Parameter
+*GEN angegeben, so wird für jede verarbeitete Nachrichten-ID eine
+separate Quellenteildatei erstellt. Wird hingegen ein Name für die
 Quellenteildatei vorgegeben, so werden alle verarbeiteten Nachrichten-IDs
 in diese Quellenteildatei abgelegt.
 .*
@@ -229,7 +229,7 @@ generiert.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort REPLACE
+.* Hilfetext für Schlüsselwort REPLACE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/REPLACE'.
 Bestehende Teildatei ersetzen - Hilfe
@@ -250,7 +250,7 @@ vorhanden ist. Der Inhalt der Quellenteildatei geht verloren.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort TYPE
+.* Hilfetext für Schlüsselwort TYPE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/TYPE'.
 Zu generierende Sourceart - Hilfe
@@ -262,11 +262,11 @@ Angeben, welche Art von Quellcode generiert werden soll.
 .*
 :PARML.
 :PT.:PK DEF.*ILERPG:EPK.
-:PD.Es wird eine Datenstruktur fÃ¼r RPG-IV erstellt.
+:PD.Es wird eine Datenstruktur für RPG-IV erstellt.
 :PT.:PV.*RPG:EPV.
-:PD.Es wird eine Datenstruktur fÃ¼r RPG-III erstellt.
+:PD.Es wird eine Datenstruktur für RPG-III erstellt.
 :PT.:PV.*C:EPV.
-:PD.Es wird eine Datenstruktur fÃ¼r C erstellt.
+:PD.Es wird eine Datenstruktur für C erstellt.
 :PT.:PV.*CLP:EPV.
 :PD.Es wird ein CL-Programm erstellt.
 :PT.:PV.*CLLE:EPV.
@@ -278,7 +278,7 @@ Angeben, welche Art von Quellcode generiert werden soll.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort DEFINE
+.* Hilfetext für Schlüsselwort DEFINE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/DEFINE'.
 DEFINE-Bestimmungen generieren - Hilfe
@@ -301,7 +301,7 @@ Parameter kann nur dann angegeben werden, wenn bei
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext fÃ¼r SchlÃ¼sselwort CRTMSGF
+.* Hilfetext für Schlüsselwort CRTMSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/CRTMSGF'.
 CRTMSGF-Befehl generieren - Hilfe
@@ -353,7 +353,7 @@ Dieser Parameter ist optional.
 .*=====================================
 :HELP NAME='COM/VALUES'.
 :P.
-MÃ¶gliche Werte sind:
+Mögliche Werte sind:
 :EHELP.
 .*
 :EPNLGRP.

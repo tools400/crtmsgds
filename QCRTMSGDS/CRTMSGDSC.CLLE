@@ -20,7 +20,7 @@
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name          Ã„nderung                                 */
+/*  Datum       Name          Änderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*  07.09.2001  Th.Raddatz    Fixed that REPLACE(*NO) appends source   */
 /*                            if member does already exist.            */
@@ -120,7 +120,7 @@
              CHGVAR     VAR(&MSGFILE   ) VALUE(%SST(&MSGF  1 10))
 
 /* ---------------------------- */
-/* prÃ¼fen, Msg Datei vorhanden  */
+/* prüfen, Msg Datei vorhanden  */
 /* ---------------------------- */
              CHKOBJ     OBJ(&MSGLIB/&MSGFILE) OBJTYPE(*MSGF)
 
@@ -146,7 +146,7 @@
                           RTNLIB(&CPYLIB)
 
 /* ---------------------------- */
-/* prÃ¼fen, Cpy Datei vorhanden  */
+/* prüfen, Cpy Datei vorhanden  */
 /* ---------------------------- */
              CHKOBJ     OBJ(&CPYLIB/&CPYFILE) OBJTYPE(*FILE)
 
@@ -188,7 +188,7 @@
                ENDDO
 
 /* ---------------------------- */
-/* PrÃ¼fen, ob VON ein exis-     */
+/* Prüfen, ob VON ein exis-     */
 /* tierende MSGID ist, wenn     */
 /* nicht, die folgende er-      */
 /* mitteln                      */
@@ -206,7 +206,7 @@
 
 /* ---------------------------- */
 /* Wenn BIS = '*LAST'           */
-/* dann den hÃ¶chsten Sortier-   */
+/* dann den hächsten Sortier-   */
 /* begriff in BIS bringen       */
 /* ---------------------------- */
                IF         COND(&MSGIDBIS *EQ '*LAST') THEN(DO)
@@ -220,7 +220,7 @@
 LOOP:
 
 /* ---------------------------- */
-/* PrÃ¼fen auf Schleifenende     */
+/* Prüfen auf Schleifenende     */
 /* ---------------------------- */
              IF         COND(&MSGID *NE '       ') THEN(DO)
                IF         COND(&MSGID *GT &MSGIDBIS) THEN(DO)
@@ -233,7 +233,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/*  Ermitteln der nÃ¤chsten      */
+/*  Ermitteln der nächsten      */
 /*  Nachrichten-ID              */
 /* ---------------------------- */
              CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
@@ -316,7 +316,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/*  PrÃ¼fen, ob Member vorhanden */
+/*  Prüfen, ob Member vorhanden */
 /* ---------------------------- */
              CHGVAR     VAR(&MBREXIST  ) VALUE('*EXIST    ')
              CHKOBJ     OBJ(&CPYLIB/&CPYFILE) OBJTYPE(*FILE) +
@@ -344,7 +344,7 @@ LOOP:
                ENDDO
                ELSE       CMD(DO)
                /* Bei angegebener Teildatei,  */
-               /* nur beim ersten Mal lÃ¶schen */
+               /* nur beim ersten Mal löschen */
                ENDDO
              ENDDO
              ELSE       CMD(DO)
@@ -373,7 +373,7 @@ LOOP:
                ENDDO
                ELSE       CMD(DO)
                /* Bei angegebener Teildatei,  */
-               /* nur beim ersten Mal prÃ¼fen  */
+               /* nur beim ersten Mal prüfen  */
                ENDDO
 
              ENDDO
@@ -438,7 +438,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/* NÃ¤chste MSG lesen            */
+/* Nächste MSG lesen            */
 /* Wenn es kein weitere MSG     */
 /* gibt (EOF) dann ist der      */
 /* Wert in &MSGID = *BLANK      */
