@@ -1,1841 +1,1752 @@
-      * =================================================================== *
-      *                                                                     *
-      *  Kurzdokumentation :                                                *
-      *                                                                     *
-      *  Bereich . . . : CRTMSGDS                                           *
-      *  Objekt  . . . : CRTMSGDSR2                                         *
-      *  Beschreibung  : Create Message Data Structure                      *
-      *  Author  . . . : Thomas Raddatz   <thomas.raddatz@tools400.de>      *
-      *  Datum . . . . : ?                                                  *
-      *                                                                     *
-      *=====================================================================*
-      *                                                                     *
-      *  This software is free software, you can redistribute it and/or     *
-      *  modify it under the terms of the GNU General Public License (GPL)  *
-      *  as published by the Free Software Foundation.                      *
-      *                                                                     *
-      *  See GNU General Public License for details.                        *
-      *          http://www.opensource.org                                  *
-      *          http://www.opensource.org/licenses/gpl-license.html        *
-      *                                                                     *
-      *=====================================================================*
-      *  History:                                                           *
-      *                                                                     *
-      *  Datum       Name          Änderung                                 *
-      *  ----------  ------------  ---------------------------------------  *
-      *  07.09.2001  Th.Raddatz    Fixed a bug when field length is *ZEROS. *
-      *  10.01.2003  Th.Raddatz    Removed special character Ä from source. *
-      *  08.03.2005  Th.Raddatz    Fixed problem that trailing blanks of    *
-      *                            message help text were dropped.          *
-      *  21.06.2005  Th.Raddatz    Renamed XMSGT to XMBRT to avoid          *
-      *                            confusion.                               *
-      *                            Increment cL within RPLHPN to fix bug    *
-      *                            that message text was truncated.         *
-      *  18.04.2008  Th.Raddatz    Datenstruktur MS0300 von 1024 auf 8192   *
-      *                            Byte vergrößert.                         *
-      *  26.01.2009  Th.Raddatz    Code des generierten CLP Programms       *
-      *                            geändert. Bibliothek kann jetzt als      *
-      *                            optionaler Parameter übergeben werden.   *
-      *                            Befehlsparameter TYPE um Auswahl         *
-      *                            *CLLE erweitert.                         *
-      *  06.10.2009  Th.Raddatz    Replaced special character '#' by        *
-      *                            '_SIZE' when generating RPGLE copy       *
-      *                            books.                                   *
-      *  09.01.2011  Th.Raddatz    Fixed problem that the field length of   *
-      *                            a sub field of a generated data structure*
-      *                            was restricted to 3 bytes.               *
-      *                                                                     *
-      *  04.04.2014  D.Storch      Support of *BIN-Fields  8-Bytes long.    *
-      *                            Generating I-Fields instead of B-Fields  *
-      *                            in ILE-RPG.                              *
-      *                                                                     *
-      *  30.03.2016  Th.Raddatz    Changed to create the message file and   *
-      *                            to add a STRPREPRC header for type *CLP  *
-      *                            and *CLLE.                               *
-      *                                                                     *
-      *  22.12.2016  Th.Raddatz    Fixed problem, that the CRTMSGF command  *
-      *                            was not properly produced for 50-char    *
-      *                            descriptions.                            *
-      *                                                                     *
-      *  30.10.2017  Th.Raddatz    Removed illegal semicolon from the       *
-      *                            'CRTMSGF' command, when generating a     *
-      *                            'CLP' or 'CLLE' source.                  *
-      *                                                                     *
-      *  30.10.2017  Th.Raddatz    Changed generated STRPREPRC header to    *
-      *                            let STRPREPRC change the object          *
-      *                            description of a 'compiled' message file.*
-      *                                                                     *
-      * =================================================================== *
-      * >>PRE-COMPILER<<                                                    *
-      *                                                                     *
-      *   >>CRTCMD<< CRTBNDRPG    PGM(&LI/&OB) +                            *
-      *                           SRCFILE(&SL/&SF) +                        *
-      *                           SRCMBR(&SM);                              *
-      *                                                                     *
-      *   >>COMPILE<<                                                       *
-      *     >>PARM<< DBGVIEW(*LIST);                                        *
-      *   >>END-COMPILE<<                                                   *
-      *                                                                     *
-      *   >>LINK<<                                                          *
-      *     >>PARM<< DFTACTGRP(*NO);                                        *
-      *     >>PARM<< ACTGRP(*CALLER );                                      *
-      *     >>PARM<< OPTION(*EVENTF);                                       *
-      *   >>END-LINK<<                                                      *
-      *                                                                     *
-      *   >>EXECUTE<<                                                       *
-      *                                                                     *
-      * >>END-PRE-COMPILER<<                                                *
-      * =================================================================== *
-      *                                                                     *
-      *  Attention: If you have applied one of the PTFs listed              *
-      *             below or if you are running V4R3 or above               *
-      *             you should set constant OFS to 1.                       *
-      *             Otherwise you should set OFS to 0.                      *
-      *                                                                     *
-      *             V3R1M0 - SF51811                                        *
-      *             V3R2M0 - SF51812                                        *
-      *             V3R6M0 - SF51813                                        *
-      *             V3R7M0 - SF51814                                        *
-      *             V4R1M0 - SF51815                                        *
-      *             V4R2M0 - SF51817                                        *
-      *                                                                     *
-      * =================================================================== *
+       // =================================================================== *
+       //                                                                     *
+       //  Kurzdokumentation :                                                *
+       //                                                                     *
+       //  Bereich . . . : CRTMSGDS                                           *
+       //  Objekt  . . . : CRTMSGDSR2                                         *
+       //  Beschreibung  : Create Message Data Structure                      *
+       //  Author  . . . : Thomas Raddatz   <thomas.raddatz@tools400.de>      *
+       //  Datum . . . . : ?                                                  *
+       //                                                                     *
+       //=====================================================================*
+       //                                                                     *
+       //  This software is free software, you can redistribute it and/or     *
+       //  modify it under the terms of the GNU General Public License (GPL)  *
+       //  as published by the Free Software Foundation.                      *
+       //                                                                     *
+       //  See GNU General Public License for details.                        *
+       //          http://www.opensource.org                                  *
+       //          http://www.opensource.org/licenses/gpl-license.html        *
+       //                                                                     *
+       //=====================================================================*
+       //  History:                                                           *
+       //                                                                     *
+       //  Datum       Name          Änderung                                 *
+       //  ----------  ------------  ---------------------------------------  *
+       //  07.09.2001  Th.Raddatz    Fixed a bug when field length is *ZEROS. *
+       //                                                                     *
+       //  10.01.2003  Th.Raddatz    Removed special character Ä from source. *
+       //                                                                     *
+       //  08.03.2005  Th.Raddatz    Fixed problem that trailing blanks of    *
+       //                            message help text were dropped.          *
+       //                                                                     *
+       //  21.06.2005  Th.Raddatz    Renamed XMSGT to XMBRT to avoid          *
+       //                            confusion.                               *
+       //                            Increment cL within RPLHPN to fix bug    *
+       //                            that message text was truncated.         *
+       //                                                                     *
+       //  18.04.2008  Th.Raddatz    Datenstruktur MS0300 von 1024 auf 8192   *
+       //                            Byte vergrößert.                         *
+       //                                                                     *
+       //  26.01.2009  Th.Raddatz    Code des generierten CLP Programms       *
+       //                            geändert. Bibliothek kann jetzt als      *
+       //                            optionaler Parameter übergeben werden.   *
+       //                            Befehlsparameter TYPE um Auswahl         *
+       //                            *CLLE erweitert.                         *
+       //                                                                     *
+       //  06.10.2009  Th.Raddatz    Replaced special character '#' by        *
+       //                            '_SIZE' when generating RPGLE copy       *
+       //                            books.                                   *
+       //                                                                     *
+       //  09.01.2011  Th.Raddatz    Fixed problem that the field length of   *
+       //                            a sub field of a generated data structure*
+       //                            was restricted to 3 bytes.               *
+       //                                                                     *
+       //  04.04.2014  D.Storch      Support of *BIN-Fields  8-Bytes long.    *
+       //                            Generating I-Fields instead of B-Fields  *
+       //                            in ILE-RPG.                              *
+       //                                                                     *
+       //  30.03.2016  Th.Raddatz    Changed to create the message file and   *
+       //                            to add a STRPREPRC header for type *CLP  *
+       //                            and *CLLE.                               *
+       //                                                                     *
+       //  22.12.2016  Th.Raddatz    Fixed problem, that the CRTMSGF command  *
+       //                            was not properly produced for 50-char    *
+       //                            descriptions.                            *
+       //                                                                     *
+       //  30.10.2017  Th.Raddatz    Removed illegal semicolon from the       *
+       //                            'CRTMSGF' command, when generating a     *
+       //                            'CLP' or 'CLLE' source.                  *
+       //                                                                     *
+       //  30.10.2017  Th.Raddatz    Changed generated STRPREPRC header to    *
+       //                            let STRPREPRC change the object          *
+       //                            description of a 'compiled' message file.*
+       //                                                                     *
+       //  24.12.2018  Th.Raddatz    Converted source code to /free.          *
+       //                                                                     *
+       // =================================================================== *
+       // >>PRE-COMPILER<<                                                    *
+       //   >>CRTCMD<< CRTBNDRPG    PGM(&LI/&OB) +                            *
+       //                           SRCFILE(&SL/&SF) SRCMBR(&SM);             *
+       //   >>IMPORTANT<<                                                     *
+       //     >>PARM<< DBGVIEW(*LIST);                                        *
+       //     >>PARM<< OPTION(*EVENTF);                                       *
+       //     >>PARM<< DFTACTGRP(*NO);                                        *
+       //     >>PARM<< ACTGRP(*CALLER );                                      *
+       //   >>END-IMPORTANT<<                                                 *
+       //   >>EXECUTE<<                                                       *
+       // >>END-PRE-COMPILER<<                                                *
+       // =================================================================== *
+       //                                                                     *
+       //  Attention: If you have applied one of the PTFs listed              *
+       //             below or if you are running V4R3 or above               *
+       //             you should set constant OFS to 1.                       *
+       //             Otherwise you should set OFS to 0.                      *
+       //                                                                     *
+       //             V3R1M0 - SF51811                                        *
+       //             V3R2M0 - SF51812                                        *
+       //             V3R6M0 - SF51813                                        *
+       //             V3R7M0 - SF51814                                        *
+       //             V4R1M0 - SF51815                                        *
+       //             V4R2M0 - SF51817                                        *
+       //                                                                     *
+       // =================================================================== *
       /COPY QCRTMSGDS,H_SPEC
       /COPY QCRTMSGDS,COPYRIGHT
-      * =================================================================== *
-      *
+       // =================================================================== *
      FSRC       O    F  256        DISK    USROPN
-     F                                     INFDS(file)
-      *
-     D file            DS                  qualified
+     F                                     INFDS(fileInfo)
+
+     D fileInfo        DS                  qualified
      D  name                  83     92A
-     D  library               93    102A
+     D  library                      10A
      D  member               129    138A
-      *
-     D TXT             S              1    DIM(80)                              eine Zeile
+
+       //  Record format of file SRC
+     D FSRC            DS                  qualified
+     D  SRCSEQ                 1      6  2 INZ(0)
+     D  SRCDAT                 7     12  0 INZ(0)
+     D  SRCDTA                13    256    INZ
+
      D ORD             S              1    DIM(35) CTDATA PERRCD(35)            Num.f.Feldn.
-     D RPG             S             80    DIM(14) CTDATA PERRCD(1)             Sourcezeilen
-     D IRPG            S             80    DIM(13) CTDATA PERRCD(1)             Sourcezeilen
+     D RPG             S             80    DIM(15) CTDATA PERRCD(1)             Sourcezeilen
+     D IRPG            S             80    DIM(15) CTDATA PERRCD(1)             Sourcezeilen
      D CLP             S             80    DIM(33) CTDATA PERRCD(1)             Sourcezeilen
      D C               S             80    DIM(10) CTDATA PERRCD(1)             Sourcezeilen
      D STRPREPRC       S             80    DIM(11) CTDATA PERRCD(1)             Sourcezeilen
-     D fldName         S             40    inz
-     D fldType         S             40    inz
-      *
-     D i               S             10I 0
-     D p               S             10I 0
-     D tmpStr          S             80A   varying
-      *
-      *------------------------------------------------------------*
-      *  Datensatzbeschreibung für Sourcen
-      *------------------------------------------------------------*
-      *
-     D FSRC            DS
-     D  SRCSEQ                 1      6  2
-     D  SRCSQ1                 1      4
-     D  SRCSQ2                 5      6
-     D  SRCDAT                 7     12  0
-     D  SRCDTA                13    256
-      *
-      *------------------------------------------------------------*
-      *  interne Prototypen
-      *------------------------------------------------------------*
-     D f_replace...
-     D                 PR           256A
-     D  i_string                    256A   value
-     D  i_var                        20A   value
-     D  i_value                     256A   value
-      *
-     D f_lcase...
-     D                 PR           256A
-     D  i_string                    256A   value
-      *
-     D f_str...
-     D                 PR           256A
-     D  i_value                      30P 0 value
-      *
-     D f_structName...
-     D                 PR            20A
-      *
-      *------------------------------------------------------------*
-      *  allg. Feldbeschreibungen für API
-      *------------------------------------------------------------*
-      *
-     D                 DS
-     D  P#VLEN                 1      4B 0
-     D  P#FORM                 5     14
-     D  P#DTAL                15     18B 0
-     D                 DS
-     D  P#MSFL                 1     10
-     D  P#MSLI                11     20
-     D  P#MSGF                 1     20
-      *
-      *------------------------------------------------------------*
-      *  Definition des Satzformates RTVM0300
-      *------------------------------------------------------------*
+
+     D srcLine         S                   like(FSRC.SRCDTA)
+
+       //  Prototypes
+     D writeLine...
+     D                 PR
+     D                                     extproc('writeLine')
+     D  i_srcDta                           const like(srcLine)
+
+     D splittLine...
+     D                 PR
+     D                                     extproc('splittLine')
+     D  buffer                     8192a   value varying
+
+     D doubleHyphens...
+     D                 PR          8192a   varying
+     D                                     extproc('doubleHyphens')
+     D  buffer                     8192a   value varying
+
+     D replace...
+     D                 PR           256a
+     D                                     extproc('replace')
+     D  i_string                    256a   value
+     D  i_var                        20a   value
+     D  i_value                     256a   value
+     D  i_length                     10i 0 value options(*nopass)
+
+     D lcase...
+     D                 PR           256a
+     D                                     extproc('lcase')
+     D  i_string                    256a   value
+
+     D str...
+     D                 PR           256a
+     D                                     extproc('str')
+     D  i_value                      10i 0 value
+
+     D getStructName...
+     D                 PR            20a   varying
+     D                                     extproc('getStructName')
+
+     D toChar1...
+     D                 PR             1a
+     D                                     extproc('toChar1')
+     D  i_integer                    10i 0 const
+
+     D toChar2...
+     D                 PR             2a
+     D                                     extproc('toChar2')
+     D  i_integer                    10i 0 const
+     D  i_rplcSpace                   1a   const options(*nopass)
+
+     D toChar4...
+     D                 PR             4a
+     D                                     extproc('toChar4')
+     D  i_integer                    10i 0 const
+     D  i_rplcSpace                   1a   const options(*nopass)
+
+     D spaces...
+     D                 PR           256a   varying
+     D                                     extproc('spaces')
+     D  i_length                     10i 0 const
+
+       //  Qualified object name
+     d qObj_t          DS                  qualified based(pDummy)
+     d  name                         10a
+     d  lib                          10a
+
+       //  Retrieve Message (QMHRTVM) API
+     d QMHRTVM...
+     d                 PR                  extpgm('QMHRTVM')
+     d  o_msgInf                  65535a          options(*varsize)
+     d  i_msgInfLen                  10i 0 const
+     d  i_format                      8a   const
+     d  i_msgID                       7a   const
+     d  i_qMsgF                            const  likeds(qObj_t)
+     d  i_rplData                 65535a   const  options(*varsize )
+     d  i_rpldataLen                 10i 0 const
+     d  i_rplVars                    10a   const
+     d  i_rtnCtrlChrs                10a   const
+     d  io_ErrCode                65535a          options(*varsize )
+     d  i_rtvOpt                     10a   const  options(*nopass  )            | OptGrp 1
+     d  i_toCcsid                    10i 0 const  options(*nopass  )            |
+     d  i_ccsidRplDta                10i 0 const  options(*nopass  )            |
+
+       //  Record format RTVM0300
      D MS0300          DS
-     D  M3TRTN                 1      4B 0
-     D  M3TVAL                 5      8B 0
-      *
-     D  M3MSSV                 9     12B 0
-     D  M3ALID                13     16B 0
-     D  M3ALOP                17     25
-     D  M3LGIN                26     26
-     D  M3MGID                27     33
-     D  M3RES1                34     36
-      *
-     D  M3NSVF                37     40B 0
-     D  M3CSIT                41     44B 0
-      *
-     D  M3CSIR                45     48B 0
-     D  M3CCIT                49     52B 0
-      *
-     D  M3OFDR                53     56B 0
-     D  M3LGDR                57     60B 0
-     D  M3LDRA                61     64B 0
-      *
-     D  M3OFMG                65     68B 0
-     D  M3LGMR                69     72B 0
-     D  M3LMRA                73     76B 0
-      *
-     D  M3OFMH                77     80B 0
-     D  M3LGMH                81     84B 0
-     D  M3LMHA                85     88B 0
-      *
-     D  M3OFVF                89     92B 0
-     D  M3LGVF                93     96B 0
-     D  M3LVFA                97    100B 0
-     D  M3LVFE               101    104B 0
-      *
-     D  M3RES2               105    256
-     D  M3DATA               257   8192
-      *
-      *-----------------------------------------------------
-      * Format der Ersetzungsvariablen in der Message
-      *-----------------------------------------------------
-      *
+     D M3TRTN                        10i 0
+     D M3TVAL                        10i 0
+     D M3MSSV                        10i 0
+     D M3ALID                        10i 0
+     D M3ALOP                         9a
+     D M3LGIN                         1a
+     D M3MGID                         7a
+     D M3RES1                         3a
+     D M3NSVF                        10i 0
+     D M3CSIT                        10i 0
+     D M3CSIR                        10i 0
+     D M3CCIT                        10i 0
+     D M3OFDR                        10i 0
+     D M3LGDR                        10i 0
+     D M3LDRA                        10i 0
+     D M3OFMG                        10i 0
+     D M3LGMR                        10i 0
+     D M3LMRA                        10i 0
+     D M3OFMH                        10i 0
+     D M3LGMH                        10i 0
+     D M3LMHA                        10i 0
+     D M3OFVF                        10i 0
+     D M3LGVF                        10i 0
+     D M3LVFA                        10i 0
+     D M3LVFE                        10i 0
+     D M3RES2                       152a
+     D M3DATA                      7936a
+
+       // Format of replacement variable
      D MS030F          DS
-     D  M3FLGD                 1      4B 0
-     D  M3FFSZ                 5      8B 0
-     D  M3FTYP                 9     18
-     D  M3FRS1                19    256
-     D  M3FRS2               257    512
-      *
-      *-----------------------------------------------------
-      * Format der ERROR-Struktur bei API'S
-      *-----------------------------------------------------
-     D ERRCOD          DS
-     D  ERRPRV                 1      4B 0 INZ
-     D  ERRAVL                 5      8B 0 INZ
-     D  ERRID                  9     15    INZ
-     D  ERRRSV                16     16    INZ
-     D  ERRDTA                17     32    INZ
-      *
-      * Zerlegung der MSG-ID
-     D D#MSID          DS
-     D  D#MFCH                 1      1    INZ
-     D  D#MPRF                 1      3    INZ
-     D  D#MNBR                 4      7    INZ
-      *
-      * Dezimalposition
-     D                 DS
-     D  D#DPS                  1      1  0 INZ
-     D  D#DEC                  1      1    INZ
-      *
-      * VON-BIS Positionen
-     D                 DS
-     D  D#OD                   1      4  0 INZ
-     D  D#POS                  1      4    INZ
-      *
-      * Unterteilung des 6 stelligen RPG Feldnamens
-     D D#FLD           DS
-     D  D#PRF                  1      1    INZ
-     D  D#NBR                  2      5    INZ
-     D  D#ORD                  6      8    INZ
-      * Unterteilung des 10 stelligen ILE-RPG Feldnamens
-     D D#IFLD          DS
-     D  D#IPRF                 1      3    INZ
-     D  D#INBR                 4      7    INZ
-     D  D#IORD                 8      8    INZ
-     D  D#EXT                  8     12    INZ
-      * Länge der Datenstruktur binär
-     D                 DS
-     D  D#DSLX                 1      4    INZ
-     D  D#DSLG                 1      4  0 INZ
-      *                                7
-     D D#DRPL          DS          8192
-     D D#MSGT          DS          8192
-     D  D#MSG                  1     59
-     D D#MSGH          DS          8192
-     D D#SUBV          DS          8192
-      *
-      *  Arbeitsfeld
-     D #TEMP           DS          8192
-     D #TEXT           DS
-     D  #TB                    1   8192    INZ
-     D                                     DIM(8192)
-     D                 DS
-     D  #Y                     1      3P 0 INZ
-     D                 DS
-     D  #N2                    1      2  0 INZ
-     D  #A2                    1      2    INZ
-     D                 DS
-     D  #N5                    1      5  0 INZ
-     D  #A5                    1      5    INZ
-      *
-      *  Boolsche Konstanten
-     D cFALSE          C                   CONST('0')
-     D cTRUE           C                   CONST('1')
-      *
-      *  Konstanten
-     D cC_DELIM        C                   CONST(';')
-     D cMSGID          C                   CONST('%%MSGID')
-     D cMSGTXT         C                   CONST('%%MSGTXT')
-     D cVARTYPE        C                   CONST('%%VARTYPE')
-     D cVARNAME        C                   CONST('%%VARNAME')
-     D cDELIMITER      C                   CONST('%%DELIMITER')
-     D cSTRUCTNAME     C                   CONST('%%STRUCTNAME')
-      *
-      *  Systemdatenstruktur
-     D sds            SDS
-     D  sds_msgID             40     46
-     D  sds_msgDta            91    170
-      *
-      *  Offset for SUBST
-      *  ... PTF applied or version V4R3 and above
-     D OFS             C                   CONST(1)
-      *  ... PTF not applied
-      ***           0                     C         OFS
-      *
-      *-----------------------------------------------------
-      *
-     C     *ENTRY        PLIST
-      * Input
-     C                   PARM                    XMSGL                          Msg-Lib
-     C                   PARM                    XMSGF                          Msg-File
-     C                   PARM                    XTEXT                          Msg-File-Text
-     C                   PARM                    XMSGI                          Msg-ID
-     C                   PARM                    XCPYL                          Cpy-Lib
-     C                   PARM                    XCPYF                          Cpy-File
-     C                   PARM                    XGENA                          Gener.Art
-     C                   PARM                    XISDFN                         Define-Best.
-     C                   PARM                    XCRTMSGF                       CrtMsgF-Befehl
-     C                   PARM                    XFIRST                         1. Msg-ID
-     C                   PARM                    XLAST                          Letzte Msg-ID
-      * Output
-     C                   PARM                    XMBRT                          MbrText
-     C                   PARM                    XERRID                         Error-ID
-     C                   PARM                    XERRDT                         Error-Data
-      *
-      *-----------------------------------------------------
-      * Programm Vorlauf
-      *-----------------------------------------------------
-     C                   EXSR      FIRST
-      *
-      *-----------------------------------------------------
-      * Aufruf API vorbereiten
-      *-----------------------------------------------------
-     C                   Z-ADD     8192          P#VLEN
-     C                   MOVEL(P)  'RTVM0300'    P#FORM
-     C                   MOVEL(P)  XMSGI         P#MSGI            7
-     C                   MOVEL(P)  XMSGL         P#MSLI                         Msg File
-     C                   MOVEL(P)  XMSGF         P#MSFL                         Msg File
-     C                   MOVEL(P)  *BLANKS       P#MSGD           80            Msg Dta
-     C     ' '           CHECKR    P#MSGD        P#DTAL                         Msg Dta Len
-      * Replace Substitution variables
-     C                   MOVEL(P)  '*NO'         P#MSRS           10            Msg Repl Sub
-      * Return format control characters
-     C                   IF        (XGENA = '*CLP'   )  or
-     C                             (XGENA = '*CLLE'  )  or
-     C                             (XGENA = '*SCRIPT')
-     C                   MOVEL(P)  '*YES'        P#MSFC           10            Ret Form Cha
-     C                   ELSE
-     C                   MOVEL(P)  '*NO'         P#MSFC           10            Ret Form Cha
-     C                   ENDIF
-     C                   CLEAR                   ERRCOD
-      *
-     C                   CALL      'QMHRTVM'                            99
-     C                   PARM                    MS0300
-     C                   PARM                    P#VLEN
-     C                   PARM                    P#FORM
-     C                   PARM                    P#MSGI                         Msg ID
-     C                   PARM                    P#MSGF                         Msg File
-     C                   PARM                    P#MSGD                         Msg Dta
-     C                   PARM                    P#DTAL                         Msg Dta Len
-     C                   PARM                    P#MSRS                         Msg Repl Sub
-     C                   PARM                    P#MSFC                         Ret Form Cha
-     C                   PARM                    ERRCOD
-      *
-      * prüfen, Aufruf OK
-     C     *IN99         IFEQ      *ON
-     C                   MOVEL(P)  'CPF9897'     XERRID
-     C                   MOVEL(P)  'Aufruf '     XERRDT
-     C                   CAT       'fehler':1    XERRDT
-     C                   CAT       'haft:':0     XERRDT
-     C                   CAT       P#MSGF:1      XERRDT
-     C                   CAT       'MSGID:':1    XERRDT
-     C                   CAT       P#MSGI:1      XERRDT
-     C                   GOTO      ENDE
-     C                   ENDIF
-      *
-      *
-     C     ERRAVL        IFGT      *ZERO
-     C                   MOVEL(P)  ERRID         XERRID
-     C                   MOVEL(P)  ERRDTA        XERRDT
-     C                   GOTO      ENDE
-     C                   ENDIF
-      *
-      * Default Reply rauslösen
-     C     M3LGDR        IFGT      *ZERO
-     C     OFS           ADD       M3OFDR        O
-     C     M3LGDR        SUBST     MS0300:O      D#DRPL
-     C                   ENDIF
-      *
-      * Messagetext rauslösen
-     C     M3LGMR        IFGT      *ZERO
-     C     OFS           ADD       M3OFMG        O
-     C     M3LGMR        SUBST     MS0300:O      D#MSGT
-     C                   ENDIF
-     C                   MOVEL(P)  D#MSGT        XMBRT
-      *
-      * Messagehelp rauslösen
-     C     M3LGMH        IFGT      *ZERO
-     C     OFS           ADD       M3OFMH        O
-     C     M3LGMH        SUBST     MS0300:O      D#MSGH
-     C                   ENDIF
-      *
-      * Ersetzungsvariable rauslösen
-     C     M3LGVF        IFGT      *ZERO
-     C     OFS           ADD       M3OFVF        O
-     C     M3LGVF        SUBST     MS0300:O      D#SUBV
-     C                   ENDIF
-      *
-      * Source generieren
-     C                   EXSR      VGEN
-      *
-     C     ENDE          TAG
-      *
-      * Datei schließen
-     C                   CLOSE     SRC
-      *
-     C                   RETURN
-      *
-      ******************************************************
-      * VGEN  Auswahl welcher Sourcecode generiert wird
-      ******************************************************
-      *
-     C     VGEN          BEGSR
-      *
-     C                   SELECT
-      *
-     C     XGENA         WHENEQ    '*RPG'
-     C                   EXSR      VRPG
-      *
-     C     XGENA         WHENEQ    '*ILERPG'
-     C                   EXSR      VRPG4
-      *
-     C     XGENA         WHENEQ    '*CLP'
-     C     XGENA         OREQ      '*CLLE'
-     C                   MOVEL(P)  XMSGL         R#MSGL                         Msg-Lib
-     C                   MOVEL(P)  XMSGF         R#MSGF                         Msg-File
-     C                   MOVEL(P)  '&LIB'        XMSGL                          Msg-Lib
-     C                   MOVEL(P)  '&OBJ'        XMSGF                          Msg-File
-     C                   EXSR      VCLP
-     C                   MOVEL(P)  R#MSGL        XMSGL                          Msg-Lib
-     C                   MOVEL(P)  R#MSGF        XMSGF                          Msg-File
-      *
-     C     XGENA         WHENEQ    '*C'
-     C                   EXSR      VC
-      *
-      * *SCRIPT wie *CLP verarbeiten, nur einzelne Zeilen rauslassen
-     C     XGENA         WHENEQ    '*SCRIPT'
-      * Ersatzvariablen für RUNCLSTM setzen
-     C                   MOVEL(P)  XMSGL         R#MSGL                         Msg-Lib
-     C                   MOVEL(P)  XMSGF         R#MSGF                         Msg-File
-     C                   MOVEL(P)  '&LI'         XMSGL                          Msg-Lib
-     C                   MOVEL(P)  '&SF'         XMSGF                          Msg-File
-     C                   EXSR      VCLP
-     C                   MOVEL(P)  R#MSGL        XMSGL                          Msg-Lib
-     C                   MOVEL(P)  R#MSGF        XMSGF                          Msg-File
-      *
-     C                   OTHER
-      *****                nichts tun
-      *
-     C                   ENDSL
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * VRPG  generieren RPG-Source
-      ******************************************************
-      *
-     C     VRPG          BEGSR
-      *
-      * Kommentarzeile durchgehend
-     C                   MOVEL(P)  RPG(1)        SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile mit Beschreibung
-     C                   MOVEL(P)  RPG(2)        SRCDTA
-     C                   CAT       XMSGI:1       SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile nur Stern
-     C                   MOVEL(P)  RPG(3)        SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile mit Nachrichtentext
-     C                   MOVEA(P)  RPG(3)        TXT
-     C                   MOVEA     D#MSG         TXT(9)
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile nur Stern
-     C                   MOVEL(P)  RPG(3)        SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Zeile für Datenstrukturfelder erstellen
-     C                   EXSR      RPGFLD
-      * Zeile mit Gesamtlänge der Datenstruktur
-     C                   EXSR      RPGLNG
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * VRPG4    generieren Source für ILE-RPG
-      ******************************************************
-      *
-     C     VRPG4         BEGSR
-      *
-      * DEFINE-Rahmen 1
-     C                   EXSR      DEFN1RPG4
-      *
-      * Kommentarzeile durchgehend
-     C                   MOVEL(P)  IRPG(1)       SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile mit Beschreibung
-     C                   MOVEL(P)  IRPG(2)       SRCDTA
-     C                   CAT       XMSGI:1       SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile nur Stern
-     C                   MOVEL(P)  IRPG(3)       SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile mit Nachrichtentext
-     C                   MOVEA(P)  IRPG(2)       TXT
-     C                   MOVEA     D#MSG         TXT(11)
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile nur Stern
-     C                   MOVEL(P)  IRPG(3)       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Zeile für Datenstrukturfelder erstellen
-     C                   EXSR      RPG4FLD
-      * Zeile mit Gesamtlänge der Datenstruktur
-     C                   EXSR      IPGLNG
-      * Kommentarzeile nur Stern
-     C                   MOVEL(P)  IRPG(3)       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * DEFINE-Rahmen 2
-     C                   EXSR      DEFN2RPG4
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * DEFN1RPG4 - DEFINE-Rahmen 1
-      ******************************************************
-      *
-     C     DEFN1RPG4     BEGSR
-      *
-     C     XISDFN        IFEQ      cFALSE
-      * keine Ausgabe der DEFINE-Bestimmungen
-     C                   ELSE
-      *
-      * /IF NOT DEFINED(UNDEFINE_ALL)
-     C                   MOVEL(P)  IRPG(11)      SRCDTA                         18
-     C                   EXSR      WRTLINE
-      *
-      * Ermitteln Namen für Define
-     C                   EXSR      EMDEFN
-      *
-      * /IF NOT DEFINED(msgid_MSG)
-     C                   MOVEL(P)  IRPG(8)       SRCDTA                         15
-     C                   CAT       P#DEFN:0      SRCDTA
-     C                   CAT       ')':0         SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * /DEFINE msgid_MSG
-     C                   MOVEL(P)  IRPG(9)       SRCDTA                         16
-     C                   CAT       P#DEFN:1      SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * DEFN2RPG4 - DEFINE-Rahmen 2
-      ******************************************************
-      *
-     C     DEFN2RPG4     BEGSR
-      *
-     C     XISDFN        IFEQ      cFALSE
-      * keine Ausgabe der DEFINE-Bestimmungen
-     C                   ELSE
-      *
-      * /ENDIF
-     C                   MOVEL(P)  IRPG(10)      SRCDTA                         17
-     C                   EXSR      WRTLINE
-      *
-      * /ENDIF
-     C                   MOVEL(P)  IRPG(10)      SRCDTA                         17
-     C                   EXSR      WRTLINE
-      * Kommentarzeile nur Stern
-     C                   MOVEL(P)  IRPG(3)       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * /IF DEFINED(UNDEFINE_ALL)
-     C                   MOVEL(P)  IRPG(12)      SRCDTA                         19
-     C                   EXSR      WRTLINE
-      *
-      * /UNDEFINE msgid_MSG
-     C                   MOVEL(P)  IRPG(13)      SRCDTA                         20
-     C                   CAT       P#DEFN:1      SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * /ENDIF
-     C                   MOVEL(P)  IRPG(10)      SRCDTA                         17
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * VCLP     generieren Source für CLP-PROGRAMM
-      ******************************************************
-      *
-     C     VCLP          BEGSR
-      *
-     C     XFIRST        IFEQ      cTRUE
-     C     XGENA         IFNE      '*SCRIPT'
-      * STRPREPRC Header
-     C                   FOR       i = 1 to %elem(STRPREPRC)
-     C                   EVAL      SRCDTA = STRPREPRC(i)
-     C                   SELECT
-     C                   WHEN      %scan('%CMD': SRCDTA) > 0
-     C                   IF        XGENA = '*CLP'
-     C                   EVAL      tmpStr = 'CRTCLPGM'
-     C                   ELSE
-     C                   EVAL      tmpStr = 'CRTBNDCL'
-     C                   ENDIF
-     C                   EVAL      SRCDTA = f_replace(SRCDTA: '%CMD': tmpStr)
-     C                   WHEN      %scan('%TEXT': SRCDTA) > 0
-     C                   EVAL      tmpStr = 'TEXT(''' + %trim(XTEXT) + ''');'
-     C                   EVAL      SRCDTA = f_replace(SRCDTA: '%TEXT': tmpStr)
-     C                   ENDSL
-     C                   EXSR      WRTLINE
-     C                   ENDFOR
-      *
-      * PGM
-     C                   MOVEL(P)  CLP(5)        SRCDTA
-     C                   EXSR      WRTLINE
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      * DCL &I_LIB
-     C                   MOVEL(P)  CLP(15)       SRCDTA
-     C                   EXSR      WRTLINE
-      * DCL &I_OBJ
-     C                   MOVEL(P)  CLP(16)       SRCDTA
-     C                   EXSR      WRTLINE
-      * DCL &LIB
-     C                   MOVEL(P)  CLP(17)       SRCDTA
-     C                   EXSR      WRTLINE
-      * DCL &OBJ
-     C                   MOVEL(P)  CLP(18)       SRCDTA
-     C                   EXSR      WRTLINE
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      * CHGVAR &LIB
-     C                   MOVEL(P)  CLP(19)       SRCDTA
-     C                   EXSR      WRTLINE
-      * MONMSG
-     C                   MOVEL(P)  CLP(20)       SRCDTA
-     C                   EXSR      WRTLINE
-      * RMVMSG
-     C                   MOVEL(P)  CLP(21)       SRCDTA
-     C                   EXSR      WRTLINE
-      * CHGVAR
-      ***                EVAL      SRCDTA = f_replace(CLP(22): '%LIB': R#MSGL)
-      ***                EXSR      WRTLINE
-      * SNDPGMMSG: Usage ...
-     C                   MOVEL(P)  CLP(30)       SRCDTA
-     C                   EXSR      WRTLINE
-     C                   EVAL      SRCDTA =
-     C                              f_replace(CLP(31):'%PGM':%trim(file.member))
-     C                   EXSR      WRTLINE
-     C                   MOVEL(P)  CLP(32)       SRCDTA
-     C                   EXSR      WRTLINE
-     C                   MOVEL(P)  CLP(33)       SRCDTA
-     C                   EXSR      WRTLINE
-      * ENDDO
-     C                   MOVEL(P)  CLP(23)       SRCDTA
-     C                   EXSR      WRTLINE
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      * CHGVAR &OBJ
-     C                   MOVEL(P)  CLP(24)       SRCDTA
-     C                   EXSR      WRTLINE
-      * MONMSG
-     C                   MOVEL(P)  CLP(20)       SRCDTA
-     C                   EXSR      WRTLINE
-      * RMVMSG
-     C                   MOVEL(P)  CLP(21)       SRCDTA
-     C                   EXSR      WRTLINE
-      * CHGVAR
-     C                   EVAL      SRCDTA = f_replace(CLP(25): '%OBJ': R#MSGF)
-     C                   EXSR      WRTLINE
-      * ENDDO
-     C                   MOVEL(P)  CLP(23)       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   IF        XCRTMSGF = cTRUE
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      * DLTMSGF
-     C                   MOVEL(P)  CLP(26)       SRCDTA
-     C                   EXSR      WRTLINE
-      * MONMSG
-     C                   MOVEL(P)  CLP(27)       SRCDTA
-     C                   EXSR      WRTLINE
-      * RMVMSG
-     C                   MOVEL(P)  CLP(21)       SRCDTA
-     C                   EXSR      WRTLINE
-      * ENDDO
-     C                   MOVEL(P)  CLP(23)       SRCDTA
-     C                   EXSR      WRTLINE
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      * CRTMSGF
-     C                   MOVEL(P)  CLP(28)       SRCDTA
-     C                   EXSR      WRTLINE
-     C                   MOVEL(P)  CLP(29)       SRCDTA
-     C                   EVAL      tmpStr = 'TEXT(''' + %trim(XTEXT) + ''')'
-     C                   EVAL      SRCDTA = f_replace(SRCDTA: '%TEXT': tmpStr)
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDIF
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-     C                   ELSE
-      *  Keine Ausgabe bei *SCRIPT
-     C                   ENDIF
-     C                   ELSE
-      *  Ausgabe nur bei 1. Nachrichten-ID
-     C                   ENDIF
-      *
-      * Kommentarzeile durchgehend
-     C                   MOVEL(P)  CLP(1)        SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile mit Beschreibung
-     C                   MOVEA(P)  CLP(2)        TXT(1)
-     C                   MOVEA     XMSGI         TXT(42)
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile mit Nachrichtentext
-     C                   MOVEA(P)  CLP(3)        TXT
-     C                   MOVEA     D#MSG         TXT(9)
-     C                   MOVEA     '*/'          TXT(69)
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      * Kommentarzeile durchgehend
-     C                   MOVEL(P)  CLP(1)        SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   IF        XCRTMSGF = cFALSE
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * RMVMSGD
-     C                   MOVEA(P)  CLP(7)        TXT
-     C                   MOVEA     XMSGI         TXT(28)
-     C                   MOVEA     XMSGL         TXT(42)
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   CAT       '/':0         SRCDTA
-     C                   CAT       XMSGF:0       SRCDTA
-     C                   CAT       ')':0         SRCDTA
-     C                   EXSR      WRTLINE
-      * MONMSG (1)
-     C                   MOVEL(P)  CLP(8)        SRCDTA
-     C                   EXSR      WRTLINE
-      * MONMSG (2)
-      *******              MOVELCLP,9     SRCDTA    P
-      *******              EXSR WRTLINE
-      *
-     C                   ENDIF
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      * ADDMSGD
-     C                   MOVEL(P)  CLP(11)       SRCDTA
-     C                   CAT       '+':1         SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Zeile für Datenstrukturfelder erstellen
-     C                   EXSR      ICLFLD
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * VC       generieren Source für C-Programme
-      ******************************************************
-      *
-     C     VC            BEGSR
-      *
-      * DEFINE-Rahmen 1
-     C                   EXSR      DEFN1C
-      *
-      * Kommentarzeile durchgehend
-     C                   EVAL      SRCDTA = c(1)
-     C                   EXSR      WRTLINE
-      * Kommentarzeile mit Beschreibung
-     C                   EVAL      SRCDTA = f_replace(c(2)         :
-     C                                                cMSGID       :
-     C                                                XMSGI        )
-     C                   EXSR      WRTLINE
-      * Kommentarzeile mit Nachrichtentext
-     C                   EVAL      SRCDTA = f_replace(c(3)         :
-     C                                                cMSGTXT      :
-     C                                                D#MSG        )
-     C                   EXSR      WRTLINE
-      * Kommentarzeile durchgehend
-     C                   EVAL      SRCDTA = c(4)
-     C                   EXSR      WRTLINE
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Zeile für Datenstrukturfelder erstellen
-     C                   EXSR      ICFLD
-      *
-      * DEFINE-Rahmen 2
-     C                   EXSR      DEFN2C
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * DEFN1C    - DEFINE-Rahmen 1
-      ******************************************************
-      *
-     C     DEFN1C        BEGSR
-      *
-     C     XISDFN        IFEQ      cFALSE
-      * keine Ausgabe der DEFINE-Bestimmungen
-     C                   ELSE
-      *
-      * #ifndef
-     C                   EVAL      SRCDTA = f_replace(c(8)          :
-     C                                                cSTRUCTNAME   :
-     C                                    '__' + %trim(f_structName))
-     C                   EXSR      WRTLINE
-      *
-      * #define
-     C                   EVAL      SRCDTA = f_replace(c(9)          :
-     C                                                cSTRUCTNAME   :
-     C                                    '__' + %trim(f_structName))
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * DEFN2C    - DEFINE-Rahmen 2
-      ******************************************************
-      *
-     C     DEFN2C        BEGSR
-      *
-     C     XISDFN        IFEQ      cFALSE
-      * keine Ausgabe der DEFINE-Bestimmungen
-     C                   ELSE
-      *
-      * #endif
-     C                   EVAL      SRCDTA = c(10)
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * ICFLD  Zeilen für Felddefinitionen generieren
-      ******************************************************
-      *
-     C     ICFLD         BEGSR
-      *
-      * Zeile mit Datenstrukturnamen
-     C                   EVAL      SRCDTA = c(5)
-     C                   EXSR      WRTLINE
-      *
-      * Anzahl der MSG-Variablen bestimmen
-      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
-     C                   EXSR      GETANZ
-      *
-     C     P#MANZ        IFLE      *ZEROS
-      * ... keine Variablen definiert
-     C                   EVAL      SRCDTA = f_replace(c(6)         :
-     C                                                cVARNAME     :
-     C                                                'dummy'      )
-     C                   EVAL      SRCDTA = f_replace(SRCDTA       :
-     C                                                cVARTYPE     :
-     C                                                'char'       )
-     C                   EVAL      SRCDTA = f_replace(SRCDTA       :
-     C                                                cDELIMITER   :
-     C                                                ';'          )
-     C                   EXSR      WRTLINE
-     C                   ELSE
-      *
-     C                   Z-ADD     1             OF
-     C     1             DO        P#MANZ        A
-      *
-      * einen Variableninformationsblock aus großem Block herausschneiden
-     C                   EXSR      CUTVAR
-      *
-      * Zeilenschablone vorbereiten
-     C                   EVAL      SRCDTA = c(6)
-      *
-      * prüfen, ob Datentyp korrekt, sonst Fehler
-     C                   EXSR      CHKTYP
-      *
-      * Feldnamen zusammenbauen
-     C                   EVAL      fldName = 'd' + ord(a)
-      *
-      * Dezimalstellen oder *BLANK
-     C                   EXSR      GETDEZ
-      *
-     C                   SELECT
-     C                   WHEN      F#TYP = 'A'
-     C                   EVAL      fldType = 'char'
-     C                   EVAL      fldName = %trim(fldName)
-     C                                     + '['
-     C                                     + %trimr(f_str(P#FLDL))
-     C                                     + ']'
-     C                   WHEN      F#TYP = 'P'
-     C                   EVAL      fldType = 'decimal'
-     C                                     + '('
-     C                                     + %trimr(f_str(P#FLDL))
-     C                                     + ','
-     C                                     + %trimr(f_str(D#DPS ))
-     C                                     + ')'
-     C                   WHEN      F#TYP = 'B'
-     C                   SELECT
-     C                   WHEN      P#FLDL = 9
-     C                   EVAL      fldType = 'long'
-     C                   WHEN      P#FLDL = 4
-     C                   EVAL      fldType = 'short'
-     C                   OTHER
-     C                   EVAL      fldType = '*error'
-     C                   ENDSL
-     C                   ENDSL
-      *
-     C                   EVAL      SRCDTA = f_replace(c(6)         :
-     C                                                cVARNAME     :
-     C                                                fldName      )
-     C                   EVAL      SRCDTA = f_replace(SRCDTA       :
-     C                                                cVARTYPE     :
-     C                                                fldType      )
-     C                   EVAL      SRCDTA = f_replace(SRCDTA       :
-     C                                                cDELIMITER   :
-     C                                                cC_DELIM     )
-      *
-     C                   IF        P#FLDL = 0
-     C                   EVAL      %SUBST(SRCDTA: 2: 2) = '/*'
-     C                   EVAL      %SUBST(SRCDTA:40: 9) = 'Length = 0'
-     C                   EVAL      %SUBST(SRCDTA:50: 2) = '*/'
-     C                   ENDIF
-      *
-      * Zeile wegschreiben
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDDO
-      *
-     C                   ENDIF
-      *
-     C                   EVAL      SRCDTA = f_replace(c(7)          :
-     C                                                cSTRUCTNAME   :
-     C                                %trim(f_structName) + cC_DELIM)
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * RPGFLD Zeilen für Felddefinitionen generieren
-      ******************************************************
-      *
-     C     RPGFLD        BEGSR
-      *
-      * Zeile mit Datenstrukturnamen
-     C                   MOVEA(P)  RPG(11)       TXT
-     C                   MOVEA     D#MFCH        TXT(7)
-     C                   MOVEA     D#MNBR        TXT(8)
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Anzahl der MSG-Variablen bestimmen
-      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
-     C                   EXSR      GETANZ
-      *
-     C     P#MANZ        IFLE      *ZEROS
-     C                   Z-ADD     *ZEROS        D#DSLG
-      * ... keine Variablen definiert
-     C                   MOVEL(P)  RPG(14)       SRCDTA
-     C                   EXSR      WRTLINE
-     C                   ELSE
-      *
-     C                   Z-ADD     1             OF
-     C                   Z-ADD     1             OD
-     C     1             DO        P#MANZ        A
-      *
-      * einen Variableninformationsblock aus großen Block herausschneiden
-     C                   EXSR      CUTVAR
-      *
-      * Zeilenschablone vorbereiten
-     C                   MOVEA(P)  RPG(12)       TXT
-      *
-      * prüfen, ob Datentyp korrekt, sonst Fehler
-     C                   EXSR      CHKTYP
-      *
-      * Feldnamen zusammenbauen
-     C                   CLEAR                   D#FLD
-     C                   MOVEL     D#MFCH        D#PRF
-     C                   MOVEL     D#MNBR        D#NBR
-     C                   MOVEL (P) ORD(A)        D#ORD
-     C                   MOVEA     D#FLD         TXT(53)
-      *
-      * Dezimalstellen oder *BLANK
-     C                   EXSR      GETDEZ
-      *
-     C     F#TYP         IFEQ      'A'
-     C                   MOVEL(P)  *BLANKS       F#TYP
-     C                   ENDIF
-      *
-     C                   MOVEA     F#TYP         TXT(43)
-     C                   MOVEA     D#DEC         TXT(52)
-      *
-      * Feld hat Länge 0
-     C                   IF        P#FLDP = 0
-     C                   MOVEA     ' * '         TXT(6)
-     C                   Z-ADD     *ZEROS        D#OD
-     C                   MOVEA     D#POS         TXT(44)
-     C                   MOVEA     D#POS         TXT(48)
-     C                   MOVEA     'Length = 0'  TXT(61)
-     C                   ELSE
-      *
-      * VON-Position
-     C                   Z-ADD     OD            D#OD                           füllen D#POS
-     C                   MOVEA     D#POS         TXT(44)
-     C                   ADD       P#FLDP        OD
-     C                   SUB       1             OD
-      *
-      * BIS-Position
-     C                   Z-ADD     OD            D#OD                           füllen D#POS
-     C                   MOVEA     D#POS         TXT(48)
-     C                   Z-ADD     D#OD          D#DSLG
-     C                   ADD       1             OD
-     C                   ENDIF
-      *
-      * Zeile wegschreiben
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDDO
-      *
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * RPGLNG Zeile mit Länge der Datenstruktur absetzen
-      ******************************************************
-      *
-     C     RPGLNG        BEGSR
-      *
-      * Zeile mit Datenstrukturdefinition (nur DS, unbenannt)
-     C                   MOVEA(P)  RPG(11)       TXT
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Zeile mit Datenstrukturlänge anlegen
-     C                   MOVEA(P)  RPG(13)       TXT
-      *
-      * Strukturlänge wegschreiben
-     C                   MOVEA     D#DSLX        TXT(21)
-      *
-      * Feldnamen zusammenbauen
-     C                   CLEAR                   D#FLD
-     C                   MOVEL     D#MFCH        D#PRF
-     C                   MOVEL     D#MNBR        D#NBR
-     C                   MOVEL (P) 'L'           D#ORD
-     C                   MOVEA     D#FLD         TXT(53)
-      *
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * RPG4FLD - Zeilen für Felddefinitionen generieren ILE
-      ******************************************************
-      *
-     C     RPG4FLD       BEGSR
-      *
-      * Zeile mit Datenstrukturnamen
-     C                   MOVEA(P)  IRPG(4)       TXT                            11
-     C                   MOVEA     D#MSID        TXT(8)
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Anzahl der MSG-Variablen bestimmen
-      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
-     C                   EXSR      GETANZ
-      *
-     C     P#MANZ        IFLE      *ZEROS
-     C                   Z-ADD     *ZEROS        D#DSLG
-      * ... keine Variablen definiert
-     C                   MOVEL(P)  IRPG(7)       SRCDTA                         14
-     C                   EXSR      WRTLINE
-     C                   ELSE
-      *
-     C                   Z-ADD     1             OF
-     C                   Z-ADD     1             OD
-     C                   Z-ADD     *ZERO         D#DSLG
-     C     1             DO        P#MANZ        A
-      *
-      * einen Variableninformationsblock aus großen Block herausschneiden
-     C                   EXSR      CUTVAR
-      *
-      * Zeilenschablone vorbereiten - ILE
-     C                   MOVEA(P)  IRPG(5)       TXT                            12
-      *
-      * prüfen, ob Datentyp korrekt, sonst Fehler
-     C                   EXSR      CHKTYP
-      *
-      * Feldnamen zusammenbauen
-     C                   CLEAR                   D#IFLD
-     C                   MOVEL     D#MPRF        D#IPRF
-     C                   MOVEL     D#MNBR        D#INBR
-     C                   MOVEL     ORD(A)        D#IORD
-     C                   MOVEA     D#IFLD        TXT(9)
-      *
-      * Dezimalstellen oder *BLANK ...
-     C                   EXSR      GETDEZ
-      * ... Initialisierung
-     C                   SELECT
-     C     F#TYP         WHENEQ    'A'
-     C                   MOVEA     '*BLANKS'     TXT(48)
-     C     F#TYP         WHENEQ    'P'
-     C                   MOVEA     '*ZEROS'      TXT(48)
-     C     F#TYP         WHENEQ    'B'
-     C                   MOVEA     '*ZEROS'      TXT(48)
-     C                   OTHER
-     C                   MOVEA     '*ERROR'      TXT(48)
-     C                   ENDSL
-      * ... Feldtyp
-     C     F#TYP         IFEQ      'B'
-     C                   MOVEA     'I'           TXT(40)
-     C                   ELSE
-     C                   MOVEA     F#TYP         TXT(40)
-     C                   ENDIF
-      * ... Dezimalstellen
-     C                   MOVEA     D#DEC         TXT(42)
-      * ... Bei Binär (==> RPG-Integer = I) die Länge anpassen
-     C     F#TYP         IFEQ      'B'
-     C                   SELECT
-     C     P#FLDL        WHENGE    10
-     C                   Z-ADD     20            P#FLDL
-     C     P#FLDL        WHENGE    5
-     C                   Z-ADD     10            P#FLDL
-     C                   OTHER
-     C                   Z-ADD     5             P#FLDL
-     C                   ENDSL
-     C                   ENDIF
-      * ... Feldlänge
-     C                   IF        P#FLDP = *ZEROS
-     C                   MOVEA     ' *'          TXT(6)
-     C                   Z-ADD     *ZEROS        D#OD                           füllen D#POS
-     C                   MOVEA     D#POS         TXT(36)
-     C                   MOVEA     'Length = 0'  TXT(58)
-     C                   ELSE
-     C                   Z-ADD     P#FLDL        D#OD                           füllen D#POS
-     C                   ADD       P#FLDP        D#DSLG
-     C                   MOVEA     D#POS         TXT(36)
-     C                   ENDIF
-      *
-      * Zeile wegschreiben
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDDO
-      *
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * IPGLNG Zeile mit Länge der Datenstruktur absetzen
-      ******************************************************
-      *
-     C     IPGLNG        BEGSR
-      *
-      * Zeile mit Datenstrukturdefinition (nur DS, unbenannt)
-     C                   MOVEA(P)  IRPG(6)       TXT                            13
-      *
-      * Strukturlänge wegschreiben
-     C                   MOVEA     D#DSLX        TXT(48)
-      *
-      * Feldnamen zusammenbauen
-     C                   CLEAR                   D#IFLD
-     C                   MOVEL     D#MPRF        D#IPRF
-     C                   MOVEL     D#MNBR        D#INBR
-     C                   MOVEL     '_SIZE'       D#EXT
-     C                   MOVEA     D#IFLD        TXT(8)
-      *
-     C                   MOVEA(P)  TXT           SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * ICLFLD Zeilen für Felddefinitionen generieren CLP
-      ******************************************************
-      *
-     C     ICLFLD        BEGSR
-      *
-      * Startposition für Schlüsselworte
-     C                   Z-ADD     16            #P                5 0
-      * Startposition für eingerückte Werte
-     C                   Z-ADD     21            #Z                5 0
-      * Startposition für Nachrichtentexte
-     C                   Z-ADD     1             #Z1               5 0
-      * Arbeitsfeld
-     C                   Z-ADD     *ZEROS        cS                5 0
-     C                   Z-ADD     *ZEROS        cL                5 0
-     C                   Z-ADD     *ZEROS        cI                5 0
-      *
-      * MSGID()
-     C                   CAT(P)    'MSGID':#P    SRCDTA
-     C                   EXSR      OPNBRK
-     C                   CAT       XMSGI:0       SRCDTA
-     C                   EXSR      CLSBRK
-     C                   EXSR      WRTLINE
-      *
-      * MSGF()
-     C                   CAT(P)    'MSGF':#P     SRCDTA
-     C                   EXSR      OPNBRK
-     C                   CAT       XMSGL:0       SRCDTA
-     C                   CAT       '/':0         SRCDTA
-     C                   CAT       XMSGF:0       SRCDTA
-     C                   EXSR      CLSBRK
-     C                   EXSR      WRTLINE
-      *
-      * MSG()
-     C     M3LGMR        IFGT      *ZEROS
-     C                   CAT(P)    'MSG':#P      SRCDTA
-     C                   EXSR      OPNBRK
-     C                   CAT       '+':0         SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   Z-ADD     M3OFMG        cS
-     C                   ADD       1             cS
-     C                   Z-ADD     M3LGMR        cL
-     C     cL            SUBST(P)  MS0300:cS     #TEXT
-      *
-     C                   EXSR      RPLHPN
-     C     ''''          CAT(P)    #TEXT         #TEXT
-    R ***                CAT       '''':0        #TEXT
-     C     cL            ADD       2             cI
-     C                   MOVEL(P)  ''''          #TB(cI)
-      *
-     C                   EXSR      SPLITT
-      *
-     C                   CAT(P)    ') +':#P      SRCDTA
-     C                   EXSR      WRTLINE
-     C                   ENDIF
-      *
-      * SECLVL()
-     C     M3LGMH        IFGT      *ZEROS
-     C                   CAT(P)    'SEC':#P      SRCDTA
-     C                   CAT(P)    'LVL':0       SRCDTA
-     C                   EXSR      OPNBRK
-     C                   CAT       '+':0         SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   Z-ADD     M3OFMH        cS
-     C                   ADD       1             cS
-     C                   Z-ADD     M3LGMH        cL
-     C     cL            SUBST(P)  MS0300:cS     #TEXT
-      *
-     C                   EXSR      RPLHPN
-     C     ''''          CAT(P)    #TEXT         #TEXT
-     C                   CAT       '''':0        #TEXT
-     C                   EXSR      SPLITT
-      *
-     C                   CAT(P)    ') +':#P      SRCDTA
-     C                   EXSR      WRTLINE
-     C                   ENDIF
-      *
-      * SEV()
-     C                   CAT(P)    'SEV':#P      SRCDTA
-     C                   EXSR      OPNBRK
-     C                   Z-ADD     M3MSSV        #N2
-     C                   CAT       #A2:0         SRCDTA
-     C                   EXSR      CLSBRK
-     C                   EXSR      WRTLINE
-      *
-      * Anzahl der MSG-Variablen bestimmen
-      * (Länge des kpl. Variablenbereichs / Länge einer Variablestruktur)
-     C                   EXSR      GETANZ
-      *
-     C     P#MANZ        IFLE      *ZEROS
-      * ... keine Variablen definiert
-     C                   MOVEL(P)  CLP(14)       SRCDTA
-     C                   EXSR      WRTLINE
-     C                   ELSE
-      *
-      * FMT()
-     C     P#MANZ        IFGT      *ZEROS
-     C                   CAT(P)    'FMT':#P      SRCDTA
-     C                   EXSR      OPNBRK
-     C                   CAT(P)    ' +':0        SRCDTA
-     C                   EXSR      WRTLINE
-     C                   ENDIF
-      *
-     C                   Z-ADD     1             OF
-     C                   Z-ADD     1             OD
-     C     1             DO        P#MANZ        A
-      *
-     C                   EVAL      %SUBST(SRCDTA: #Z: 1) = '('
-      *
-      * einen Variableninformationsblock aus großen Block herausschneiden
-     C                   EXSR      CUTVAR
-      *
-      * prüfen, ob Datentyp korrekt, sonst Fehler
-     C                   EXSR      CHKTYP
-      *
-      * Dezimalstellen oder *BLANK ...
-     C                   EXSR      GETDEZ
-      * ... Initialisierung
-     C                   SELECT
-     C     F#TYP         WHENEQ    'B'
-     C                   CAT       '*BIN':0      SRCDTA
-     C                   SELECT
-     C     P#FLDL        WHENGE    10
-     C                   Z-ADD     8             P#FLDL
-     C     P#FLDL        WHENGE    5
-     C                   Z-ADD     4             P#FLDL
-     C                   OTHER
-     C                   Z-ADD     2             P#FLDL
-     C                   ENDSL
-     C                   OTHER
-     C                   CAT       M3FTYP:0      SRCDTA
-     C                   ENDSL
-      * ... Feldlänge
-     C                   Z-ADD     P#FLDL        D#OD
-     C                   CAT       D#POS:1       SRCDTA
-      * ... Dezimalstellen
-     C                   CAT       D#DEC:1       SRCDTA
-      *
-      * Zeile wegschreiben
-     C                   CAT(P)    ') +':0       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C                   ENDDO
-      *
-     C                   CAT(P)    ') +':#P      SRCDTA
-     C                   EXSR      WRTLINE
-     C                   ENDIF
-      *
-      * ALROPT()
-     C                   CAT(P)    'ALR':#P      SRCDTA
-     C                   CAT(P)    'OPT':0       SRCDTA
-     C                   EXSR      OPNBRK
-     C                   CAT       M3ALOP:0      SRCDTA
-     C     M3ALID        IFGE      1
-     C     M3ALID        ANDLE     99
-     C                   Z-ADD     M3ALID        #N2
-     C                   CAT       #A2:1         SRCDTA
-     C                   ENDIF
-     C                   EXSR      CLSBRK
-     C                   EXSR      WRTLINE
-      *
-      * CCSID()
-     C                   CAT(P)    'CCSID':#P    SRCDTA
-     C                   EXSR      OPNBRK
-     C                   Z-ADD     M3CCIT        #N5
-     C                   CAT       #A5:1         SRCDTA
-     C                   EXSR      CLSBRK
-     C                   EXSR      WRTLINE
-      *
-      * EOF
-     C                   CAT(P)    '/*':#P       SRCDTA
-     C                   CAT       '-EOF-':2     SRCDTA
-     C                   CAT       '*/':2        SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-     C     XLAST         IFEQ      cTRUE
-      * nicht bei *SCRIPT
-     C     XGENA         ANDNE     '*SCRIPT'
-      * RCLRSC
-     C                   MOVEL(P)  CLP(12)       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * Leerzeile
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   EXSR      WRTLINE
-      *
-      * ENDPGM
-     C                   MOVEL(P)  CLP(13)       SRCDTA
-     C                   EXSR      WRTLINE
-     C                   ELSE
-      *  Ausgabe nur bei letzter Nachrichten-ID
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * RPLHPN   - Replace hyphen
-      *            Ersetzen Hochkomma durch doppelte
-      *            Hochkomma
-      ******************************************************
-      *
-     C     RPLHPN        BEGSR
-      *
-     C                   Z-ADD     1             #Y
-      *
-     C     #Y            DOUEQ     *ZEROS
-      *
-     C     ''''          SCAN      #TEXT:#Y      #Y
-     C     #Y            IFLE      *ZEROS
-      *  Nichts weiter zu tun ...
-     C                   ELSE
-      *  Zweite "Hälfte" retten ...
-     C                   ADD       1             #Y
-     C     #Y            IFLE      8192
-     C                   SUBST     #TEXT:#Y      #TEMP
-     C                   ELSE
-      *  "ASSERT"
-     C                   MOVEL     'CPF9897'     sds_msgID
-     C     '#Y:'         CAT       '> 8192':1    sds_msgDta
-     C                   EXSR      *PSSR
-     C                   ENDIF
-      *
-     C                   MOVEA     ''''          #TB(#Y)
-     C                   ADD       1             #Y
-     C                   ADD       1             cL
-     C     #Y            IFLE      8192
-     C                   MOVEA     #TEMP         #TB(#Y)
-     C                   ELSE
-      *  "ASSERT"
-     C                   MOVEL     'CPF9897'     sds_msgID
-     C     '#Y:'         CAT       '> 8192':1    sds_msgDta
-     C                   EXSR      *PSSR
-     C                   ENDIF
-      *
-     C                   ENDIF
-      *
-     C                   ENDDO
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * SPLITT   - Aufsplitten von #TEXT auf mehrere Zeilen
-      ******************************************************
-      *
-     C     SPLITT        BEGSR
-      *
-     C     71            SUB       #Z1           #L                5 0
-     C                   Z-ADD     *ZEROS        #X                5 0
-      *
-     C     #TEXT         DOWNE     *BLANKS
-      *
-      *  Übertragen Nachrichtentext in Datenzeile
-     C                   Z-ADD     1             #S                5 0
-     C     #L            SUBST(P)  #TEXT:#S      SRCDTA
-      *
-      *  Entfernen übertragene Zeichen aus Nachrichtentext
-     C                   ADD       #L            #S
-     C     #S            IFLE      8192
-     C                   SUBST(P)  #TEXT:#S      #TEXT
-     C                   ELSE
-     C                   MOVEL(P)  *BLANKS       #TEXT
-     C                   ENDIF
-      *
-      *  Anfügen Fortsetzungszeichen
-     C                   MOVEA     SRCDTA        TXT(#Z1)
-     C     #Z1           ADD       #L            #X
-      *
-     C     #TEXT         IFEQ      *BLANKS
-     C                   MOVE      '+'           TXT(#X)
-     C                   ELSE
-     C                   MOVE      '-'           TXT(#X)
-     C                   ENDIF
-      *
-     C                   MOVEA(P)  TXT           SRCDTA
-      *
-      *  Ausgeben Datenzeile
-     C                   EXSR      WRTLINE
-     C                   ENDDO
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * OPNBRK   - Öffnen Klammer (Open bracket)
-      ******************************************************
-      *
-     C     OPNBRK        BEGSR
-      *
-     C                   CAT       '(':0         SRCDTA
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * CLSBRK   - Schließen Klammer (Close bracket)
-      ******************************************************
-      *
-     C     CLSBRK        BEGSR
-      *
-     C                   CAT       ') +':0       SRCDTA
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * CHKTYP   - Prüfen Datentyp
-      ******************************************************
-      *
-     C     CHKTYP        BEGSR
-      *
-     C     M3FTYP        IFNE      '*QTDCHAR'
-     C     M3FTYP        ANDNE     '*CHAR'
-     C     M3FTYP        ANDNE     '*DEC'
-     C     M3FTYP        ANDNE     '*HEX'
-     C     M3FTYP        ANDNE     '*BIN'
-     C                   MOVEL(P)  'CPF9897'     XERRID
-     C                   MOVEL(P)  'MSG-ID:'     XERRDT
-     C                   CAT       M3MGID:1      XERRDT
-     C                   CAT       'Unerla':1    XERRDT
-     C                   CAT       'ubter':0     XERRDT
-     C                   CAT       'Typ':1       XERRDT
-     C                   CAT       M3FTYP:1      XERRDT
-     C                   GOTO      ENDE
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * GETANZ   - Bestimmen Anzahl Variablen
-      ******************************************************
-      *
-     C     GETANZ        BEGSR
-      *
-     C     M3LGVF        IFGT      *ZERO
-     C     M3LGVF        DIV       M3LVFE        P#MANZ
-     C                   ELSE
-     C                   Z-ADD     *ZERO         P#MANZ
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * CUTVAR   - Herausschneiden eines Variablen-
-      *            informationsblock aus großem Block
-      ******************************************************
-      *
-     C     CUTVAR        BEGSR
-      *
-     C                   CLEAR                   MS030F
-     C     M3LVFE        SUBST     D#SUBV:OF     MS030F
-     C                   ADD       M3LVFE        OF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * GETDEZ   - Ermitteln Anzahl Dezimalstellen
-      *            und Feldtyp
-      ******************************************************
-      *
-     C     GETDEZ        BEGSR
-      *
-      * Feldlänge laut MSGD
-     C                   Z-ADD     M3FLGD        P#FLDL
-     C                   Z-ADD     M3FLGD        P#FLDP
-      *
-      * und rechnen
-     C                   SELECT
-     C     M3FTYP        WHENEQ    '*QTDCHAR'
-     C                   MOVEL     *BLANK        D#DEC
-     C                   MOVEL     'A'           F#TYP             1
-      *
-     C     M3FTYP        WHENEQ    '*CHAR'
-     C                   MOVEL     *BLANK        D#DEC
-     C                   MOVEL     'A'           F#TYP
-      *
-     C     M3FTYP        WHENEQ    '*HEX'
-     C                   MOVEL     *BLANK        D#DEC
-     C                   MOVEL     'A'           F#TYP
-      *
-     C     M3FTYP        WHENEQ    '*DEC'
-     C                   Z-ADD     M3FFSZ        D#DPS
-      *          die Feldlänge für gepackt errechnen
-     C     P#FLDL        DIV       2             P#FLDP
-     C                   ADD       1             P#FLDP
-     C                   MOVEL     'P'           F#TYP
-      *
-     C     M3FTYP        WHENEQ    '*BIN'
-     C                   SELECT
-     C     P#FLDL        WHENEQ    8
-     C                   Z-ADD     18            P#FLDL
-     C     P#FLDL        WHENEQ    4
-     C                   Z-ADD     9             P#FLDL
-     C                   OTHER
-     C                   Z-ADD     4             P#FLDL
-     C                   ENDSL
-     C                   MOVEL     'B'           F#TYP
-     C                   Z-ADD     *ZEROS        D#DPS
-      *
-     C                   ENDSL
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * WRTLINE Schreiben Zeile in Sourcedatei
-      ******************************************************
-      *
-     C     WRTLINE       BEGSR
-      *
-     C                   ADD       ,01           SRCSEQ
-     C                   Z-ADD     *ZERO         SRCDAT
-     C                   WRITE     SRC           FSRC
-      *
-     C                   MOVEL(P)  *BLANKS       SRCDTA
-     C                   MOVEA(P)  *BLANKS       TXT
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * EMDEFN   - Ermitteln DEFINE-Namen
-      ******************************************************
-      *
-     C     EMDEFN        BEGSR
-      *
-     C                   CLEAR                   P#DEFN
-     C                   MOVEL(P)  XMSGI         P#DEFN
-     C                   CAT       '_MSG':0      P#DEFN
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * Programm Vorlauf
-      ******************************************************
-      *
-     C     FIRST         BEGSR
-      *
-      * Datei öffnen
-     C                   OPEN      SRC
-      *
-      * Rückgabeparameter initialisieren
-     C                   MOVEL     *BLANK        XMBRT                          Msgtext
-     C                   MOVEL     *BLANK        XERRID                         Error-ID
-     C                   MOVEL     *BLANK        XERRDT                         Error-Data
-      *
-      * Initialisierung
-      *
-      * Stelle in RTVM0300 ab der variabler Teil beginnt
-     C                   Z-ADD     105           R#OFF3                         Offset in DS
-      *
-      * laufender Zähler für Offsets
-     C                   Z-ADD     *ZERO         O
-      *
-      * laufender Zähler Variablenverarbeitung
-     C                   Z-ADD     *ZERO         A
-      *
-      * Empfangsvariablen für variablen Teil initialisieren
-     C                   MOVEL(P)  *BLANK        D#DRPL
-     C                   MOVEL(P)  *BLANK        D#MSGT
-     C                   MOVEL(P)  *BLANK        D#MSGH
-     C                   MOVEL(P)  *BLANK        D#SUBV
-      * Anzahl der Variablen in der MSG
-     C                   Z-ADD     *ZERO         P#MANZ
-      * MSGID in Zerlegungsstruktur bringen
-     C                   MOVEL(P)  XMSGI         D#MSID
-      * Länge der Msg-Variablen
-     C                   Z-ADD     *ZERO         P#FLDL
-     C                   Z-ADD     *ZERO         P#FLDP
-      * Rest bei Division
-     C                   Z-ADD     *ZERO         P#REST
-      * Sourcezeilenstruktur RPG erstmals initialisierem
-     C     XFIRST        IFEQ      cTRUE
-     C                   CLEAR                   FSRC
-     C                   Z-ADD     *ZERO         SRCSEQ
-     C                   ENDIF
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * Programm Initialisierung einmalig
-      ******************************************************
-      *
-     C     *INZSR        BEGSR
-      *
-      * Definition Programmaufrufparameter
-      * Input
-     C                   MOVEL     XMSGL         XMSGL            10            Msg-Lib
-     C                   MOVEL     XMSGF         XMSGF            10            Msg-File
-     C                   MOVEL     XTEXT         XTEXT            50            Msg-File-Text
-     C                   MOVEL     R#MSGF        R#MSGF           10            Msg-Lib
-     C                   MOVEL     R#MSGL        R#MSGL           10            Msg-File
-     C                   MOVEL     XMSGI         XMSGI             7            Msg-ID
-     C                   MOVEL     XCPYL         XCPYL            10            Cpy-Lib
-     C                   MOVEL     XCPYF         XCPYF            10            Cpy-File
-     C                   MOVEL     XGENA         XGENA            10            Gener.Art
-     C                   MOVEL     XISDFN        XISDFN            1            Define-Best.
-     C                   MOVEL     XCRTMSGF      XCRTMSGF          1            CrtMsgF-Befehl
-     C                   MOVEL     XFIRST        XFIRST            1            1. Msg-ID
-     C                   MOVEL     XLAST         XLAST             1            letzte Msg-ID
-      * Output
-     C                   MOVEL     XMBRT         XMBRT            80            MbrText
-     C                   MOVEL     XERRID        XERRID            7            Error-ID
-     C                   MOVEL     XERRDT        XERRDT           80            Error-Data
-      *
-      * Stelle in RTVM0300 ab der variabler Teil beginnt
-     C                   Z-ADD     R#OFF3        R#OFF3            4 0          Offset in DS
-      *
-      * laufender Zähler für Offsets
-     C                   Z-ADD     O             O                 4 0
-     C                   Z-ADD     OF            OF                3 0
-      *
-      * laufender Zähler für Positionen in generierter Datenstruktur
-     C                   Z-ADD     OD            OD                4 0
-      *
-      * laufender Zähler Variablenverarbeitung
-     C                   Z-ADD     A             A                 4 0
-      *
-      * Anzahl der Variablen in der MSG
-     C                   Z-ADD     P#MANZ        P#MANZ            2 0
-      *
-      * Länge der Msg-Variablen
-     C                   Z-ADD     P#FLDL        P#FLDL            4 0
-     C                   Z-ADD     P#FLDP        P#FLDP            4 0
-      *
-      * Rest bei Division
-     C                   Z-ADD     P#REST        P#REST            3 0
-      *
-      * Namen für Define
-     C                   MOVEL     P#DEFN        P#DEFN           20
-      *
-     C                   ENDSR
-      *
-      ******************************************************
-      * Fehlerbehandlung
-      ******************************************************
-      *
-     C     *PSSR         BEGSR
-      *
-     C                   DUMP
-      *
-     C                   ENDSR     '*CANCL'
-      *****************************************************************
-      *  Replace variables
-      *****************************************************************
-     P f_replace...
+     D M3FLGD                        10i 0
+     D M3FFSZ                        10i 0
+     D M3FTYP                        10a
+     D M3FRS1                       238a
+     D M3FRS2                       256a
+
+       // Generic API error structure
+     D errCode         DS                  qualified
+     D  bytPrv                       10i 0 inz
+     D  bytAvl                       10i 0 inz
+     D  excID                         7a   inz
+     D  reserved_1                    1a   inz
+     D  excDta                       16a   inz
+
+       // Message ID parts
+     D msgIdDS         DS                  qualified
+     D prfx                           3a   inz
+     D  prfx1ch                       1a   inz overlay(prfx)
+     D nbr                            4a   inz
+
+       // 6-char RPG field name
+     D field6          DS                  qualified
+     D  prfx                          1a
+     D  nbr                           4a
+     D  count                         3a
+
+       // 10-char ILE-RPG field name
+     D field10         DS                  qualified
+     D  prfx                          3a
+     D  nbr                           4a
+     D  count                         5a
+
+      // C field name and type
+     D c_fldName       S             40a
+     D c_fldType       S             40a
+
+      // Return format control characters *YES or *NO
+     D rtnFmtCtrlChrs  S             10a
+
+      // Various buffers for message description data
+     D msgText         S           8192a
+     D msgHelp         S           8192a
+     D rplcVars        S           8192a
+
+      // General purpose index variable
+     D i               S             10i 0
+
+      // Buffer for building temporary strings
+     D tmpStr          S             80a   varying
+
+       //  Global variable: message file
+     D qMsgF           ds                  likeds(qObj_t)
+
+       // Offset replacement variables
+     D rplcVarOffs     S             10i 0
+
+       // Sub-field counter
+     D OD              S             10i 0
+
+       // laufender Zähler Variablenverarbeitung
+     D rplcVarIdx      S             10i 0
+
+       // Total length of data structure
+     D lenStruct       S             10i 0
+
+       // Total number of replacement variables
+     D rplcVarCount    S             10i 0
+
+       // Type and length of replacement variable
+     D rplcVar         DS                  qualified
+     D  length                       10i 0
+     D  packedLen                    10i 0
+     D  fraction                     10i 0
+     D  type                          1a
+
+      // Buffer for generating message text and message help
+     D buffer          S           8192a   varying
+
+       // Name for DEFINE compiler directive
+     D defineName      S             20a   varying
+
+     D qGenMsgF        ds                  likeds(qObj_t)
+
+     D INDENT_1        C                   16
+     D INDENT_2        C                   20
+
+     D FALSE           C                   *off
+     D TRUE            C                   *on
+
+     D C_DELIM         C                   ';'
+     D MSGID           C                   '%%MSGID'
+     D MSGTXT          C                   '%%MSGTXT'
+     D MSGF            C                   '%%MSGF'
+     D MSGL            C                   '%%MSGL'
+     D PGM             C                   '%%PGM'
+     D VARTYPE         C                   '%%VARTYPE'
+     D VARNAME         C                   '%%VARNAME'
+     D DELIMITER       C                   '%%DELIMITER'
+     D STRUCTNAME      C                   '%%STRUCTNAME'
+     D DS_NAME         C                   '%%DS'
+     D INIT_VALUE      C                   '%%IV'
+     D FIELD_NAME      C                   '%%FLDNME'
+     D FROM            C                   '%%FR'
+     D TO              C                   '%%TO'
+     D LENGTH          C                   '%%LN'
+
+       //  Offset for SUBST
+       //  ... PTF applied or version V4R3 and above
+     D PTF_OFFSET      C                   1
+
+       //  Program entry point
+     D CRTMSGDSR2...
+     D                 pr                  extpgm('CRTMSGDSR2')
+     D  gi_msgFLib                   10a   const                                Msg-Lib
+     D  gi_msgF                      10a   const                                Msg-File
+     D  gi_msgFText                  50a   const                                Msg-File-Text
+     D  gi_msgId                      7a   const                                Msg-ID
+     D  gi_copyFLib                  10a   const                                Cpy-Lib
+     D  gi_copyF                     10a   const                                Cpy-File
+     D  gi_genType                   10a   const                                Gener.Art
+     D  gi_isDefine                    n   const                                Define-Best.
+     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
+     D  gi_isFirstId                   n   const                                1. Msg-ID
+     D  gi_isLastId                    n   const                                Letzte Msg-ID
+     D  go_mbrText                   80a                                        MbrText
+     D  go_excId                      7a                                        Error-ID
+     D  go_excDta                    80a                                        Error-Data
+
+     D CRTMSGDSR2...
+     D                 pi
+     D  gi_msgFLib                   10a   const                                Msg-Lib
+     D  gi_msgF                      10a   const                                Msg-File
+     D  gi_msgFText                  50a   const                                Msg-File-Text
+     D  gi_msgId                      7a   const                                Msg-ID
+     D  gi_copyFLib                  10a   const                                Cpy-Lib
+     D  gi_copyF                     10a   const                                Cpy-File
+     D  gi_genType                   10a   const                                Gener.Art
+     D  gi_isDefine                    n   const                                Define-Best.
+     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
+     D  gi_isFirstId                   n   const                                1. Msg-ID
+     D  gi_isLastId                    n   const                                Letzte Msg-ID
+     D  go_mbrText                   80a                                        MbrText
+     D  go_excId                      7a                                        Error-ID
+     D  go_excDta                    80a                                        Error-Data
+
+       // Initialize return values
+      /free
+
+       go_mbrText  = '';
+       go_excId = '';
+       go_excDta = '';
+
+       IF (gi_isFirstId = TRUE);
+          CLEAR FSRC;
+          FSRC.SRCSEQ = 0;
+       ENDIF;
+
+       // Open SRC file
+       OPEN SRC;
+
+       // Splitt message id into prefix and number
+       msgIdDS = gi_msgId;
+
+       // Call the retrieve message description API
+       IF (gi_genType = '*CLP'   )  or
+          (gi_genType = '*CLLE'  )  or
+          (gi_genType = '*SCRIPT');
+          // Return format control characters
+          rtnFmtCtrlChrs = '*YES';
+       ELSE;
+          rtnFmtCtrlChrs = '*NO';
+       ENDIF;
+
+       CLEAR errCode;
+
+       qMsgF.name = gi_msgF;
+       qMsgF.lib = gi_msgFLib;
+
+       CALLP(E) QMHRTVM(MS0300: %size(MS0300): 'RTVM0300'
+               : gi_msgId: qMsgF: '':  0: '*NO': rtnFmtCtrlChrs
+               : errCode);
+
+       // Check error indicator
+       IF (%error());
+          go_excId = 'CPF9897';
+          go_excDta = 'Error: ' + %trim(qMsgF.lib) + '/' +
+                              %trim(qMsgF.name) +
+                  ' Id: ' + %trim(gi_msgId);
+       ELSE;
+
+          IF (errCode.bytAvl > 0);
+             go_excId = errCode.excID;
+             go_excDta = errCode.excDta;
+          ELSE;
+
+             // Retrieve: message text
+             IF M3LGMR > *ZERO;
+                msgText = %subst(MS0300: PTF_OFFSET + M3OFMG: M3LGMR);
+             ELSE;
+                msgText = '';
+             ENDIF;
+
+             go_mbrText = msgText;
+
+             // Retrieve: message help text
+             IF M3LGMH > *ZERO;
+                msgHelp = %subst(MS0300: PTF_OFFSET + M3OFMH: M3LGMH);
+             ELSE;
+                msgHelp = '';
+             ENDIF;
+
+             // Retrieve: replacement variables
+             IF M3LGVF > *ZERO;
+                rplcVars = %subst(MS0300: PTF_OFFSET + M3OFVF: M3LGVF);
+             ELSE;
+                rplcVars = '';
+             ENDIF;
+
+             // Generate source
+             EXSR performOperation;
+          ENDIF;
+       ENDIF;
+
+       // Close SRC file
+       CLOSE SRC;
+
+       RETURN;
+
+       //*****************************************************
+       // Select the type of source that is generated
+       //*****************************************************
+       BEGSR performOperation;
+
+          SELECT;
+
+          WHEN gi_genType = '*RPG';
+             qGenMsgF.lib = gi_msgFLib;
+             qGenMsgF.name = gi_msgF;
+             EXSR performRPG3;
+
+          WHEN gi_genType = '*ILERPG';
+             qGenMsgF.lib = gi_msgFLib;
+             qGenMsgF.name = gi_msgF;
+             EXSR performRPG4;
+
+          WHEN gi_genType = '*CLP'
+             OR gi_genType = '*CLLE';
+             qGenMsgF.lib = '&LIB';
+             qGenMsgF.name = '&OBJ';
+             EXSR performCLP;
+
+          WHEN gi_genType = '*C';
+             EXSR performC;
+
+             // Process *SCRIPT as *CLP but drop some statements
+          WHEN gi_genType = '*SCRIPT';
+             qGenMsgF.lib = '&LI';
+             qGenMsgF.name = '&SF';
+             EXSR performCLP;
+
+          OTHER;
+
+          ENDSL;
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate RPG source code
+       //*****************************************************
+       BEGSR performRPG3;
+
+          // Comment line (dashes)
+          writeLine(RPG(1));
+
+          // Comment line with message ID
+          writeLine(%trimr(RPG(2)) + ' ' + gi_msgId);
+
+          // Empty comment line
+          writeLine(RPG(3));
+
+          // Comment line with message text
+          writeLine(%trimr(RPG(3)) + ' ' + %subst(msgText: 1: 59));
+
+          // Empty comment line
+          writeLine(RPG(3));
+
+          // Generate data structure
+          EXSR genStructRPG3;
+          IF (go_excId <> '');
+             LEAVESR;
+          ENDIF;
+
+          // Add total length of data structure
+          EXSR genTotalLenRPG3;
+
+          // Empty comment line
+          writeLine(RPG(3));
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate ILE-RPG source code
+       //*****************************************************
+       BEGSR performRPG4;
+
+          // Generate DEFINE compiler directive
+          EXSR genStartDefineRPG4;
+
+          // Comment line (dashes)
+          writeLine(IRPG(1));
+
+          // Comment line with message ID
+          writeLine(%trimr(IRPG(2)) + ' ' + gi_msgId);
+
+          // Empty line
+          writeLine(IRPG(3));
+
+          // Comment line with message text
+          writeLine(%trimr(IRPG(14)) + '  ' + %subst(msgText: 1: 59));
+
+          // Empty line
+          writeLine('');
+
+          // Generate data structure
+          EXSR genStructRPG4;
+          IF (go_excId <> '');
+             LEAVESR;
+          ENDIF;
+
+          // Add total length of data structure
+          EXSR genTotalLenRPG4;
+
+          // Empty line
+          writeLine(IRPG(3));
+
+          // Generate ENDIF compiler directive
+          EXSR genEndDefineRPG4;
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate DEFINE compiler directive, part 1
+       //*****************************************************
+       BEGSR genStartDefineRPG4;
+
+          IF (gi_isDefine = FALSE);
+             // User did not select generating the DEFINE compiler directive
+             LEAVESR;
+          ENDIF;
+
+          // /IF NOT DEFINED(UNDEFINE_ALL)
+          writeLine(IRPG(11));
+
+          // Produce name for DEFINE compiler directive
+          defineName = %trimr(gi_msgId) + '_MSG';
+
+          // /IF NOT DEFINED(msgid_MSG)
+          writeLine(%trimr(IRPG(8)) + defineName + ')');
+
+          // /DEFINE msgid_MSG
+          writeLine(%trimr(IRPG(9)) + ' ' + defineName);
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate DEFINE compiler directive, part 2
+       //*****************************************************
+       BEGSR genEndDefineRPG4;
+
+          IF (gi_isDefine = FALSE);
+             // User did not select generating the DEFINE compiler directive
+             LEAVESR;
+          ENDIF;
+
+          // /ENDIF
+          writeLine(IRPG(10));
+
+          // /ENDIF
+          writeLine(IRPG(10));
+
+          // Empty comment line
+          writeLine(IRPG(3));
+
+          // /IF DEFINED(UNDEFINE_ALL)
+          writeLine(IRPG(12));
+
+          // /UNDEFINE msgid_MSG
+          writeLine(%trimr(IRPG(13)) + ' ' + defineName);
+
+          // /ENDIF
+          writeLine(IRPG(10));
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate CLP source code.
+       //*****************************************************
+       BEGSR performCLP;
+
+          IF (gi_isFirstId = TRUE);
+             IF (gi_genType <> '*SCRIPT');
+                // STRPREPRC Header
+                FOR i = 1 to %elem(STRPREPRC);
+                   srcLine = STRPREPRC(i);
+                   SELECT;
+                   WHEN %scan('%CMD': srcLine) > 0;
+                      IF gi_genType = '*CLP';
+                         tmpStr = 'CRTCLPGM';
+                      ELSE;
+                         tmpStr = 'CRTBNDCL';
+                      ENDIF;
+                      srcLine = replace(srcLine: '%CMD': tmpStr);
+                   WHEN %scan('%TEXT': srcLine) > 0;
+                      tmpStr = 'TEXT(''' + %trim(gi_msgFText) + ''');';
+                      srcLine = replace(srcLine: '%TEXT': tmpStr);
+                   ENDSL;
+                   writeLine(srcLine);
+                ENDFOR;
+
+                // PGM
+                writeLine(CLP(5));
+
+                // Empty line
+                writeLine('');
+
+                // DCL &I_LIB
+                writeLine(CLP(15));
+
+                // DCL &I_OBJ
+                writeLine(CLP(16));
+
+                // DCL &LIB
+                writeLine(CLP(17));
+
+                // DCL &OBJ
+                writeLine(CLP(18));
+
+                // Empty line
+                writeLine('');
+
+                // CHGVAR &LIB
+                writeLine(CLP(19));
+
+                // MONMSG
+                writeLine(CLP(20));
+
+                // RMVMSG
+                writeLine(CLP(21));
+
+                // CHGVAR
+                //**                EVAL      SRCDTA = f_replace(CLP(22): '%LIB': qGenMsgF.lib)
+                //**                EXSR      WRTLINE
+                // SNDPGMMSG: Usage ...
+                writeLine(CLP(30));
+
+                writeLine(replace(CLP(31): PGM: %trim(fileInfo.member)));
+
+                writeLine(CLP(32));
+
+                writeLine(CLP(33));
+
+                // ENDDO
+                writeLine(CLP(23));
+
+                // Empty line
+                writeLine('');
+
+                // CHGVAR &OBJ
+                writeLine(CLP(24));
+
+                // MONMSG
+                writeLine(CLP(20));
+
+                // RMVMSG
+                writeLine(CLP(21));
+
+                // CHGVAR
+                writeLine(replace(CLP(25): '%OBJ': gi_msgF));
+
+                // ENDDO
+                writeLine(CLP(23));
+
+                IF (gi_isCrtMsgF = TRUE);
+
+                   // Empty line
+                   writeLine('');
+
+                   // DLTMSGF
+                   writeLine(CLP(26));
+
+                   // MONMSG
+                   writeLine(CLP(27));
+
+                   // RMVMSG
+                   writeLine(CLP(21));
+
+                   // ENDDO
+                   writeLine(CLP(23));
+
+                   // Empty line
+                   writeLine('');
+
+                   // CRTMSGF
+                   writeLine(CLP(28));
+
+                   srcLine = CLP(29);
+                   tmpStr = 'TEXT(''' + %trim(gi_msgFText) + ''')';
+                   srcLine = replace(srcLine: '%TEXT': tmpStr);
+                   writeLine(srcLine);
+
+                ENDIF;
+
+                // Empty line
+                writeLine('');
+             ENDIF;
+          ELSE;
+             //  Not for 2nd, 3rd, etc. message description
+          ENDIF;
+
+          // Comment line (dashes)
+          writeLine(CLP(1));
+
+          // Comment line with message ID
+          writeLine(replace(CLP(2): MSGID: gi_msgId));
+
+          // Comment line with message text
+          writeLine(replace(CLP(3): MSGTXT: msgText));
+
+          // Comment line (dashes)
+          writeLine(CLP(1));
+
+          IF (gi_isCrtMsgF = FALSE);
+
+             // Empty line
+             writeLine('');
+
+             // RMVMSGD
+             //                  MOVEA(P)  CLP(7)        TXT
+             //                  MOVEA     XMSGI         TXT(28)
+             //                  MOVEA     qGenMsgF.lib        TXT(42)
+             //                  MOVEA(P)  TXT           SRCDTA
+             //                  CAT       '/':0         SRCDTA
+             //                  CAT       qGenMsgF.name:0      SRCDTA
+             //                  CAT       ')':0         SRCDTA
+             srcLine = replace(CLP(7): MSGID: %trimr(gi_msgId));
+             srcLine = replace(srcLine: MSGL: %trimr(qGenMsgF.lib));
+             srcLine = replace(srcLine: MSGF: %trimr(qGenMsgF.name));
+             writeLine(srcLine);
+
+             // MONMSG (1)
+             writeLine(CLP(8));
+
+             // MONMSG (2)
+             //******              MOVELCLP,9     SRCDTA    P
+             //******              EXSR WRTLINE
+             //
+          ENDIF;
+
+          // Empty line
+          writeLine('');
+
+          // Generate replacement variables
+          EXSR genADDMSGD;
+          IF (go_excId <> '');
+             LEAVESR;
+          ENDIF;
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate C source code.
+       //*****************************************************
+       BEGSR performC;
+
+          // Generate DEFINE compiler directive
+          EXSR genStartDefineC;
+
+          // Comment line (dashes)
+          writeLine(c(1));
+
+          // Comment line with message ID
+          writeLine(replace(c(2): MSGID: gi_msgId));
+
+          // Comment line with message text
+          writeLine(replace(c(3): MSGTXT: msgText));
+
+          // Comment line (dashes)
+          writeLine(c(4));
+
+          // Comment line
+          writeLine('');
+
+          // Generate replacement variables
+          EXSR genStructC;
+          IF (go_excId <> '');
+             LEAVESR;
+          ENDIF;
+
+          // Generate ENDIF compiler directive
+          EXSR genEndDefineC;
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate DEFINE compiler directive, part 1
+       //*****************************************************
+       BEGSR genStartDefineC;
+
+          IF (gi_isDefine = FALSE);
+             // User did not select generating the DEFINE compiler directive
+             LEAVESR;
+          ENDIF;
+
+          // #ifndef
+          writeLine(replace(c(8): STRUCTNAME: '__' + getStructName()));
+
+          // #define
+          writeLine(replace(c(9): STRUCTNAME: '__' + getStructName()));
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate DEFINE compiler directive, part 2
+       //*****************************************************
+       BEGSR genEndDefineC;
+
+          IF (gi_isDefine = FALSE);
+             // User did not select generating the DEFINE compiler directive
+             LEAVESR;
+          ENDIF;
+
+          // #endif
+          writeLine(c(10));
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate replacement variables, C source code.
+       //*****************************************************
+       BEGSR genStructC;
+
+          // Line with struct name
+          writeLine(c(5));
+
+          // Determine number of replacement variables
+          EXSR getRplVarCount;
+
+          IF (rplcVarCount <= 0);
+             // ... no replacement variables available
+             srcLine = replace(c(6): VARNAME: 'dummy');
+             srcLine = replace(srcLine: VARTYPE: 'char');
+             srcLine = replace(srcLine: DELIMITER: ';');
+             writeLine(srcLine);
+          ELSE;
+
+             EVAL rplcVarOffs = 1;
+
+             FOR rplcVarIdx = 1 TO rplcVarCount;
+
+                // Get replacement variable
+                EXSR getRplVar;
+
+                // Check data type
+                EXSR chkRplVarType;
+                IF (go_excId <> '');
+                   LEAVESR;
+                ENDIF;
+
+                // Prepare output
+                srcLine = c(6);
+
+                // Produce field name
+                c_fldName = 'd' + ord(rplcVarIdx);
+
+                // Set decimal positions
+                EXSR getVarType;
+
+                SELECT;
+                WHEN rplcVar.type = 'A';
+                   c_fldType = 'char';
+                   c_fldName = %trim(c_fldName)
+                          + '['
+                          + %trimr(str(rplcVar.length))
+                          + ']';
+                WHEN rplcVar.type = 'P';
+                   c_fldType = 'decimal'
+                          + '('
+                          + %trimr(str(rplcVar.length))
+                          + ','
+                          + %trimr(str(rplcVar.fraction))
+                          + ')';
+                WHEN rplcVar.type = 'B';
+                   SELECT;
+                   WHEN rplcVar.length = 9;
+                      c_fldType = 'long';
+                   WHEN rplcVar.length = 4;
+                      c_fldType = 'short';
+                   OTHER;
+                      c_fldType = '*error';
+                   ENDSL;
+                ENDSL;
+
+                srcLine = replace(c(6): VARNAME: c_fldName);
+                srcLine = replace(srcLine: VARTYPE: c_fldType);
+                srcLine = replace(srcLine: DELIMITER: C_DELIM);
+
+                IF rplcVar.length = 0;
+                   %SUBST(srcLine: 2:  2) = '/*';
+                   %SUBST(srcLine:40: 10) = 'Length = 0';
+                   %SUBST(srcLine:51:  2) = '*/';
+                ENDIF;
+
+                // Append replacement variable
+                writeLine(srcLine);
+
+             ENDFOR;
+
+          ENDIF;
+
+          writeLine(replace(c(7): STRUCTNAME: getStructName() + C_DELIM));
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate sub-field, RPG.
+       //*****************************************************
+       BEGSR genStructRPG3;
+
+          // Line with struct name
+          writeLine(replace(RPG(11): DS_NAME: msgIdDS.prfx1ch + msgIdDS.nbr));
+
+          // Determine number of replacement variables
+          EXSR getRplVarCount;
+
+          IF (rplcVarCount <= 0);
+             // ... no replacement variables available
+             lenStruct = 0;
+             writeLine(RPG(15));
+          ELSE;
+
+             rplcVarOffs = 1;
+             OD = 1;
+             lenStruct = 0;
+
+             FOR rplcVarIdx = 1 TO rplcVarCount;
+
+                // Get replacement variable
+                EXSR getRplVar;
+
+                // Check data type
+                EXSR chkRplVarType;
+                IF (go_excId <> '');
+                   LEAVESR;
+                ENDIF;
+
+                // Produce field name
+                CLEAR field6;
+                field6.prfx = msgIdDS.prfx1ch;
+                field6.nbr = msgIdDS.nbr;
+                field6.count = ORD(rplcVarIdx);
+
+                // Get type and size
+                EXSR getVarType;
+
+                // Field has no length
+                IF (rplcVar.length = 0);
+                   srcLine = replace(RPG(14): FIELD_NAME: field6);
+                ELSE;
+                   srcLine = replace(RPG(12): FIELD_NAME: field6);
+
+                   IF (rplcVar.type = 'A');
+                      rplcVar.type = '';
+                   ENDIF;
+
+                   srcLine = replace(srcLine: '?': rplcVar.type: 1);
+
+                   IF (rplcVar.type = 'P' OR rplcVar.type = 'B');
+                      srcLine = replace(
+                                  srcLine: '!': toChar1(rplcVar.fraction): 1);
+                   ELSE;
+                      srcLine = replace(srcLine: '!': ' ': 1);
+                   ENDIF;
+
+                   // Set 'from' position
+                   srcLine = replace(srcLine: FROM: toChar4(OD: '0'));
+
+                   OD = OD + rplcVar.packedLen;
+
+                   // Set 'to' position
+                   srcLine = replace(srcLine: TO: toChar4(OD - 1: '0'));
+
+                   // Count total length of structure
+                   lenStruct = lenStruct + rplcVar.packedLen;
+                ENDIF;
+
+                // Append sub-field
+                writeLine(srcLine);
+
+             ENDFOR;
+
+          ENDIF;
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate field with total length of structure, RPG.
+       //*****************************************************
+       BEGSR genTotalLenRPG3;
+
+          // Produce structure without a name
+          writeLine(replace(RPG(11): DS_NAME: ''));
+
+          // Create sub-field with total length of strucure
+          srcLine = replace(RPG(13): INIT_VALUE: toChar4(lenStruct: '0'));
+
+          // Produce field name
+          CLEAR field6;
+          field6.prfx = msgIdDS.prfx1ch;
+          field6.nbr = msgIdDS.nbr;
+          field6.count = 'L';
+          srcLine = replace(srcLine: FIELD_NAME: field6);
+
+          writeLine(srcLine);
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate sub-field, ILE-RPG.
+       //*****************************************************
+       BEGSR genStructRPG4;
+
+          // Line with struct name
+          writeLine(replace(IRPG(4): DS_NAME: gi_msgId));
+
+          // Determine number of replacement variables
+          EXSR getRplVarCount;
+
+          IF (rplcVarCount <= 0);
+             // ... no replacement variables available
+             lenStruct = 0;
+             writeLine(IRPG(7));
+          ELSE;
+
+             rplcVarOffs = 1;
+             lenStruct = 0;
+             FOR rplcVarIdx = 1 TO rplcVarCount;
+
+                // Get replacement variable
+                EXSR getRplVar;
+
+                // Check data type
+                EXSR chkRplVarType;
+                IF (go_excId <> '');
+                   LEAVESR;
+                ENDIF;
+
+                // Produce field name
+                CLEAR field10;
+                field10.prfx = msgIdDS.prfx;
+                field10.nbr = msgIdDS.nbr;
+                field10.count = ORD(rplcVarIdx);
+
+                // Get type and size
+                EXSR getVarType;
+
+                // Field has no length
+                IF (rplcVar.length = 0);
+                   srcLine = replace(IRPG(15): FIELD_NAME: field10);
+                ELSE;
+                   srcLine = replace(IRPG(5): FIELD_NAME: field10);
+
+                   // Adjust length for binary fields
+                   IF (rplcVar.type = 'B');
+                      SELECT;
+                      WHEN (rplcVar.length >= 10);
+                         rplcVar.length = 20;
+                      WHEN (rplcVar.length >= 5);
+                         rplcVar.length = 10;
+                      OTHER;
+                         rplcVar.length = 5;
+                      ENDSL;
+                   ENDIF;
+
+                   // Set 'length'
+                   srcLine = replace(srcLine: LENGTH: toChar4(rplcVar.length));
+
+                   // Set initial value
+                   SELECT;
+                   WHEN rplcVar.type = 'A';
+                      srcLine = replace(srcLine: INIT_VALUE: '*BLANKS');
+                   WHEN rplcVar.type = 'P';
+                      srcLine = replace(srcLine: INIT_VALUE: '*ZEROS');
+                   WHEN rplcVar.type = 'B';
+                      srcLine = replace(srcLine: INIT_VALUE: '*ZEROS');
+                   OTHER;
+                      srcLine = replace(srcLine: INIT_VALUE: '*ERROR');
+                   ENDSL;
+
+                   // Set data type
+                   IF rplcVar.type = 'B';
+                      srcLine = replace(srcLine: '?': 'I': 1);
+                   ELSE;
+                      srcLine = replace(srcLine: '?': rplcVar.type: 1);
+                   ENDIF;
+
+                   // Set fraction
+                   IF (rplcVar.type = 'P' OR rplcVar.type = 'B');
+                      srcLine = replace(
+                                  srcLine: '!!': toChar2(rplcVar.fraction): 2);
+                   ELSE;
+                      srcLine = replace(srcLine: '!!': ' ': 2);
+                   ENDIF;
+
+                   // Count total length of structure
+                   lenStruct = lenStruct + rplcVar.packedLen;
+                ENDIF;
+
+                // Zeile wegschreiben
+                writeLine(srcLine);
+
+             ENDFOR;
+
+          ENDIF;
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate field with total length of structure, ILE-RPG.
+       //*****************************************************
+       BEGSR genTotalLenRPG4;
+
+          // Produce field name
+          CLEAR field10;
+          field10.prfx = msgIdDS.prfx;
+          field10.nbr = msgIdDS.nbr;
+          field10.count = '_SIZE';
+
+          // Produce structure without a name
+          srcLine = replace(IRPG(6): FIELD_NAME: field10);
+
+          // Insert total length of structure
+          srcLine = replace(srcLine: INIT_VALUE: str(lenStruct));
+
+          writeLine(srcLine);
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate replacement variables, CLP source code.
+       //*****************************************************
+       BEGSR genADDMSGD;
+
+          // ADDMSGD
+          writeLine(%trimr(CLP(11)) + ' +');
+
+          // MSGID()
+          srcLine = spaces(INDENT_1) + 'MSGID';
+          EXSR addOpenBracket;
+          srcLine = %trimr(srcLine) + gi_msgId;
+          EXSR addCloseBracket;
+          writeLine(srcLine);
+
+          // MSGF()
+          srcLine = spaces(INDENT_1) + 'MSGF';
+          EXSR addOpenBracket;
+          srcLine = %trimr(srcLine) +
+                  %trim(qGenMsgF.lib) + '/' + %trim(qGenMsgF.name);
+          EXSR addCloseBracket;
+          writeLine(srcLine);
+
+          // MSG()
+          IF (M3LGMR > 0);
+             srcLine = spaces(INDENT_1) + 'MSG';
+             EXSR addOpenBracket;
+             srcLine = %trimr(srcLine) + ' +';
+             writeLine(srcLine);
+
+             buffer = %subst(MS0300: M3OFMG + 1: M3LGMR);
+
+             buffer = doubleHyphens(buffer);
+             buffer = '''' + buffer + '''';
+
+             splittLine(buffer);
+
+             writeLine(spaces(INDENT_1) + ') +');
+          ENDIF;
+
+          // SECLVL()
+          IF (M3LGMH > 0);
+             srcLine = spaces(INDENT_1) + 'SECLVL';
+             EXSR addOpenBracket;
+             srcLine = %trimr(srcLine) + ' +';
+             writeLine(srcLine);
+
+             buffer = %subst(MS0300: M3OFMH + 1: M3LGMH);
+
+             buffer = doubleHyphens(buffer);
+             buffer = '''' + buffer + '''';
+
+             splittLine(buffer);
+
+             writeLine(spaces(INDENT_1) + ') +');
+          ENDIF;
+
+          // SEV()
+          srcLine = spaces(INDENT_1) + 'SEV';
+          EXSR addOpenBracket;
+          srcLine = %trimr(srcLine) + str(M3MSSV);
+          EXSR addCloseBracket;
+          writeLine(srcLine);
+
+          // Determine number of replacement variables
+          EXSR getRplVarCount;
+
+          IF (rplcVarCount <= 0);
+             // ... no replacement variables available
+             writeLine(CLP(14));
+          ELSE;
+
+             // FMT()
+             srcLine = spaces(INDENT_1) + 'FMT';
+             EXSR addOpenBracket;
+             srcLine = %trimr(srcLine) + ' +';
+             writeLine(srcLine);
+
+             rplcVarOffs = 1;
+             FOR rplcVarIdx = 1 TO rplcVarCount;
+
+                // %SUBST(SRCDTA: INDENT_2: 1) = '(';
+                srcLine = spaces(INDENT_2) + '(';
+
+                // Get replacement variable
+                EXSR getRplVar;
+
+                // Check data type
+                EXSR chkRplVarType;
+                IF (go_excId <> '');
+                   LEAVESR;
+                ENDIF;
+
+                // Get type and size
+                EXSR getVarType;
+
+                SELECT;
+                WHEN rplcVar.type = 'B';
+                   srcLine = %trimr(srcLine) + '*BIN';
+                   SELECT;
+                   WHEN rplcVar.length >= 10;
+                      rplcVar.length = 8;
+                   WHEN rplcVar.length >= 5;
+                      rplcVar.length = 4;
+                   OTHER;
+                      rplcVar.length = 2;
+                   ENDSL;
+                OTHER;
+                   srcLine = %trimr(srcLine) + M3FTYP;
+                ENDSL;
+
+                // ... field length
+                srcLine = %trimr(srcLine) + ' ' + str(rplcVar.length);
+
+                // ... fraction
+                IF (rplcVar.type = 'P' OR rplcVar.type = 'B');
+                   srcLine = %trimr(srcLine) + ' ' + str(rplcVar.fraction);
+                ENDIF;
+
+                // Append source line
+                EXSR addCloseBracket;
+                writeLine(srcLine);
+
+             ENDFOR;
+
+             writeLine(spaces(INDENT_1) + ') +');
+          ENDIF;
+
+          // ALROPT()
+          srcLine = spaces(INDENT_1) + 'ALROPT';
+          EXSR addOpenBracket;
+          srcLine = %trimr(srcLine) + M3ALOP;
+          IF (M3ALID >= 1 AND M3ALID <= 99);
+             srcLine = %trimr(srcLine) + ' ' + str(M3ALID);
+          ENDIF;
+          EXSR addCloseBracket;
+          writeLine(srcLine);
+
+          // CCSID()
+          srcLine = spaces(INDENT_1) + 'CCSID';
+          EXSR addOpenBracket;
+          srcLine = %trimr(srcLine) + str(M3CCIT);
+          EXSR addCloseBracket;
+          writeLine(srcLine);
+
+          // EOF
+          writeLine(spaces(INDENT_1) + '/*  -EOF-  */');
+
+          // Empty line
+          writeLine('');
+
+          IF (gi_isLastId = TRUE AND gi_genType <> '*SCRIPT');
+             // RCLRSC
+             writeLine(CLP(12));
+
+             // Empty line
+             writeLine('');
+
+             // ENDPGM
+             writeLine(CLP(13));
+          ENDIF;
+
+       ENDSR;
+
+       //*****************************************************
+       // Adds a "Open bracket".
+       //*****************************************************
+       BEGSR addOpenBracket;
+
+          srcLine =
+            %trimr(srcLine) + '(';
+
+       ENDSR;
+
+       //*****************************************************
+       // Adds a "Close bracket".
+       //*****************************************************
+       BEGSR addCloseBracket;
+
+          srcLine = %trimr(srcLine) + ') +';
+
+       ENDSR;
+
+       //*****************************************************
+       // Verifies the data type of a given replacement variable
+       //*****************************************************
+       BEGSR chkRplVarType;
+
+          IF (M3FTYP <> '*QTDCHAR' and
+             M3FTYP <> '*CHAR' and
+             M3FTYP <> '*DEC' and
+             M3FTYP <> '*HEX' and
+             M3FTYP <> '*BIN');
+             go_excId = 'CPF9897';
+             go_excDta = 'MSG-ID: ' + %trim(M3MGID) +
+                     ' unknown data type: ' +
+                     %trim(M3FTYP);
+          ENDIF;
+
+       ENDSR;
+
+       //*****************************************************
+       // Returns the number of replacement variables
+       //*****************************************************
+       BEGSR getRplVarCount;
+
+          IF (M3LGVF > 0);
+             rplcVarCount = M3LGVF / M3LVFE;
+          ELSE;
+             rplcVarCount = 0;
+          ENDIF;
+
+       ENDSR;
+
+       //*****************************************************
+       // Returns a replacement variable
+       //*****************************************************
+       BEGSR getRplVar;
+
+          CLEAR MS030F;
+          MS030F = %subst(rplcVars: rplcVarOffs: M3LVFE);
+          rplcVarOffs = rplcVarOffs + M3LVFE;
+
+       ENDSR;
+
+       //*****************************************************
+       // Returns the length and type of the current
+       // replacement variable.
+       //*****************************************************
+
+       BEGSR getVarType;
+
+          rplcVar.length = M3FLGD; // length
+          rplcVar.packedLen = M3FLGD; // length of packed field
+
+          SELECT;
+          WHEN (M3FTYP = '*QTDCHAR');
+             rplcVar.fraction = -1;
+             rplcVar.type = 'A';
+
+          WHEN (M3FTYP = '*CHAR');
+             rplcVar.fraction = -1;
+             rplcVar.type = 'A';
+
+          WHEN (M3FTYP = '*HEX');
+             rplcVar.fraction = -1;
+             rplcVar.type = 'A';
+
+          WHEN (M3FTYP = '*DEC');
+             rplcVar.fraction = M3FFSZ;
+             // calculate length of packed data type
+             rplcVar.packedLen = rplcVar.length / 2 + 1;
+             rplcVar.type = 'P';
+
+          WHEN (M3FTYP = '*BIN');
+             SELECT;
+             WHEN (rplcVar.length = 8);
+                rplcVar.length = 18;
+             WHEN (rplcVar.length = 4);
+                rplcVar.length = 9;
+             OTHER;
+                rplcVar.length = 4;
+             ENDSL;
+             rplcVar.type = 'B';
+             rplcVar.fraction = 0;
+
+          ENDSL;
+
+       ENDSR;
+
+       //*****************************************************
+       // Error handler
+       //*****************************************************
+       BEGSR *PSSR;
+
+          DUMP;
+
+       ENDSR '*CANCL';
+
+      /end-free
+
+       //*****************************************************
+       // Appends a line to the source file.
+       //*****************************************************
+     P writeLine...
      P                 B
-      *
-     D f_replace...
-     D                 PI           256A
-     D  i_string                    256A   value
-     D  i_var                        20A   value
-     D  i_value                     256A   value
-      *
-     D x               S             10I 0 inz
-     D y               S             10I 0 inz
-     D z               S             10I 0 inz
-      *---------------------------------------------------------------
-      *
-     C                   EVAL      x = 0
-      *
-     C                   DOU       x <= 0
-      *
-     C                   IF        x > 0
-     C                   EVAL      y = x + %len(%trimr(i_var))
-     C     '>'           CHECK     i_string:y    y
-     C                   IF        y > 0
-     C                   EVAL      z = y - x
-     C                   ELSE
-     C                   EVAL      z = %len(%trimr(i_var))
-     C                   Endif
-     C                   EVAL      i_string = %replace(%subst(i_value: 1: z):
-     C                                                  i_string            :
-     C                                                  x                   :
-     C                                                  z                   )
-     C                   Endif
-      *
-     C                   EVAL      x = %scan(%trimr(i_var):
-     C                                       i_string     )
-     C                   Enddo
-      *
-     C                   RETURN    i_string
-      *
-     P f_replace...
+     D                 PI
+     D  i_srcDta                           const like(srcLine)
+      /free
+
+          FSRC.SRCSEQ = FSRC.SRCSEQ + ,01;
+          FSRC.SRCDAT = 0;
+          FSRC.SRCDTA = i_srcDta;
+          WRITE SRC FSRC;
+
+          srcLine = '';
+
+      /end-free
      P                 E
-      *****************************************************************
-      *  set to lower
-      *****************************************************************
-     P f_lcase...
+
+       //*****************************************************
+       // Splitts a given string to multiple lines
+       //*****************************************************
+     P splittLine...
      P                 B
-     D                 PI           256A
-     D  i_string                    256A   value
-      *
+     D                 PI
+     D  buffer                     8192a   value varying
+
+     D LINE_LENGTH     C                   70
+     D spX             S             10i 0
+     D spS             S             10i 0
+      /free
+
+          spX = 0;
+
+          DOW (buffer <> '');
+
+             spS = 1;
+
+             if (%len(buffer) >= LINE_LENGTH);
+                srcLine = %subst(buffer: spS: LINE_LENGTH);
+             ELSE;
+                srcLine = buffer;
+             ENDIF;
+
+             spS = spS + LINE_LENGTH;
+             IF (spS < %len(buffer));
+                buffer = %subst(buffer: spS);
+             ELSE;
+                buffer = '';
+             ENDIF;
+
+             //  Add continuation character
+             spX = 1 + LINE_LENGTH;
+
+             IF buffer = *BLANKS;
+                %subst(srcLine: spX: 1) = '+';
+             ELSE;
+                %subst(srcLine: spX: 1) = '-';
+             ENDIF;
+
+             //  Append source line
+             writeLine(srcLine);
+          ENDDO;
+
+      /end-free
+     P                 E
+       //*****************************************************
+       // Replaces the hyphens of a given strin with
+       // double-hyphens.
+       //*****************************************************
+     P doubleHyphens...
+     P                 B
+     D                 PI          8192a   varying
+     D  buffer                     8192a   value varying
+
+     D dhF             S             10i 0
+     D dhL             S             10i 0
+      /free
+
+          dhF = 1;
+
+          DOU (dhF <= 0);
+
+             dhF = %scan('''': buffer: dhF);
+             IF (dhF > 0);
+                IF (dhF < %len(buffer));
+                   //  Insert single quote
+                   buffer = %replace('''': buffer: dhF: 0);
+                   dhF = dhF + 2;
+                   dhL = dhL + 1;
+                ENDIF;
+             ENDIF;
+
+          ENDDO;
+
+       return buffer;
+
+      /end-free
+     P                 E
+
+       //****************************************************************
+       //  Replace variables
+       //****************************************************************
+     P replace...
+     P                 B
+     D                 PI           256a
+     D  i_string                    256a   value
+     D  i_var                        20a   value
+     D  i_value                     256a   value
+     D  i_length                     10i 0 value options(*nopass)
+
+     D p_length        C                   4
+
+     D length          S                   like(i_length)
+
+     D start           S             10i 0 inz
+     D lenRpl          S             10i 0 inz
+     D lenVal          S             10i 0 inz
+     D i               S             10i 0 inz
+       //---------------------------------------------------------------
+      /free
+
+       IF (%parms() >= p_length);
+          length = i_length;
+       ELSE;
+          length = %len(%trimr(i_value));
+       ENDIF;
+
+       start = %scan(%trimr(i_var): i_string);
+
+       DOW start > 0;
+          lenVal = length;
+          lenRpl = %len(%trimr(i_var));
+          i = start + lenRpl;
+          DOW (i <= %len(i_string) and
+             %subst(i_string: i: 1) = '>');
+             lenRpl = lenRpl + 1;
+             lenVal = lenRpl;
+             i = i + 1;
+          ENDDO;
+          i_string = %replace(
+                       %subst(i_value: 1: lenVal)
+                       : i_string
+                       : start
+                       : lenRpl);
+          start = %scan(%trimr(i_var): i_string);
+       ENDDO;
+
+       RETURN i_string;
+
+      /end-free
+     P                 E
+
+       //****************************************************************
+       //  set to lower
+       //****************************************************************
+     P lcase...
+     P                 B
+     D                 PI           256a
+     D  i_string                    256a   value
+
      D uc              C                   const('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
      D lc              C                   const('abcdefghijklmnopqrstuvwxyz')
-      *---------------------------------------------------------------
-      *
-     C     uc:lc         XLATE     i_string      i_string
-      *
-     C                   RETURN    i_string
-      *
+       //---------------------------------------------------------------
+      /free
+
+       %SUBST(i_string:1:%SIZE(i_string)) =
+       %XLATE(uc:lc:i_string);
+
+       RETURN i_string;
+
+      /end-free
      P                 E
-      *****************************************************************
-      *  convert to char
-      *****************************************************************
-     P f_str...
+
+       //****************************************************************
+       //  convert to char
+       //****************************************************************
+     P str...
      P                 B
-     D                 PI           256A
-     D  i_value                      30P 0 value
-      *
-      *---------------------------------------------------------------
-      *
-     C                   RETURN    %triml(%editc(i_value: 'Z'))
-      *
+     D                 PI           256a
+     D  i_value                      10i 0 value
+       //---------------------------------------------------------------
+      /free
+
+       IF (i_value = 0);
+          RETURN '0';
+       ENDIF;
+
+       RETURN %triml(%editc(i_value: 'Z'));
+
+      /end-free
      P                 E
-      *****************************************************************
-      *  c structure name
-      *****************************************************************
-     P f_structName...
+
+       //****************************************************************
+       //  c structure name
+       //****************************************************************
+     P getStructName...
      P                 B
-     D                 PI            20A
-      *
-      *---------------------------------------------------------------
-     C                   RETURN    %trim(f_lcase(D#MSID)) + '_t'
-      *
+     D                 PI            20a   varying
+       //---------------------------------------------------------------
+      /free
+
+       RETURN %trim(lcase(gi_msgId)) + '_t';
+
+      /end-free
      P                 E
-      *
+
+       //****************************************************************
+       //  convert integer to character 1, edit code 3
+       //****************************************************************
+     P toChar1...
+     P                 B
+     D                 PI             1a
+     D  i_integer                    10i 0 const
+       //---------------------------------------------------------------
+      /free
+
+       RETURN %editc(%dec(i_integer: 1: 0): '3');
+
+      /end-free
+     P                 E
+
+       //****************************************************************
+       //  convert integer to character 2, edit code 3
+       //****************************************************************
+     P toChar2...
+     P                 B
+     D                 PI             2a
+     D  i_integer                    10i 0 const
+     D  i_rplcSpace                   1a   const options(*nopass)
+      //---------------------------------------------------------------
+      /free
+
+       IF (%parms() >= 2);
+          RETURN %xlate(' ': i_rplcSpace :%editc(%dec(i_integer: 2: 0): '3'));
+       ELSE;
+          RETURN %editc(%dec(i_integer: 2: 0): '3');
+       ENDIF;
+
+      /end-free
+     P                 E
+
+       //****************************************************************
+       //  convert integer to character 4, edit code 3
+       //****************************************************************
+     P toChar4...
+     P                 B
+     D                 PI             4a
+     D  i_integer                    10i 0 const
+     D  i_rplcSpace                   1a   const options(*nopass)
+       //---------------------------------------------------------------
+      /free
+
+       IF (%parms() >= 2);
+          RETURN %xlate(' ': i_rplcSpace :%editc(%dec(i_integer: 4: 0): '3'));
+       ELSE;
+          RETURN %editc(%dec(i_integer: 4: 0): '3');
+       ENDIF;
+
+      /end-free
+     P                 E
+
+       //****************************************************************
+       //  returns a string of spaces
+       //****************************************************************
+     P spaces...
+     P                 B
+     D                 PI           256a   varying
+     D  i_length                     10i 0 const
+
+     D SPACES          S            256a   inz
+       //---------------------------------------------------------------
+      /free
+
+       RETURN %subst(SPACES: 1: i_length);
+
+      /end-free
+     P                 E
 **  ORD
 123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
 **  RPG
@@ -1849,17 +1760,18 @@
       *
       *
       *
-     I            DS
-     I I
-     I I                                  B   1   40
+     I%%DS>       DS
+     I I                                  ?%%FR%%TO!%%FLDNME
+     I I            %%IV                  B   1   40%%FLDNME
+      *                                    00000000 %%FLDNMELength = 0
       *   No replacement variables available!
 **  IRPG
       // ---------------------------------------------------------------
       //  Data structure for message ID:
 
-     d                 ds
-     d                                     inz(       )
-     d                 s             10I 0 inz(    )
+     d %%DS>>>>>>>>    ds
+     d  %%FLDNME>>>>               %%LN?!! inz(%%IV>>>)
+     d %%FLDNME>>>>    s             10I 0 inz(%%IV)
       //  No replacement variables available!
       /if not defined(
       /define
@@ -1867,14 +1779,16 @@
       /if not defined(UNDEFINE_ALL)
       /if defined(UNDEFINE_ALL)
       /undefine
+      //
+      * %%FLDNME>>                 0000A   inz(*BLANKS)  Length = 0
 **  CLP
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :                              */
-     /*                                                             */
+     /*   Cmd-ADDMSGD für Message-ID :   %%MSGID                    */
+     /* %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
      /*-------------------------------------------------------------*/
              PGM        PARM(&I_LIB &I_OBJ)
 
-             RMVMSGD MSGID(1234567) MSGF(
+             RMVMSGD MSGID(%%MSGID) MSGF(%%MSGL/%%MSGF)
              MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
  wird nicht abgefangen     CPF2407)     /* MsgF  nicht gefunden */
 
@@ -1898,7 +1812,7 @@
              CRTMSGF MSGF(&LIB/&OBJ) +
                %TEXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                SNDPGMMSG  MSGID(CPF9898) MSGF(*LIBL/QCPFMSG) +
-                            MSGDTA('Usage: CALL PGM(%PGM>>>>>>) +
+                            MSGDTA('Usage: CALL PGM(%%PGM) +
                                     PARM(libName [msgFName)') +
                             TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*ESCAPE)
 **  C
