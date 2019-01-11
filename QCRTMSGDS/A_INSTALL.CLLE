@@ -76,12 +76,6 @@
              DLTPGM     PGM(&TOLIB/CRTMSGDSC)
              MONMSG     MSGID(CPF2105)
 
-             DLTPGM     PGM(&TOLIB/CRTMSGDSR1)
-             MONMSG     MSGID(CPF2105)
-
-             DLTPGM     PGM(&TOLIB/CRTMSGDSR2)
-             MONMSG     MSGID(CPF2105)
-
              DLTMSGF    MSGF(&TOLIB/&MSGF)
              MONMSG     MSGID(CPF2105)
 
@@ -139,27 +133,14 @@
              MONMSG     MSGID(CPF0000)
 
              CRTPGM     PGM(&TOLIB/CRTMSGDSC) +
-                          MODULE(&TOLIB/CRTMSGDSC) TEXT(*ENTMODTXT) +
+                          MODULE(&TOLIB/CRTMSGDSC  +
+                                 &TOLIB/CRTMSGDSR1 +
+                                 &TOLIB/CRTMSGDSR2) +
                           ENTMOD(&TOLIB/CRTMSGDSC) ACTGRP(*NEW) +
+                          TEXT(*ENTMODTXT) +
                           DETAIL(*BASIC) USRPRF(*USER) +
                           TGTRLS(&TGTRLS)
              DLTSPLF    FILE(CRTMSGDSC ) JOB(*) SPLNBR(*LAST)
-             MONMSG     MSGID(CPF0000)
-
-             CRTPGM     PGM(&TOLIB/CRTMSGDSR1) +
-                          MODULE(&TOLIB/CRTMSGDSR1) TEXT(*ENTMODTXT) +
-                          ENTMOD(&TOLIB/CRTMSGDSR1) ACTGRP(*CALLER) +
-                          DETAIL(*BASIC) USRPRF(*USER) +
-                          TGTRLS(&TGTRLS)
-             DLTSPLF    FILE(CRTMSGDSR1) JOB(*) SPLNBR(*LAST)
-             MONMSG     MSGID(CPF0000)
-
-             CRTPGM     PGM(&TOLIB/CRTMSGDSR2) +
-                          MODULE(&TOLIB/CRTMSGDSR2) TEXT(*ENTMODTXT) +
-                          ENTMOD(&TOLIB/CRTMSGDSR2) ACTGRP(*CALLER) +
-                          DETAIL(*BASIC) USRPRF(*USER) +
-                          TGTRLS(&TGTRLS)
-             DLTSPLF    FILE(CRTMSGDSR2) JOB(*) SPLNBR(*LAST)
              MONMSG     MSGID(CPF0000)
 
              CRTPNLGRP  PNLGRP(&TOLIB/CRTMSGDSP) SRCFILE(&SRCLIB/&SRCFILE) +
@@ -167,9 +148,12 @@
              DLTSPLF    FILE(CRTMSGDSP) JOB(*) SPLNBR(*LAST)
              MONMSG     MSGID(CPF0000)
 
-             CRTCMD     CMD(&TOLIB/CRTMSGDS) PGM(&TOLIB/CRTMSGDSC) +
-                          SRCFILE(&SRCLIB/&SRCFILE) SRCMBR(&CMD) +
-                          HLPPNLGRP(&TOLIB/CRTMSGDSP) HLPID(CRTMSGDS)
+             CRTCMD     CMD(&TOLIB/CRTMSGDS)          +
+                          PGM(&TOLIB/CRTMSGDSC)       +
+                          SRCFILE(&SRCLIB/&SRCFILE)   +
+                          SRCMBR(&CMD)                +
+                          HLPPNLGRP(&TOLIB/CRTMSGDSP) +
+                          HLPID(CRTMSGDS)
              DLTSPLF    FILE(CRTMSGDS ) JOB(*) SPLNBR(*LAST)
              MONMSG     MSGID(CPF0000)
 

@@ -29,17 +29,17 @@
        //                                                                     *
        // =================================================================== *
        // >>PRE-COMPILER<<                                                    *
-       //   >>CRTCMD<< CRTBNDRPG    PGM(&LI/&OB) +                            *
+       //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +                         *
        //                           SRCFILE(&SL/&SF) SRCMBR(&SM);             *
        //   >>IMPORTANT<<                                                     *
        //     >>PARM<< DBGVIEW(*LIST);                                        *
+       //     >>PARM<< TRUNCNBR(*NO);                                         *
        //     >>PARM<< OPTION(*EVENTF);                                       *
-       //     >>PARM<< DFTACTGRP(*NO);                                        *
-       //     >>PARM<< ACTGRP(*CALLER );                                      *
        //   >>END-IMPORTANT<<                                                 *
        //   >>EXECUTE<<                                                       *
        // >>END-PRE-COMPILER<<                                                *
        // =================================================================== *
+     h nomain
       /COPY QCRTMSGDS,H_SPEC
       /COPY QCRTMSGDS,COPYRIGHT
        // =================================================================== *
@@ -66,24 +66,9 @@
      d  i_toCcsid                    10i 0 const  options(*nopass  )            |
      d  i_ccsidRplDta                10i 0 const  options(*nopass  )            |
 
-       //  Record format RTVM0300
-     D rtvm0300        DS                  qualified
-     D msgId                  27     33
-
-       // API error code structure
-     D errCode         DS                  qualified
-     D  bytPrv                       10I 0 INZ
-     D  bytAvl                       10I 0 INZ
-     D  excID                         7A   INZ
-     D  reserved_1                    1A   INZ
-     D  excDta                       16A   INZ
-
-       // Global variable: message file
-     D qMsgF           ds                  likeds(qObj_t) inz
-
        //  Program entry point
      D CRTMSGDSR1...
-     D                 pr                  extpgm('CRTMSGDSR1')
+     D                 pr
      D  XMSGL                        10A   const                                Msg-Lib
      D  XMSGF                        10A   const                                Msg-File
      D  XMSGI                         7A   const                                Msg-Id
@@ -92,7 +77,11 @@
      D  XERRID                        7A                                        Error-Id
      D  XERRDT                       80A                                        Error-Data
 
-     D CRTMSGDSR1...
+       //****************************************************************
+       //  resolve message id
+       //****************************************************************
+     p CRTMSGDSR1...
+     P                 b                   export
      D                 pi
      D  XMSGL                        10A   const                                Msg-Lib
      D  XMSGF                        10A   const                                Msg-File
@@ -101,6 +90,19 @@
      D  XMSGR                         7A                                        Msg-Id Returned
      D  XERRID                        7A                                        Error-Id
      D  XERRDT                       80A                                        Error-Data
+
+
+     D errCode         DS                  qualified
+     D  bytPrv                       10I 0 INZ
+     D  bytAvl                       10I 0 INZ
+     D  excID                         7A   INZ
+     D  reserved_1                    1A   INZ
+     D  excDta                       16A   INZ
+
+     D qMsgF           ds                  likeds(qObj_t) inz
+
+     D rtvm0300        DS                  qualified
+     D msgId                  27     33
       /free
 
        // Initialize return values
@@ -138,3 +140,4 @@
        return;
 
       /end-free
+     P                 e

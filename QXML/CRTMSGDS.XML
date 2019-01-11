@@ -51,7 +51,7 @@
       appblddate CDATA #REQUIRED
      >
      ]>
-<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate=" 1/02/2019">
+<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate=" 1/11/2019">
 <install_instructions><![CDATA[
      *----------------------------------------------------------------      ------
      *  1. Upload entire XML to your AS/400 to a source file 112 long, into any mbr
@@ -1369,12 +1369,6 @@ srccssid=  "00273">
              DLTPGM     PGM(&TOLIB/CRTMSGDSC)
              MONMSG     MSGID(CPF2105)
 
-             DLTPGM     PGM(&TOLIB/CRTMSGDSR1)
-             MONMSG     MSGID(CPF2105)
-
-             DLTPGM     PGM(&TOLIB/CRTMSGDSR2)
-             MONMSG     MSGID(CPF2105)
-
              DLTMSGF    MSGF(&TOLIB/&MSGF)
              MONMSG     MSGID(CPF2105)
 
@@ -1432,27 +1426,14 @@ srccssid=  "00273">
              MONMSG     MSGID(CPF0000)
 
              CRTPGM     PGM(&TOLIB/CRTMSGDSC) +
-                          MODULE(&TOLIB/CRTMSGDSC) TEXT(*ENTMODTXT) +
+                          MODULE(&TOLIB/CRTMSGDSC  +
+                                 &TOLIB/CRTMSGDSR1 +
+                                 &TOLIB/CRTMSGDSR2) +
                           ENTMOD(&TOLIB/CRTMSGDSC) ACTGRP(*NEW) +
+                          TEXT(*ENTMODTXT) +
                           DETAIL(*BASIC) USRPRF(*USER) +
                           TGTRLS(&TGTRLS)
              DLTSPLF    FILE(CRTMSGDSC ) JOB(*) SPLNBR(*LAST)
-             MONMSG     MSGID(CPF0000)
-
-             CRTPGM     PGM(&TOLIB/CRTMSGDSR1) +
-                          MODULE(&TOLIB/CRTMSGDSR1) TEXT(*ENTMODTXT) +
-                          ENTMOD(&TOLIB/CRTMSGDSR1) ACTGRP(*CALLER) +
-                          DETAIL(*BASIC) USRPRF(*USER) +
-                          TGTRLS(&TGTRLS)
-             DLTSPLF    FILE(CRTMSGDSR1) JOB(*) SPLNBR(*LAST)
-             MONMSG     MSGID(CPF0000)
-
-             CRTPGM     PGM(&TOLIB/CRTMSGDSR2) +
-                          MODULE(&TOLIB/CRTMSGDSR2) TEXT(*ENTMODTXT) +
-                          ENTMOD(&TOLIB/CRTMSGDSR2) ACTGRP(*CALLER) +
-                          DETAIL(*BASIC) USRPRF(*USER) +
-                          TGTRLS(&TGTRLS)
-             DLTSPLF    FILE(CRTMSGDSR2) JOB(*) SPLNBR(*LAST)
              MONMSG     MSGID(CPF0000)
 
              CRTPNLGRP  PNLGRP(&TOLIB/CRTMSGDSP) SRCFILE(&SRCLIB/&SRCFILE) +
@@ -1460,9 +1441,12 @@ srccssid=  "00273">
              DLTSPLF    FILE(CRTMSGDSP) JOB(*) SPLNBR(*LAST)
              MONMSG     MSGID(CPF0000)
 
-             CRTCMD     CMD(&TOLIB/CRTMSGDS) PGM(&TOLIB/CRTMSGDSC) +
-                          SRCFILE(&SRCLIB/&SRCFILE) SRCMBR(&CMD) +
-                          HLPPNLGRP(&TOLIB/CRTMSGDSP) HLPID(CRTMSGDS)
+             CRTCMD     CMD(&TOLIB/CRTMSGDS)          +
+                          PGM(&TOLIB/CRTMSGDSC)       +
+                          SRCFILE(&SRCLIB/&SRCFILE)   +
+                          SRCMBR(&CMD)                +
+                          HLPPNLGRP(&TOLIB/CRTMSGDSP) +
+                          HLPID(CRTMSGDS)
              DLTSPLF    FILE(CRTMSGDS ) JOB(*) SPLNBR(*LAST)
              MONMSG     MSGID(CPF0000)
 
@@ -1721,10 +1705,9 @@ srccssid=  "00273">
 /*                           SRCMBR(&SM);                              */
 /*                                                                     */
 /*   >>COMPILE<<                                                       */
-/*     >>PARM<< PGM(*LIBL/CRTMSGDSC);                                  */
-/*     >>PARM<< HLPPNLGRP(*LIBL/CRTMSGDSP);                            */
+/*     >>PARM<< PGM(&LI/CRTMSGDSC);                                    */
+/*     >>PARM<< HLPPNLGRP(&LI/CRTMSGDSP);                              */
 /*     >>PARM<< HLPID(CRTMSGDS);                                       */
-/*     >>PARM<< PRDLIB(&LI);                                           */
 /*   >>END-COMPILE<<                                                   */
 /*                                                                     */
 /*   >>EXECUTE<<                                                       */
@@ -1802,10 +1785,6 @@ srccssid=  "00273">
                           MIN(0)                                    +
                           PMTCTL(PMTCTL2)                           +
                           PROMPT('CRTMSGF-Befehl generieren')
-
-             PARM       KWD(MSGFLNG   ) TYPE(*CHAR)        +
-                          LEN(10)                          +
-                          CONSTANT(CRTMSGDS )
 
 QMSGF:       QUAL       TYPE(*NAME)                                 +
                           LEN(10)                                   +
@@ -1907,10 +1886,9 @@ srccssid=  "00273">
 /*                           SRCMBR(&SM);                              */
 /*                                                                     */
 /*   >>COMPILE<<                                                       */
-/*     >>PARM<< PGM(*LIBL/CRTMSGDSC);                                  */
-/*     >>PARM<< HLPPNLGRP(*LIBL/CRTMSGDSP);                            */
+/*     >>PARM<< PGM(&LI/CRTMSGDSC);                                    */
+/*     >>PARM<< HLPPNLGRP(&LI/CRTMSGDSP);                              */
 /*     >>PARM<< HLPID(CRTMSGDS);                                       */
-/*     >>PARM<< PRDLIB(&LI);                                           */
 /*   >>END-COMPILE<<                                                   */
 /*                                                                     */
 /*   >>EXECUTE<<                                                       */
@@ -1988,10 +1966,6 @@ srccssid=  "00273">
                           MIN(0)                                    +
                           PMTCTL(PMTCTL2)                           +
                           PROMPT('Add CRTMSGF command')
-
-             PARM       KWD(MSGFLNG   ) TYPE(*CHAR)        +
-                          LEN(10)                          +
-                          CONSTANT(CRTMSGDSE)
 
 QMSGF:       QUAL       TYPE(*NAME)                                 +
                           LEN(10)                                   +
@@ -2090,25 +2064,22 @@ srccssid=  "00273">
 /* =================================================================== */
 /* >>PRE-COMPILER<<                                                    */
 /*                                                                     */
-/*   >>CRTCMD<< CRTBNDCL     PGM(&LI/&OB) +                            */
-/*                           SRCFILE(&SL/&SF) +                        */
-/*                           SRCMBR(&SM);                              */
-/*                                                                     */
-/*   >>COMPILE<<                                                       */
+/*   >>CRTCMD<< CRTCLMOD     MODULE(&LI/&OB) +                         */
+/*                           SRCFILE(&SL/&SF) SRCMBR(&SM);             */
+/*   >>IMPORTANT<<                                                     */
 /*     >>PARM<< DBGVIEW(*LIST);                                        */
-/*   >>END-COMPILE<<                                                   */
-/*                                                                     */
-/*   >>LINK<<                                                          */
-/*     >>PARM<< DFTACTGRP(*NO);                                        */
-/*     >>PARM<< ACTGRP(*NEW    );                                      */
-/*   >>END-LINK<<                                                      */
-/*                                                                     */
+/*   >>END-IMPORTANT<<                                                 */
 /*   >>EXECUTE<<                                                       */
-/*                                                                     */
+/*   >>CMD<<    CRTPGM       PGM(&LI/&OB) +                            */
+/*                           MODULE(&LI/CRTMSGDSC   +                  */
+/*                                  &LI/CRTMSGDSR1  +                  */
+/*                                  &LI/CRTMSGDSR2) +                  */
+/*                           ACTGRP(*NEW) +                            */
+/*                           DETAIL(*BASIC);                           */
 /* >>END-PRE-COMPILER<<                                                */
 /* =================================================================== */
              PGM        PARM(&MSGR &MSGF &CPYF &MBR +
-                          &REPLACE &TYP &DEFINE &CRTMSGF &I_MSGF)
+                          &REPLACE &TYP &DEFINE &CRTMSGF)
 
 /*  Parameter  */
              /*  Input      */
@@ -2120,7 +2091,6 @@ srccssid=  "00273">
              DCL        VAR(&TYP         ) TYPE(*CHAR) LEN(  1  )
              DCL        VAR(&DEFINE      ) TYPE(*CHAR) LEN(  1  )
              DCL        VAR(&CRTMSGF     ) TYPE(*CHAR) LEN(  1  )
-             DCL        VAR(&I_MSGF      ) TYPE(*CHAR) LEN( 10  )
 
 /* interne Felder       */
              DCL        VAR(&MSGLIB      ) TYPE(*CHAR) LEN( 10  )
@@ -2144,6 +2114,9 @@ srccssid=  "00273">
              DCL        VAR(&ERRDT       ) TYPE(*CHAR) LEN( 80  )
              DCL        VAR(&IS_FIRST    ) TYPE(*LGL)
              DCL        VAR(&IS_LAST     ) TYPE(*LGL)
+
+             DCL        VAR(&APP_MSG_F   ) TYPE(*CHAR) LEN(10   ) VALUE('CRTMSGDS')
+             DCL        VAR(&PRDLIB      ) TYPE(*CHAR) LEN(10   ) VALUE('*LIBL')
 
 /* Fehlerbehandlung     */
              DCL        VAR(&ERROR)      TYPE(*LGL) +
@@ -2173,6 +2146,7 @@ srccssid=  "00273">
 /* -------------------------------------------------------------- */
 /*  Los geht's                                                    */
 /* -------------------------------------------------------------- */
+             CALLPRC    PRC('getPrdLib') RTNVAL(&PRDLIB)
 
 /* ---------------------------- */
 /* MSGF zerlegen in Lib         */
@@ -2236,9 +2210,13 @@ srccssid=  "00273">
                IF         COND(&MSGIDVON *EQ '*FIRST') THEN(DO)
                  CHGVAR     VAR(&MSGREFID) VALUE('       ')
                  CHGVAR     VAR(&RETRIEVEOP) VALUE('*FIRST ')
-                 CALL       PGM(CRTMSGDSR1) PARM(&MSGLIB &MSGFILE +
-                              &MSGREFID +
-                              &RETRIEVEOP &MSGIDVON &ERRID &ERRDT)
+                 CALLPRC    PRC(CRTMSGDSR1) PARM((&MSGLIB     *BYREF) +
+                                                 (&MSGFILE    *BYREF) +
+                                                 (&MSGREFID   *BYREF) +
+                                                 (&RETRIEVEOP *BYREF) +
+                                                 (&MSGIDVON   *BYREF) +
+                                                 (&ERRID      *BYREF) +
+                                                 (&ERRDT      *BYREF))
                ENDDO
 
 /* ---------------------------- */
@@ -2260,9 +2238,13 @@ srccssid=  "00273">
                MONMSG     MSGID(CPF2419) EXEC(DO)
                  CHGVAR     VAR(&MSGREFID)   VALUE(&MSGIDVON)
                  CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
-                CALL       PGM(CRTMSGDSR1) PARM(&MSGLIB &MSGFILE +
-                                &MSGREFID +
-                                &RETRIEVEOP &MSGIDVON &ERRID &ERRDT)
+                 CALLPRC    PRC(CRTMSGDSR1) PARM((&MSGLIB     *BYREF) +
+                                                 (&MSGFILE    *BYREF) +
+                                                 (&MSGREFID   *BYREF) +
+                                                 (&RETRIEVEOP *BYREF) +
+                                                 (&MSGIDVON   *BYREF) +
+                                                 (&ERRID      *BYREF) +
+                                                 (&ERRDT      *BYREF))
                ENDDO
              ENDDO
 
@@ -2300,9 +2282,13 @@ LOOP:
 /* ---------------------------- */
              CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
              CHGVAR     VAR(&MSGREFID)   VALUE(&MSGID   )
-             CALL       PGM(CRTMSGDSR1) PARM(&MSGLIB &MSGFILE +
-                          &MSGREFID +
-                          &RETRIEVEOP &MSGIDTEMP &ERRID &ERRDT)
+             CALLPRC    PRC(CRTMSGDSR1) PARM((&MSGLIB     *BYREF) +
+                                             (&MSGFILE    *BYREF) +
+                                             (&MSGREFID   *BYREF) +
+                                             (&RETRIEVEOP *BYREF) +
+                                             (&MSGIDTEMP  *BYREF) +
+                                             (&ERRID      *BYREF) +
+                                             (&ERRDT      *BYREF))
              IF         COND(&MSGIDTEMP *EQ ' '  +
                         *OR  &MSGIDTEMP *GT &MSGIDBIS) THEN(DO)
                CHGVAR     VAR(&MSGIDBIS) VALUE(&MSGID)
@@ -2414,14 +2400,14 @@ LOOP:
 
                  IF         COND(&MBREXIST *EQ '*EXIST') THEN(DO)
                    IF         COND(&MBR *EQ '*GEN') THEN(DO)
-                     SNDPGMMSG  MSGID(USR0001) MSGF(*LIBL/&I_MSGF) +
+                     SNDPGMMSG  MSGID(USR0001) MSGF(&PRDLIB/&APP_MSG_F) +
                                 MSGDTA(&CPYFILE *CAT &CPYLIB *CAT +
                                        &CPYMBR  *CAT &SOURCETYPE  ) +
                                 TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*DIAG)
                      GOTO       CMDLBL(NEXT_MSGID)
                    ENDDO
                    ELSE       CMD(DO)
-                     SNDPGMMSG  MSGID(USR0001) MSGF(*LIBL/&I_MSGF) +
+                     SNDPGMMSG  MSGID(USR0001) MSGF(&PRDLIB/&APP_MSG_F) +
                                 MSGDTA(&CPYFILE *CAT &CPYLIB *CAT +
                                        &CPYMBR  *CAT &SOURCETYPE  ) +
                                 TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*ESCAPE)
@@ -2458,11 +2444,20 @@ LOOP:
 /*  SOURCEGENERIERUNGSPROGRAMM  */
 /*  AUFRUFEN                    */
 /* ---------------------------- */
-             CALL       PGM(CRTMSGDSR2) PARM( +
-                          &MSGLIB &MSGFILE &MSGFTEXT +
-                          &MSGID &CPYLIB &CPYFILE &SOURCETYPE +
-                          &DEFINE &CRTMSGF &IS_FIRST &IS_LAST +
-                          &MBRTEXT &ERRID &ERRDT)
+             CALLPRC    PRC(CRTMSGDSR2) PARM((&MSGLIB     *BYREF) +
+                                             (&MSGFILE    *BYREF) +
+                                             (&MSGFTEXT   *BYREF) +
+                                             (&MSGID      *BYREF) +
+                                             (&CPYLIB     *BYREF) +
+                                             (&CPYFILE    *BYREF) +
+                                             (&SOURCETYPE *BYREF) +
+                                             (&DEFINE     *BYREF) +
+                                             (&CRTMSGF    *BYREF) +
+                                             (&IS_FIRST   *BYREF) +
+                                             (&IS_LAST    *BYREF) +
+                                             (&MBRTEXT    *BYREF) +
+                                             (&ERRID      *BYREF) +
+                                             (&ERRDT      *BYREF))
              DLTOVR     FILE(*ALL) LVL(*)
 
 /* ---------------------------- */
@@ -2493,7 +2488,7 @@ LOOP:
 /* ---------------------------- */
 /*  Fertig ...                  */
 /* ---------------------------- */
-               SNDPGMMSG  MSGID(USR0002) MSGF(*LIBL/&I_MSGF) +
+               SNDPGMMSG  MSGID(USR0002) MSGF(&PRDLIB/&APP_MSG_F) +
                                 MSGDTA(&CPYFILE *CAT &CPYLIB *CAT +
                                        &CPYMBR  *CAT &SOURCETYPE  ) +
                           TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*INFO)
@@ -2508,9 +2503,13 @@ LOOP:
 NEXT_MSGID:
                  CHGVAR     VAR(&MSGREFID)   VALUE(&MSGID   )
                  CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
-                 CALL       PGM(CRTMSGDSR1) PARM(&MSGLIB &MSGFILE +
-                              &MSGREFID +
-                              &RETRIEVEOP &MSGID &ERRID &ERRDT)
+                 CALLPRC    PRC(CRTMSGDSR1) PARM((&MSGLIB     *BYREF) +
+                                                 (&MSGFILE    *BYREF) +
+                                                 (&MSGREFID   *BYREF) +
+                                                 (&RETRIEVEOP *BYREF) +
+                                                 (&MSGID      *BYREF) +
+                                                 (&ERRID      *BYREF) +
+                                                 (&ERRDT      *BYREF))
 
 /* ---------------------------- */
 /* Schleifenende                */
@@ -3351,17 +3350,17 @@ srccssid=  "00273">
        //                                                                     *
        // =================================================================== *
        // >>PRE-COMPILER<<                                                    *
-       //   >>CRTCMD<< CRTBNDRPG    PGM(&LI/&OB) +                            *
+       //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +                         *
        //                           SRCFILE(&SL/&SF) SRCMBR(&SM);             *
        //   >>IMPORTANT<<                                                     *
        //     >>PARM<< DBGVIEW(*LIST);                                        *
+       //     >>PARM<< TRUNCNBR(*NO);                                         *
        //     >>PARM<< OPTION(*EVENTF);                                       *
-       //     >>PARM<< DFTACTGRP(*NO);                                        *
-       //     >>PARM<< ACTGRP(*CALLER );                                      *
        //   >>END-IMPORTANT<<                                                 *
        //   >>EXECUTE<<                                                       *
        // >>END-PRE-COMPILER<<                                                *
        // =================================================================== *
+     h nomain
       /COPY QCRTMSGDS,H_SPEC
       /COPY QCRTMSGDS,COPYRIGHT
        // =================================================================== *
@@ -3388,24 +3387,9 @@ srccssid=  "00273">
      d  i_toCcsid                    10i 0 const  options(*nopass  )            |
      d  i_ccsidRplDta                10i 0 const  options(*nopass  )            |
 
-       //  Record format RTVM0300
-     D rtvm0300        DS                  qualified
-     D msgId                  27     33
-
-       // API error code structure
-     D errCode         DS                  qualified
-     D  bytPrv                       10I 0 INZ
-     D  bytAvl                       10I 0 INZ
-     D  excID                         7A   INZ
-     D  reserved_1                    1A   INZ
-     D  excDta                       16A   INZ
-
-       // Global variable: message file
-     D qMsgF           ds                  likeds(qObj_t) inz
-
        //  Program entry point
      D CRTMSGDSR1...
-     D                 pr                  extpgm('CRTMSGDSR1')
+     D                 pr
      D  XMSGL                        10A   const                                Msg-Lib
      D  XMSGF                        10A   const                                Msg-File
      D  XMSGI                         7A   const                                Msg-Id
@@ -3414,7 +3398,11 @@ srccssid=  "00273">
      D  XERRID                        7A                                        Error-Id
      D  XERRDT                       80A                                        Error-Data
 
-     D CRTMSGDSR1...
+       //****************************************************************
+       //  resolve message id
+       //****************************************************************
+     p CRTMSGDSR1...
+     P                 b                   export
      D                 pi
      D  XMSGL                        10A   const                                Msg-Lib
      D  XMSGF                        10A   const                                Msg-File
@@ -3423,6 +3411,19 @@ srccssid=  "00273">
      D  XMSGR                         7A                                        Msg-Id Returned
      D  XERRID                        7A                                        Error-Id
      D  XERRDT                       80A                                        Error-Data
+
+
+     D errCode         DS                  qualified
+     D  bytPrv                       10I 0 INZ
+     D  bytAvl                       10I 0 INZ
+     D  excID                         7A   INZ
+     D  reserved_1                    1A   INZ
+     D  excDta                       16A   INZ
+
+     D qMsgF           ds                  likeds(qObj_t) inz
+
+     D rtvm0300        DS                  qualified
+     D msgId                  27     33
       /free
 
        // Initialize return values
@@ -3460,6 +3461,7 @@ srccssid=  "00273">
        return;
 
       /end-free
+     P                 e
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
@@ -3553,13 +3555,12 @@ srccssid=  "00273">
        //                                                                     *
        // =================================================================== *
        // >>PRE-COMPILER<<                                                    *
-       //   >>CRTCMD<< CRTBNDRPG    PGM(&LI/&OB) +                            *
+       //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +                         *
        //                           SRCFILE(&SL/&SF) SRCMBR(&SM);             *
        //   >>IMPORTANT<<                                                     *
        //     >>PARM<< DBGVIEW(*LIST);                                        *
+       //     >>PARM<< TRUNCNBR(*NO);                                         *
        //     >>PARM<< OPTION(*EVENTF);                                       *
-       //     >>PARM<< DFTACTGRP(*NO);                                        *
-       //     >>PARM<< ACTGRP(*CALLER );                                      *
        //   >>END-IMPORTANT<<                                                 *
        //   >>EXECUTE<<                                                       *
        // >>END-PRE-COMPILER<<                                                *
@@ -3578,6 +3579,7 @@ srccssid=  "00273">
        //             V4R2M0 - SF51817                                        *
        //                                                                     *
        // =================================================================== *
+     H nomain
       /COPY QCRTMSGDS,H_SPEC
       /COPY QCRTMSGDS,COPYRIGHT
        // =================================================================== *
@@ -3602,13 +3604,13 @@ srccssid=  "00273">
      D C               S             80    DIM(10) CTDATA PERRCD(1)             Sourcezeilen
      D STRPREPRC       S             80    DIM(11) CTDATA PERRCD(1)             Sourcezeilen
 
-     D srcLine         S                   like(FSRC.SRCDTA)
+     D srcLine_t       S                   like(FSRC.SRCDTA)
 
        //  Prototypes
      D writeLine...
      D                 PR
      D                                     extproc('writeLine')
-     D  i_srcDta                           const like(srcLine)
+     D  i_srcLine                          const like(srcLine_t)
 
      D splittLine...
      D                 PR
@@ -3641,6 +3643,7 @@ srccssid=  "00273">
      D getStructName...
      D                 PR            20a   varying
      D                                     extproc('getStructName')
+     D  i_msgId                       7a   const
 
      D toChar1...
      D                 PR             1a
@@ -3664,10 +3667,84 @@ srccssid=  "00273">
      D                                     extproc('spaces')
      D  i_length                     10i 0 const
 
+     D getPrdLib...
+     D                 PR            10a   extproc('getPrdLib')
+
        //  Qualified object name
      d qObj_t          DS                  qualified based(pDummy)
      d  name                         10a
      d  lib                          10a
+
+     D INDENT_1        C                   16
+     D INDENT_2        C                   20
+
+     D FALSE           C                   *off
+     D TRUE            C                   *on
+
+     D C_DELIM         C                   ';'
+     D MSGID           C                   '%%MSGID'
+     D MSGTXT          C                   '%%MSGTXT'
+     D MSGF            C                   '%%MSGF'
+     D MSGL            C                   '%%MSGL'
+     D PGM             C                   '%%PGM'
+     D VARTYPE         C                   '%%VARTYPE'
+     D VARNAME         C                   '%%VARNAME'
+     D DELIMITER       C                   '%%DELIMITER'
+     D STRUCTNAME      C                   '%%STRUCTNAME'
+     D DS_NAME         C                   '%%DS'
+     D INIT_VALUE      C                   '%%IV'
+     D FIELD_NAME      C                   '%%FLDNME'
+     D FROM            C                   '%%FR'
+     D TO              C                   '%%TO'
+     D LENGTH          C                   '%%LN'
+
+       //  Offset for SUBST
+       //  ... PTF applied or version V4R3 and above
+     D PTF_OFFSET      C                   1
+
+       // Main procedure
+     D CRTMSGDSR2...
+     D                 pr
+     D  gi_msgFLib                   10a   const                                Msg-Lib
+     D  gi_msgF                      10a   const                                Msg-File
+     D  gi_msgFText                  50a   const                                Msg-File-Text
+     D  gi_msgId                      7a   const                                Msg-ID
+     D  gi_copyFLib                  10a   const                                Cpy-Lib
+     D  gi_copyF                     10a   const                                Cpy-File
+     D  gi_genType                   10a   const                                Gener.Art
+     D  gi_isDefine                    n   const                                Define-Best.
+     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
+     D  gi_isFirstId                   n   const                                1. Msg-ID
+     D  gi_isLastId                    n   const                                Letzte Msg-ID
+     D  go_mbrText                   80a                                        MbrText
+     D  go_excId                      7a                                        Error-ID
+     D  go_excDta                    80a                                        Error-Data
+
+      /DEFINE SDS_EXTENDED
+      /COPY QCRTMSGDS,SDS
+
+       //****************************************************************
+       //  Main procedure
+       //****************************************************************
+     P CRTMSGDSR2...
+     P                 b                   export
+     D                 pi
+     D  gi_msgFLib                   10a   const                                Msg-Lib
+     D  gi_msgF                      10a   const                                Msg-File
+     D  gi_msgFText                  50a   const                                Msg-File-Text
+     D  gi_msgId                      7a   const                                Msg-ID
+     D  gi_copyFLib                  10a   const                                Cpy-Lib
+     D  gi_copyF                     10a   const                                Cpy-File
+     D  gi_genType                   10a   const                                Gener.Art
+     D  gi_isDefine                    n   const                                Define-Best.
+     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
+     D  gi_isFirstId                   n   const                                1. Msg-ID
+     D  gi_isLastId                    n   const                                Letzte Msg-ID
+     D  go_mbrText                   80a                                        MbrText
+     D  go_excId                      7a                                        Error-ID
+     D  go_excDta                    80a                                        Error-Data
+
+     D srcLine         S                   like(srcLine_t)
 
        //  Retrieve Message (QMHRTVM) API
      d QMHRTVM...
@@ -3799,72 +3876,11 @@ srccssid=  "00273">
        // Name for DEFINE compiler directive
      D defineName      S             20a   varying
 
+       // Generic message file name
      D qGenMsgF        ds                  likeds(qObj_t)
-
-     D INDENT_1        C                   16
-     D INDENT_2        C                   20
-
-     D FALSE           C                   *off
-     D TRUE            C                   *on
-
-     D C_DELIM         C                   ';'
-     D MSGID           C                   '%%MSGID'
-     D MSGTXT          C                   '%%MSGTXT'
-     D MSGF            C                   '%%MSGF'
-     D MSGL            C                   '%%MSGL'
-     D PGM             C                   '%%PGM'
-     D VARTYPE         C                   '%%VARTYPE'
-     D VARNAME         C                   '%%VARNAME'
-     D DELIMITER       C                   '%%DELIMITER'
-     D STRUCTNAME      C                   '%%STRUCTNAME'
-     D DS_NAME         C                   '%%DS'
-     D INIT_VALUE      C                   '%%IV'
-     D FIELD_NAME      C                   '%%FLDNME'
-     D FROM            C                   '%%FR'
-     D TO              C                   '%%TO'
-     D LENGTH          C                   '%%LN'
-
-       //  Offset for SUBST
-       //  ... PTF applied or version V4R3 and above
-     D PTF_OFFSET      C                   1
-
-       //  Program entry point
-     D CRTMSGDSR2...
-     D                 pr                  extpgm('CRTMSGDSR2')
-     D  gi_msgFLib                   10a   const                                Msg-Lib
-     D  gi_msgF                      10a   const                                Msg-File
-     D  gi_msgFText                  50a   const                                Msg-File-Text
-     D  gi_msgId                      7a   const                                Msg-ID
-     D  gi_copyFLib                  10a   const                                Cpy-Lib
-     D  gi_copyF                     10a   const                                Cpy-File
-     D  gi_genType                   10a   const                                Gener.Art
-     D  gi_isDefine                    n   const                                Define-Best.
-     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
-     D  gi_isFirstId                   n   const                                1. Msg-ID
-     D  gi_isLastId                    n   const                                Letzte Msg-ID
-     D  go_mbrText                   80a                                        MbrText
-     D  go_excId                      7a                                        Error-ID
-     D  go_excDta                    80a                                        Error-Data
-
-     D CRTMSGDSR2...
-     D                 pi
-     D  gi_msgFLib                   10a   const                                Msg-Lib
-     D  gi_msgF                      10a   const                                Msg-File
-     D  gi_msgFText                  50a   const                                Msg-File-Text
-     D  gi_msgId                      7a   const                                Msg-ID
-     D  gi_copyFLib                  10a   const                                Cpy-Lib
-     D  gi_copyF                     10a   const                                Cpy-File
-     D  gi_genType                   10a   const                                Gener.Art
-     D  gi_isDefine                    n   const                                Define-Best.
-     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
-     D  gi_isFirstId                   n   const                                1. Msg-ID
-     D  gi_isLastId                    n   const                                Letzte Msg-ID
-     D  go_mbrText                   80a                                        MbrText
-     D  go_excId                      7a                                        Error-ID
-     D  go_excDta                    80a                                        Error-Data
+      /free
 
        // Initialize return values
-      /free
 
        go_mbrText  = '';
        go_excId = '';
@@ -4332,10 +4348,10 @@ srccssid=  "00273">
           ENDIF;
 
           // #ifndef
-          writeLine(replace(c(8): STRUCTNAME: '__' + getStructName()));
+          writeLine(replace(c(8): STRUCTNAME: '__' + getStructName(gi_msgId)));
 
           // #define
-          writeLine(replace(c(9): STRUCTNAME: '__' + getStructName()));
+          writeLine(replace(c(9): STRUCTNAME: '__' + getStructName(gi_msgId)));
 
        ENDSR;
 
@@ -4437,7 +4453,8 @@ srccssid=  "00273">
 
           ENDIF;
 
-          writeLine(replace(c(7): STRUCTNAME: getStructName() + C_DELIM));
+          writeLine(
+             replace(c(7): STRUCTNAME: getStructName(gi_msgId) + C_DELIM));
 
        ENDSR;
 
@@ -4942,9 +4959,10 @@ srccssid=  "00273">
 
           DUMP;
 
-       ENDSR '*CANCL';
+       ENDSR;
 
       /end-free
+     P                 e
 
        //*****************************************************
        // Appends a line to the source file.
@@ -4952,15 +4970,13 @@ srccssid=  "00273">
      P writeLine...
      P                 B
      D                 PI
-     D  i_srcDta                           const like(srcLine)
+     D  io_srcLine                         const like(srcLine_t)
       /free
 
           FSRC.SRCSEQ = FSRC.SRCSEQ + ,01;
           FSRC.SRCDAT = 0;
-          FSRC.SRCDTA = i_srcDta;
+          FSRC.SRCDTA = io_srcLine;
           WRITE SRC FSRC;
-
-          srcLine = '';
 
       /end-free
      P                 E
@@ -4976,6 +4992,8 @@ srccssid=  "00273">
      D LINE_LENGTH     C                   70
      D spX             S             10i 0
      D spS             S             10i 0
+
+     D srcLine         S                   like(srcLine_t)
       /free
 
           spX = 0;
@@ -5145,10 +5163,11 @@ srccssid=  "00273">
      P getStructName...
      P                 B
      D                 PI            20a   varying
+     D  i_msgId                       7a   const
        //---------------------------------------------------------------
       /free
 
-       RETURN %trim(lcase(gi_msgId)) + '_t';
+       RETURN %trim(lcase(i_msgId)) + '_t';
 
       /end-free
      P                 E
@@ -5221,6 +5240,20 @@ srccssid=  "00273">
       /free
 
        RETURN %subst(SPACES: 1: i_length);
+
+      /end-free
+     P                 E
+
+       //****************************************************************
+       //  returns the name of the product library
+       //****************************************************************
+     P getPrdLib...
+     P                 B                   export
+     D                 PI            10a
+       //---------------------------------------------------------------
+      /free
+
+       RETURN sds.pgmLib;
 
       /end-free
      P                 E
@@ -5333,6 +5366,65 @@ srccssid=  "00273">
      H DEBUG
      H OPTION(*SRCSTMT : *NODEBUGIO)
      H DECEDIT('0,') DATEDIT(*DMY.)
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing SDS  type RPGLE - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "SDS       "
+mbrtype =  "RPGLE     "
+mbrtext =  "Program Status Data Structure                     "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "00273">
+<copysrc><![CDATA[
+      /if not defined(SDS)
+      /define SDS
+
+     d sds            SDS                  qualified
+     d  pgmName                1     10a
+     d  pgmStat               11     15s 0
+     d  prevStat              16     20s 0
+     d  lastSeq               21     28a
+     d  lastSubr              29     36a
+     d  nbrParm               37     39s 0
+     d  excType               40     42a
+     d  excNbr                43     46a
+     d  miInstruction         47     50a
+     d  workArea              51     80a
+      /if defined(SDS_EXTENDED)
+     d  pgmLib                81     90a
+     d  excData               91    170a
+     d  rnx9001Exc           171    174a
+     d  lastFileLong         175    184a
+     d  unused_1             185    190a
+     d  datFmt               191    198a
+     d  year                 199    200s 0
+     d  lastFileShort        201    208a
+     d  fileStat             209    243a
+     d  job                  244    253a
+     d  user                 254    263a
+     d  nbr                  264    269s 0
+     d  startDate            270    275s 0
+     d  runDate              276    281s 0
+     d  runTime              282    287s 0
+     d  compDate             288    293a
+     d  compTime             294    299a
+     d  compLevel            300    303a
+     d  srcFile              304    313a
+     d  srcLib               314    323a
+     d  srcMbr               324    333a
+     d  pgmContProc          334    343a
+     d  modContProc          344    353a
+     d  sourceID1            354    355i 0
+     d  sourceID2            356    357i 0
+     d  currUser             358    367a
+     d  unused_2             368    429a
+      /endif
+      /endif
 ]]>  </copysrc>
 </mbr>
 <qcmdexc condition="*NONE" release="*CURRENT" dltsplf="A_INSTALL"><![CDATA[

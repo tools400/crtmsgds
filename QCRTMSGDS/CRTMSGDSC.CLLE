@@ -28,25 +28,22 @@
 /* =================================================================== */
 /* >>PRE-COMPILER<<                                                    */
 /*                                                                     */
-/*   >>CRTCMD<< CRTBNDCL     PGM(&LI/&OB) +                            */
-/*                           SRCFILE(&SL/&SF) +                        */
-/*                           SRCMBR(&SM);                              */
-/*                                                                     */
-/*   >>COMPILE<<                                                       */
+/*   >>CRTCMD<< CRTCLMOD     MODULE(&LI/&OB) +                         */
+/*                           SRCFILE(&SL/&SF) SRCMBR(&SM);             */
+/*   >>IMPORTANT<<                                                     */
 /*     >>PARM<< DBGVIEW(*LIST);                                        */
-/*   >>END-COMPILE<<                                                   */
-/*                                                                     */
-/*   >>LINK<<                                                          */
-/*     >>PARM<< DFTACTGRP(*NO);                                        */
-/*     >>PARM<< ACTGRP(*NEW    );                                      */
-/*   >>END-LINK<<                                                      */
-/*                                                                     */
+/*   >>END-IMPORTANT<<                                                 */
 /*   >>EXECUTE<<                                                       */
-/*                                                                     */
+/*   >>CMD<<    CRTPGM       PGM(&LI/&OB) +                            */
+/*                           MODULE(&LI/CRTMSGDSC   +                  */
+/*                                  &LI/CRTMSGDSR1  +                  */
+/*                                  &LI/CRTMSGDSR2) +                  */
+/*                           ACTGRP(*NEW) +                            */
+/*                           DETAIL(*BASIC);                           */
 /* >>END-PRE-COMPILER<<                                                */
 /* =================================================================== */
              PGM        PARM(&MSGR &MSGF &CPYF &MBR +
-                          &REPLACE &TYP &DEFINE &CRTMSGF &I_MSGF)
+                          &REPLACE &TYP &DEFINE &CRTMSGF)
 
 /*  Parameter  */
              /*  Input      */
@@ -58,7 +55,6 @@
              DCL        VAR(&TYP         ) TYPE(*CHAR) LEN(  1  )
              DCL        VAR(&DEFINE      ) TYPE(*CHAR) LEN(  1  )
              DCL        VAR(&CRTMSGF     ) TYPE(*CHAR) LEN(  1  )
-             DCL        VAR(&I_MSGF      ) TYPE(*CHAR) LEN( 10  )
 
 /* interne Felder       */
              DCL        VAR(&MSGLIB      ) TYPE(*CHAR) LEN( 10  )
@@ -82,6 +78,9 @@
              DCL        VAR(&ERRDT       ) TYPE(*CHAR) LEN( 80  )
              DCL        VAR(&IS_FIRST    ) TYPE(*LGL)
              DCL        VAR(&IS_LAST     ) TYPE(*LGL)
+
+             DCL        VAR(&APP_MSG_F   ) TYPE(*CHAR) LEN(10   ) VALUE('CRTMSGDS')
+             DCL        VAR(&PRDLIB      ) TYPE(*CHAR) LEN(10   ) VALUE('*LIBL')
 
 /* Fehlerbehandlung     */
              DCL        VAR(&ERROR)      TYPE(*LGL) +
@@ -111,6 +110,7 @@
 /* -------------------------------------------------------------- */
 /*  Los geht's                                                    */
 /* -------------------------------------------------------------- */
+             CALLPRC    PRC('getPrdLib') RTNVAL(&PRDLIB)
 
 /* ---------------------------- */
 /* MSGF zerlegen in Lib         */
@@ -174,9 +174,13 @@
                IF         COND(&MSGIDVON *EQ '*FIRST') THEN(DO)
                  CHGVAR     VAR(&MSGREFID) VALUE('       ')
                  CHGVAR     VAR(&RETRIEVEOP) VALUE('*FIRST ')
-                 CALL       PGM(CRTMSGDSR1) PARM(&MSGLIB &MSGFILE +
-                              &MSGREFID +
-                              &RETRIEVEOP &MSGIDVON &ERRID &ERRDT)
+                 CALLPRC    PRC(CRTMSGDSR1) PARM((&MSGLIB     *BYREF) +
+                                                 (&MSGFILE    *BYREF) +
+                                                 (&MSGREFID   *BYREF) +
+                                                 (&RETRIEVEOP *BYREF) +
+                                                 (&MSGIDVON   *BYREF) +
+                                                 (&ERRID      *BYREF) +
+                                                 (&ERRDT      *BYREF))
                ENDDO
 
 /* ---------------------------- */
@@ -198,9 +202,13 @@
                MONMSG     MSGID(CPF2419) EXEC(DO)
                  CHGVAR     VAR(&MSGREFID)   VALUE(&MSGIDVON)
                  CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
-                CALL       PGM(CRTMSGDSR1) PARM(&MSGLIB &MSGFILE +
-                                &MSGREFID +
-                                &RETRIEVEOP &MSGIDVON &ERRID &ERRDT)
+                 CALLPRC    PRC(CRTMSGDSR1) PARM((&MSGLIB     *BYREF) +
+                                                 (&MSGFILE    *BYREF) +
+                                                 (&MSGREFID   *BYREF) +
+                                                 (&RETRIEVEOP *BYREF) +
+                                                 (&MSGIDVON   *BYREF) +
+                                                 (&ERRID      *BYREF) +
+                                                 (&ERRDT      *BYREF))
                ENDDO
              ENDDO
 
@@ -238,9 +246,13 @@ LOOP:
 /* ---------------------------- */
              CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
              CHGVAR     VAR(&MSGREFID)   VALUE(&MSGID   )
-             CALL       PGM(CRTMSGDSR1) PARM(&MSGLIB &MSGFILE +
-                          &MSGREFID +
-                          &RETRIEVEOP &MSGIDTEMP &ERRID &ERRDT)
+             CALLPRC    PRC(CRTMSGDSR1) PARM((&MSGLIB     *BYREF) +
+                                             (&MSGFILE    *BYREF) +
+                                             (&MSGREFID   *BYREF) +
+                                             (&RETRIEVEOP *BYREF) +
+                                             (&MSGIDTEMP  *BYREF) +
+                                             (&ERRID      *BYREF) +
+                                             (&ERRDT      *BYREF))
              IF         COND(&MSGIDTEMP *EQ ' '  +
                         *OR  &MSGIDTEMP *GT &MSGIDBIS) THEN(DO)
                CHGVAR     VAR(&MSGIDBIS) VALUE(&MSGID)
@@ -352,14 +364,14 @@ LOOP:
 
                  IF         COND(&MBREXIST *EQ '*EXIST') THEN(DO)
                    IF         COND(&MBR *EQ '*GEN') THEN(DO)
-                     SNDPGMMSG  MSGID(USR0001) MSGF(*LIBL/&I_MSGF) +
+                     SNDPGMMSG  MSGID(USR0001) MSGF(&PRDLIB/&APP_MSG_F) +
                                 MSGDTA(&CPYFILE *CAT &CPYLIB *CAT +
                                        &CPYMBR  *CAT &SOURCETYPE  ) +
                                 TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*DIAG)
                      GOTO       CMDLBL(NEXT_MSGID)
                    ENDDO
                    ELSE       CMD(DO)
-                     SNDPGMMSG  MSGID(USR0001) MSGF(*LIBL/&I_MSGF) +
+                     SNDPGMMSG  MSGID(USR0001) MSGF(&PRDLIB/&APP_MSG_F) +
                                 MSGDTA(&CPYFILE *CAT &CPYLIB *CAT +
                                        &CPYMBR  *CAT &SOURCETYPE  ) +
                                 TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*ESCAPE)
@@ -396,11 +408,20 @@ LOOP:
 /*  SOURCEGENERIERUNGSPROGRAMM  */
 /*  AUFRUFEN                    */
 /* ---------------------------- */
-             CALL       PGM(CRTMSGDSR2) PARM( +
-                          &MSGLIB &MSGFILE &MSGFTEXT +
-                          &MSGID &CPYLIB &CPYFILE &SOURCETYPE +
-                          &DEFINE &CRTMSGF &IS_FIRST &IS_LAST +
-                          &MBRTEXT &ERRID &ERRDT)
+             CALLPRC    PRC(CRTMSGDSR2) PARM((&MSGLIB     *BYREF) +
+                                             (&MSGFILE    *BYREF) +
+                                             (&MSGFTEXT   *BYREF) +
+                                             (&MSGID      *BYREF) +
+                                             (&CPYLIB     *BYREF) +
+                                             (&CPYFILE    *BYREF) +
+                                             (&SOURCETYPE *BYREF) +
+                                             (&DEFINE     *BYREF) +
+                                             (&CRTMSGF    *BYREF) +
+                                             (&IS_FIRST   *BYREF) +
+                                             (&IS_LAST    *BYREF) +
+                                             (&MBRTEXT    *BYREF) +
+                                             (&ERRID      *BYREF) +
+                                             (&ERRDT      *BYREF))
              DLTOVR     FILE(*ALL) LVL(*)
 
 /* ---------------------------- */
@@ -431,7 +452,7 @@ LOOP:
 /* ---------------------------- */
 /*  Fertig ...                  */
 /* ---------------------------- */
-               SNDPGMMSG  MSGID(USR0002) MSGF(*LIBL/&I_MSGF) +
+               SNDPGMMSG  MSGID(USR0002) MSGF(&PRDLIB/&APP_MSG_F) +
                                 MSGDTA(&CPYFILE *CAT &CPYLIB *CAT +
                                        &CPYMBR  *CAT &SOURCETYPE  ) +
                           TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*INFO)
@@ -446,9 +467,13 @@ LOOP:
 NEXT_MSGID:
                  CHGVAR     VAR(&MSGREFID)   VALUE(&MSGID   )
                  CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
-                 CALL       PGM(CRTMSGDSR1) PARM(&MSGLIB &MSGFILE +
-                              &MSGREFID +
-                              &RETRIEVEOP &MSGID &ERRID &ERRDT)
+                 CALLPRC    PRC(CRTMSGDSR1) PARM((&MSGLIB     *BYREF) +
+                                                 (&MSGFILE    *BYREF) +
+                                                 (&MSGREFID   *BYREF) +
+                                                 (&RETRIEVEOP *BYREF) +
+                                                 (&MSGID      *BYREF) +
+                                                 (&ERRID      *BYREF) +
+                                                 (&ERRDT      *BYREF))
 
 /* ---------------------------- */
 /* Schleifenende                */

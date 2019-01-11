@@ -32,10 +32,9 @@
 /*                           SRCMBR(&SM);                              */
 /*                                                                     */
 /*   >>COMPILE<<                                                       */
-/*     >>PARM<< PGM(*LIBL/CRTMSGDSC);                                  */
-/*     >>PARM<< HLPPNLGRP(*LIBL/CRTMSGDSP);                            */
+/*     >>PARM<< PGM(&LI/CRTMSGDSC);                                    */
+/*     >>PARM<< HLPPNLGRP(&LI/CRTMSGDSP);                              */
 /*     >>PARM<< HLPID(CRTMSGDS);                                       */
-/*     >>PARM<< PRDLIB(&LI);                                           */
 /*   >>END-COMPILE<<                                                   */
 /*                                                                     */
 /*   >>EXECUTE<<                                                       */
@@ -113,10 +112,6 @@
                           MIN(0)                                    +
                           PMTCTL(PMTCTL2)                           +
                           PROMPT('CRTMSGF-Befehl generieren')
-
-             PARM       KWD(MSGFLNG   ) TYPE(*CHAR)        +
-                          LEN(10)                          +
-                          CONSTANT(CRTMSGDS )
 
 QMSGF:       QUAL       TYPE(*NAME)                                 +
                           LEN(10)                                   +

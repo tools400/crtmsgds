@@ -76,13 +76,12 @@
        //                                                                     *
        // =================================================================== *
        // >>PRE-COMPILER<<                                                    *
-       //   >>CRTCMD<< CRTBNDRPG    PGM(&LI/&OB) +                            *
+       //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +                         *
        //                           SRCFILE(&SL/&SF) SRCMBR(&SM);             *
        //   >>IMPORTANT<<                                                     *
        //     >>PARM<< DBGVIEW(*LIST);                                        *
+       //     >>PARM<< TRUNCNBR(*NO);                                         *
        //     >>PARM<< OPTION(*EVENTF);                                       *
-       //     >>PARM<< DFTACTGRP(*NO);                                        *
-       //     >>PARM<< ACTGRP(*CALLER );                                      *
        //   >>END-IMPORTANT<<                                                 *
        //   >>EXECUTE<<                                                       *
        // >>END-PRE-COMPILER<<                                                *
@@ -101,6 +100,7 @@
        //             V4R2M0 - SF51817                                        *
        //                                                                     *
        // =================================================================== *
+     H nomain
       /COPY QCRTMSGDS,H_SPEC
       /COPY QCRTMSGDS,COPYRIGHT
        // =================================================================== *
@@ -125,13 +125,13 @@
      D C               S             80    DIM(10) CTDATA PERRCD(1)             Sourcezeilen
      D STRPREPRC       S             80    DIM(11) CTDATA PERRCD(1)             Sourcezeilen
 
-     D srcLine         S                   like(FSRC.SRCDTA)
+     D srcLine_t       S                   like(FSRC.SRCDTA)
 
        //  Prototypes
      D writeLine...
      D                 PR
      D                                     extproc('writeLine')
-     D  i_srcDta                           const like(srcLine)
+     D  i_srcLine                          const like(srcLine_t)
 
      D splittLine...
      D                 PR
@@ -164,6 +164,7 @@
      D getStructName...
      D                 PR            20a   varying
      D                                     extproc('getStructName')
+     D  i_msgId                       7a   const
 
      D toChar1...
      D                 PR             1a
@@ -187,10 +188,84 @@
      D                                     extproc('spaces')
      D  i_length                     10i 0 const
 
+     D getPrdLib...
+     D                 PR            10a   extproc('getPrdLib')
+
        //  Qualified object name
      d qObj_t          DS                  qualified based(pDummy)
      d  name                         10a
      d  lib                          10a
+
+     D INDENT_1        C                   16
+     D INDENT_2        C                   20
+
+     D FALSE           C                   *off
+     D TRUE            C                   *on
+
+     D C_DELIM         C                   ';'
+     D MSGID           C                   '%%MSGID'
+     D MSGTXT          C                   '%%MSGTXT'
+     D MSGF            C                   '%%MSGF'
+     D MSGL            C                   '%%MSGL'
+     D PGM             C                   '%%PGM'
+     D VARTYPE         C                   '%%VARTYPE'
+     D VARNAME         C                   '%%VARNAME'
+     D DELIMITER       C                   '%%DELIMITER'
+     D STRUCTNAME      C                   '%%STRUCTNAME'
+     D DS_NAME         C                   '%%DS'
+     D INIT_VALUE      C                   '%%IV'
+     D FIELD_NAME      C                   '%%FLDNME'
+     D FROM            C                   '%%FR'
+     D TO              C                   '%%TO'
+     D LENGTH          C                   '%%LN'
+
+       //  Offset for SUBST
+       //  ... PTF applied or version V4R3 and above
+     D PTF_OFFSET      C                   1
+
+       // Main procedure
+     D CRTMSGDSR2...
+     D                 pr
+     D  gi_msgFLib                   10a   const                                Msg-Lib
+     D  gi_msgF                      10a   const                                Msg-File
+     D  gi_msgFText                  50a   const                                Msg-File-Text
+     D  gi_msgId                      7a   const                                Msg-ID
+     D  gi_copyFLib                  10a   const                                Cpy-Lib
+     D  gi_copyF                     10a   const                                Cpy-File
+     D  gi_genType                   10a   const                                Gener.Art
+     D  gi_isDefine                    n   const                                Define-Best.
+     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
+     D  gi_isFirstId                   n   const                                1. Msg-ID
+     D  gi_isLastId                    n   const                                Letzte Msg-ID
+     D  go_mbrText                   80a                                        MbrText
+     D  go_excId                      7a                                        Error-ID
+     D  go_excDta                    80a                                        Error-Data
+
+      /DEFINE SDS_EXTENDED
+      /COPY QCRTMSGDS,SDS
+
+       //****************************************************************
+       //  Main procedure
+       //****************************************************************
+     P CRTMSGDSR2...
+     P                 b                   export
+     D                 pi
+     D  gi_msgFLib                   10a   const                                Msg-Lib
+     D  gi_msgF                      10a   const                                Msg-File
+     D  gi_msgFText                  50a   const                                Msg-File-Text
+     D  gi_msgId                      7a   const                                Msg-ID
+     D  gi_copyFLib                  10a   const                                Cpy-Lib
+     D  gi_copyF                     10a   const                                Cpy-File
+     D  gi_genType                   10a   const                                Gener.Art
+     D  gi_isDefine                    n   const                                Define-Best.
+     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
+     D  gi_isFirstId                   n   const                                1. Msg-ID
+     D  gi_isLastId                    n   const                                Letzte Msg-ID
+     D  go_mbrText                   80a                                        MbrText
+     D  go_excId                      7a                                        Error-ID
+     D  go_excDta                    80a                                        Error-Data
+
+     D srcLine         S                   like(srcLine_t)
 
        //  Retrieve Message (QMHRTVM) API
      d QMHRTVM...
@@ -322,72 +397,11 @@
        // Name for DEFINE compiler directive
      D defineName      S             20a   varying
 
+       // Generic message file name
      D qGenMsgF        ds                  likeds(qObj_t)
-
-     D INDENT_1        C                   16
-     D INDENT_2        C                   20
-
-     D FALSE           C                   *off
-     D TRUE            C                   *on
-
-     D C_DELIM         C                   ';'
-     D MSGID           C                   '%%MSGID'
-     D MSGTXT          C                   '%%MSGTXT'
-     D MSGF            C                   '%%MSGF'
-     D MSGL            C                   '%%MSGL'
-     D PGM             C                   '%%PGM'
-     D VARTYPE         C                   '%%VARTYPE'
-     D VARNAME         C                   '%%VARNAME'
-     D DELIMITER       C                   '%%DELIMITER'
-     D STRUCTNAME      C                   '%%STRUCTNAME'
-     D DS_NAME         C                   '%%DS'
-     D INIT_VALUE      C                   '%%IV'
-     D FIELD_NAME      C                   '%%FLDNME'
-     D FROM            C                   '%%FR'
-     D TO              C                   '%%TO'
-     D LENGTH          C                   '%%LN'
-
-       //  Offset for SUBST
-       //  ... PTF applied or version V4R3 and above
-     D PTF_OFFSET      C                   1
-
-       //  Program entry point
-     D CRTMSGDSR2...
-     D                 pr                  extpgm('CRTMSGDSR2')
-     D  gi_msgFLib                   10a   const                                Msg-Lib
-     D  gi_msgF                      10a   const                                Msg-File
-     D  gi_msgFText                  50a   const                                Msg-File-Text
-     D  gi_msgId                      7a   const                                Msg-ID
-     D  gi_copyFLib                  10a   const                                Cpy-Lib
-     D  gi_copyF                     10a   const                                Cpy-File
-     D  gi_genType                   10a   const                                Gener.Art
-     D  gi_isDefine                    n   const                                Define-Best.
-     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
-     D  gi_isFirstId                   n   const                                1. Msg-ID
-     D  gi_isLastId                    n   const                                Letzte Msg-ID
-     D  go_mbrText                   80a                                        MbrText
-     D  go_excId                      7a                                        Error-ID
-     D  go_excDta                    80a                                        Error-Data
-
-     D CRTMSGDSR2...
-     D                 pi
-     D  gi_msgFLib                   10a   const                                Msg-Lib
-     D  gi_msgF                      10a   const                                Msg-File
-     D  gi_msgFText                  50a   const                                Msg-File-Text
-     D  gi_msgId                      7a   const                                Msg-ID
-     D  gi_copyFLib                  10a   const                                Cpy-Lib
-     D  gi_copyF                     10a   const                                Cpy-File
-     D  gi_genType                   10a   const                                Gener.Art
-     D  gi_isDefine                    n   const                                Define-Best.
-     D  gi_isCrtMsgF                   n   const                                CrtMsgF-Befehl
-     D  gi_isFirstId                   n   const                                1. Msg-ID
-     D  gi_isLastId                    n   const                                Letzte Msg-ID
-     D  go_mbrText                   80a                                        MbrText
-     D  go_excId                      7a                                        Error-ID
-     D  go_excDta                    80a                                        Error-Data
+      /free
 
        // Initialize return values
-      /free
 
        go_mbrText  = '';
        go_excId = '';
@@ -855,10 +869,10 @@
           ENDIF;
 
           // #ifndef
-          writeLine(replace(c(8): STRUCTNAME: '__' + getStructName()));
+          writeLine(replace(c(8): STRUCTNAME: '__' + getStructName(gi_msgId)));
 
           // #define
-          writeLine(replace(c(9): STRUCTNAME: '__' + getStructName()));
+          writeLine(replace(c(9): STRUCTNAME: '__' + getStructName(gi_msgId)));
 
        ENDSR;
 
@@ -960,7 +974,8 @@
 
           ENDIF;
 
-          writeLine(replace(c(7): STRUCTNAME: getStructName() + C_DELIM));
+          writeLine(
+             replace(c(7): STRUCTNAME: getStructName(gi_msgId) + C_DELIM));
 
        ENDSR;
 
@@ -1465,9 +1480,10 @@
 
           DUMP;
 
-       ENDSR '*CANCL';
+       ENDSR;
 
       /end-free
+     P                 e
 
        //*****************************************************
        // Appends a line to the source file.
@@ -1475,15 +1491,13 @@
      P writeLine...
      P                 B
      D                 PI
-     D  i_srcDta                           const like(srcLine)
+     D  io_srcLine                         const like(srcLine_t)
       /free
 
           FSRC.SRCSEQ = FSRC.SRCSEQ + ,01;
           FSRC.SRCDAT = 0;
-          FSRC.SRCDTA = i_srcDta;
+          FSRC.SRCDTA = io_srcLine;
           WRITE SRC FSRC;
-
-          srcLine = '';
 
       /end-free
      P                 E
@@ -1499,6 +1513,8 @@
      D LINE_LENGTH     C                   70
      D spX             S             10i 0
      D spS             S             10i 0
+
+     D srcLine         S                   like(srcLine_t)
       /free
 
           spX = 0;
@@ -1668,10 +1684,11 @@
      P getStructName...
      P                 B
      D                 PI            20a   varying
+     D  i_msgId                       7a   const
        //---------------------------------------------------------------
       /free
 
-       RETURN %trim(lcase(gi_msgId)) + '_t';
+       RETURN %trim(lcase(i_msgId)) + '_t';
 
       /end-free
      P                 E
@@ -1744,6 +1761,20 @@
       /free
 
        RETURN %subst(SPACES: 1: i_length);
+
+      /end-free
+     P                 E
+
+       //****************************************************************
+       //  returns the name of the product library
+       //****************************************************************
+     P getPrdLib...
+     P                 B                   export
+     D                 PI            10a
+       //---------------------------------------------------------------
+      /free
+
+       RETURN sds.pgmLib;
 
       /end-free
      P                 E
