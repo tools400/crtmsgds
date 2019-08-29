@@ -74,6 +74,9 @@
        //                                                                     *
        //  24.12.2018  Th.Raddatz    Converted source code to /free.          *
        //                                                                     *
+       //  29.08.2019  Th.Raddatz    Fixed RNX0100 (Length or start position  *
+       //                            is out of range) in doubleHyphens().     *
+       //                                                                     *
        // =================================================================== *
        // >>PRE-COMPILER<<                                                    *
        //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +                         *
@@ -1566,11 +1569,11 @@
 
           dhF = 1;
 
-          DOU (dhF <= 0);
+          DOU (dhF <= 0 or dhF > %len(buffer));
 
              dhF = %scan('''': buffer: dhF);
              IF (dhF > 0);
-                IF (dhF < %len(buffer));
+                IF (dhF < %size(buffer)-2);
                    //  Insert single quote
                    buffer = %replace('''': buffer: dhF: 0);
                    dhF = dhF + 2;
