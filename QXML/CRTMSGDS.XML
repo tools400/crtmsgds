@@ -51,7 +51,7 @@
       appblddate CDATA #REQUIRED
      >
      ]>
-<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate=" 8/29/2019">
+<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate="11/25/2019">
 <install_instructions><![CDATA[
      *----------------------------------------------------------------      ------
      *  1. Upload entire XML to your AS/400 to a source file 112 long, into any mbr
@@ -1289,7 +1289,7 @@ mbrtext =  "CRTMSGDS - Installer                              "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
      /* =================================================================== */
      /*                                                                     */
@@ -1471,7 +1471,7 @@ mbrtext =  "MSG: USR0001 - USR0002                            "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
      /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
@@ -1541,7 +1541,7 @@ mbrtext =  "MSG: USR0001 - USR0002                            "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
      /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
@@ -1611,7 +1611,7 @@ mbrtext =  "CRTMSGDS Readme                                   "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
 CRTMSGDS - A Tools/400 Utility
 ------------------------------
@@ -1646,16 +1646,16 @@ mbrtext =  "Copyright information                             "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
       /if not defined(COPYRIGHT_DSPEC)
-     H COPYRIGHT('V1.14.1 - 29.08.2019 - mailto:thomas.raddatz@tools400.de')
+     H COPYRIGHT('V1.14.2 - 25.11.2019 - mailto:thomas.raddatz@tools400.de')
       /eof
       /endif
      D CRTMSGDS_VERSION...
-     D                 C                   '1.14.1'
+     D                 C                   '1.14.2'
      D CRTMSGDS_DATE...
-     D                 C                   '29.08.2019'
+     D                 C                   '25.11.2019'
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
@@ -1669,7 +1669,7 @@ mbrtext =  "Create Message Data Structure - Ger               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
 /* =================================================================== */
 /*                                                                     */
@@ -1850,7 +1850,7 @@ mbrtext =  "Create Message Data Structure - Eng               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
 /* =================================================================== */
 /*                                                                     */
@@ -2032,7 +2032,7 @@ mbrtext =  "Create Message Data Structure - CPP               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
 /* =================================================================== */
 /*                                                                     */
@@ -2569,7 +2569,7 @@ mbrtext =  "Create Message Data Structure - Ger               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
 .*=====================================================================*
 .*                                                                     *
@@ -2943,7 +2943,7 @@ mbrtext =  "Create Message Data Structure - Eng               "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
 .*=====================================================================*
 .*                                                                     *
@@ -3317,7 +3317,7 @@ mbrtext =  "Create Message Data Structure                     "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
        // =================================================================== *
        //                                                                     *
@@ -3475,7 +3475,7 @@ mbrtext =  "Create Message Data Structure                     "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
        // =================================================================== *
        //                                                                     *
@@ -3555,6 +3555,10 @@ srccssid=  "00273">
        //                                                                     *
        //  29.08.2019  Th.Raddatz    Fixed RNX0100 (Length or start position  *
        //                            is out of range) in doubleHyphens().     *
+       //                                                                     *
+       //  25.11.2019  Th.Raddatz    Fixed problem that splittLine did not    *
+       //                            work properly, when the buffer length    *
+       //                            WAS LINE_LENGTH + 1.                     *
        //                                                                     *
        // =================================================================== *
        // >>PRE-COMPILER<<                                                    *
@@ -4994,7 +4998,6 @@ srccssid=  "00273">
 
      D LINE_LENGTH     C                   70
      D spX             S             10i 0
-     D spS             S             10i 0
 
      D srcLine         S                   like(srcLine_t)
       /free
@@ -5003,18 +5006,11 @@ srccssid=  "00273">
 
           DOW (buffer <> '');
 
-             spS = 1;
-
-             if (%len(buffer) >= LINE_LENGTH);
-                srcLine = %subst(buffer: spS: LINE_LENGTH);
+             if (%len(buffer) > LINE_LENGTH);
+                srcLine = %subst(buffer: 1: LINE_LENGTH);
+                buffer = %subst(buffer: LINE_LENGTH + 1);
              ELSE;
                 srcLine = buffer;
-             ENDIF;
-
-             spS = spS + LINE_LENGTH;
-             IF (spS < %len(buffer));
-                buffer = %subst(buffer: spS);
-             ELSE;
                 buffer = '';
              ENDIF;
 
@@ -5364,7 +5360,7 @@ mbrtext =  "H-Specifications                                  "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
      H DEBUG
      H OPTION(*SRCSTMT : *NODEBUGIO)
@@ -5382,7 +5378,7 @@ mbrtext =  "Program Status Data Structure                     "
 srcfile =  "QCRTMSGDS "
 srclib  =  "selected  "
 srclen  =  "00112"
-srccssid=  "00273">
+srccssid=  "01141">
 <copysrc><![CDATA[
       /if not defined(SDS)
       /define SDS

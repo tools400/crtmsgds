@@ -77,6 +77,10 @@
        //  29.08.2019  Th.Raddatz    Fixed RNX0100 (Length or start position  *
        //                            is out of range) in doubleHyphens().     *
        //                                                                     *
+       //  25.11.2019  Th.Raddatz    Fixed problem that splittLine did not    *
+       //                            work properly, when the buffer length    *
+       //                            WAS LINE_LENGTH + 1.                     *
+       //                                                                     *
        // =================================================================== *
        // >>PRE-COMPILER<<                                                    *
        //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +                         *
@@ -1515,7 +1519,6 @@
 
      D LINE_LENGTH     C                   70
      D spX             S             10i 0
-     D spS             S             10i 0
 
      D srcLine         S                   like(srcLine_t)
       /free
@@ -1524,18 +1527,11 @@
 
           DOW (buffer <> '');
 
-             spS = 1;
-
-             if (%len(buffer) >= LINE_LENGTH);
-                srcLine = %subst(buffer: spS: LINE_LENGTH);
+             if (%len(buffer) > LINE_LENGTH);
+                srcLine = %subst(buffer: 1: LINE_LENGTH);
+                buffer = %subst(buffer: LINE_LENGTH + 1);
              ELSE;
                 srcLine = buffer;
-             ENDIF;
-
-             spS = spS + LINE_LENGTH;
-             IF (spS < %len(buffer));
-                buffer = %subst(buffer: spS);
-             ELSE;
                 buffer = '';
              ENDIF;
 
