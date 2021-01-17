@@ -23,6 +23,8 @@
 .*                                                                     *
 .*  Datum       Name          Änderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
+.*  17.01.2021  Th.Raddatz    Added support for /free message data     *
+.*                            structures.                              *
 .*                                                                     *
 .*=====================================================================*
 .* >>PRE-COMPILER<<                                                    *
@@ -265,6 +267,8 @@ Angeben, welche Art von Quellcode generiert werden soll.
 :PD.Es wird eine Datenstruktur für RPG-IV erstellt.
 :PT.:PV.*RPG:EPV.
 :PD.Es wird eine Datenstruktur für RPG-III erstellt.
+:PT.:PV.*FREE:EPV.
+:PD.Es wird eine Datenstruktur für RPG-IV und das **free Format erstellt.
 :PT.:PV.*C:EPV.
 :PD.Es wird eine Datenstruktur für C erstellt.
 :PT.:PV.*CLP:EPV.

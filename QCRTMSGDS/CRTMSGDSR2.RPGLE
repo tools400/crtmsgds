@@ -81,6 +81,9 @@
        //                            work properly, when the buffer length    *
        //                            WAS LINE_LENGTH + 1.                     *
        //                                                                     *
+       //  17.01.2021  Th.Raddatz    Added support for /free message data     *
+       //                            structures.                              *
+       //                                                                     *
        // =================================================================== *
        // >>PRE-COMPILER<<                                                    *
        //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +                         *
@@ -128,6 +131,7 @@
      D ORD             S              1    DIM(35) CTDATA PERRCD(35)            Num.f.Feldn.
      D RPG             S             80    DIM(15) CTDATA PERRCD(1)             Sourcezeilen
      D IRPG            S             80    DIM(15) CTDATA PERRCD(1)             Sourcezeilen
+     D FREE            S             80    DIM(12) CTDATA PERRCD(1)             Sourcezeilen
      D CLP             S             80    DIM(33) CTDATA PERRCD(1)             Sourcezeilen
      D C               S             80    DIM(10) CTDATA PERRCD(1)             Sourcezeilen
      D STRPREPRC       S             80    DIM(11) CTDATA PERRCD(1)             Sourcezeilen
@@ -203,6 +207,14 @@
      d  name                         10a
      d  lib                          10a
 
+     D GENTYPE_FREE    C                   '*FREE'
+     D GENTYPE_ILERPG  C                   '*ILERPG'
+     D GENTYPE_RPG     C                   '*RPG'
+     D GENTYPE_C       C                   '*C'
+     D GENTYPE_CLP     C                   '*CLP'
+     D GENTYPE_CLLE    C                   '*CLLE'
+     D GENTYPE_SCRIPT  C                   '*SCRIPT'
+
      D INDENT_1        C                   16
      D INDENT_2        C                   20
 
@@ -225,6 +237,7 @@
      D FROM            C                   '%%FR'
      D TO              C                   '%%TO'
      D LENGTH          C                   '%%LN'
+     D TYPE            C                   '%%TYPE'
 
        //  Offset for SUBST
        //  ... PTF applied or version V4R3 and above
@@ -426,10 +439,10 @@
        msgIdDS = gi_msgId;
 
        // Call the retrieve message description API
-       IF (gi_genType = '*CLP'   )  or
-          (gi_genType = '*CLLE'  )  or
-          (gi_genType = '*SCRIPT');
-          // Return format control characters
+       // to return format control characters ...
+       IF (gi_genType = GENTYPE_CLP
+           or gi_genType = GENTYPE_CLLE
+           or gi_genType = GENTYPE_SCRIPT);
           rtnFmtCtrlChrs = '*YES';
        ELSE;
           rtnFmtCtrlChrs = '*NO';
@@ -497,27 +510,32 @@
 
           SELECT;
 
-          WHEN gi_genType = '*RPG';
+          WHEN gi_genType = GENTYPE_RPG;
              qGenMsgF.lib = gi_msgFLib;
              qGenMsgF.name = gi_msgF;
              EXSR performRPG3;
 
-          WHEN gi_genType = '*ILERPG';
+          WHEN gi_genType = GENTYPE_ILERPG;
              qGenMsgF.lib = gi_msgFLib;
              qGenMsgF.name = gi_msgF;
              EXSR performRPG4;
 
-          WHEN gi_genType = '*CLP'
-             OR gi_genType = '*CLLE';
+          WHEN gi_genType = GENTYPE_FREE;
+             qGenMsgF.lib = gi_msgFLib;
+             qGenMsgF.name = gi_msgF;
+             EXSR performFree;
+
+          WHEN gi_genType = GENTYPE_CLP
+             OR gi_genType = GENTYPE_CLLE;
              qGenMsgF.lib = '&LIB';
              qGenMsgF.name = '&OBJ';
              EXSR performCLP;
 
-          WHEN gi_genType = '*C';
+          WHEN gi_genType = GENTYPE_C;
              EXSR performC;
 
              // Process *SCRIPT as *CLP but drop some statements
-          WHEN gi_genType = '*SCRIPT';
+          WHEN gi_genType = GENTYPE_SCRIPT;
              qGenMsgF.lib = '&LI';
              qGenMsgF.name = '&SF';
              EXSR performCLP;
@@ -603,56 +621,39 @@
        ENDSR;
 
        //*****************************************************
-       // Generate DEFINE compiler directive, part 1
+       // Generate ILE-RPG /free source code
        //*****************************************************
-       BEGSR genStartDefineRPG4;
+       BEGSR performFree;
 
-          IF (gi_isDefine = FALSE);
-             // User did not select generating the DEFINE compiler directive
+          // Write: **free
+          writeLine(FREE(1));
+
+          // Generate DEFINE compiler directive
+          EXSR genStartDefineFree;
+
+          // Comment line (dashes)
+          writeLine(FREE(2));
+
+          // Comment line with message ID
+          writeLine(%trimr(FREE(3)) + ' ' + gi_msgId);
+
+          // Comment line with message text
+          writeLine(%trimr(FREE(11)) + '  ' + %subst(msgText: 1: 59));
+
+          // Empty line
+          writeLine('');
+
+          // Generate data structure
+          EXSR genStructFree;
+          IF (go_excId <> '');
              LEAVESR;
           ENDIF;
 
-          // /IF NOT DEFINED(UNDEFINE_ALL)
-          writeLine(IRPG(11));
+          // Empty line
+          writeLine('');
 
-          // Produce name for DEFINE compiler directive
-          defineName = %trimr(gi_msgId) + '_MSG';
-
-          // /IF NOT DEFINED(msgid_MSG)
-          writeLine(%trimr(IRPG(8)) + defineName + ')');
-
-          // /DEFINE msgid_MSG
-          writeLine(%trimr(IRPG(9)) + ' ' + defineName);
-
-       ENDSR;
-
-       //*****************************************************
-       // Generate DEFINE compiler directive, part 2
-       //*****************************************************
-       BEGSR genEndDefineRPG4;
-
-          IF (gi_isDefine = FALSE);
-             // User did not select generating the DEFINE compiler directive
-             LEAVESR;
-          ENDIF;
-
-          // /ENDIF
-          writeLine(IRPG(10));
-
-          // /ENDIF
-          writeLine(IRPG(10));
-
-          // Empty comment line
-          writeLine(IRPG(3));
-
-          // /IF DEFINED(UNDEFINE_ALL)
-          writeLine(IRPG(12));
-
-          // /UNDEFINE msgid_MSG
-          writeLine(%trimr(IRPG(13)) + ' ' + defineName);
-
-          // /ENDIF
-          writeLine(IRPG(10));
+          // Generate ENDIF compiler directive
+          EXSR genEndDefineFree;
 
        ENDSR;
 
@@ -662,13 +663,13 @@
        BEGSR performCLP;
 
           IF (gi_isFirstId = TRUE);
-             IF (gi_genType <> '*SCRIPT');
+             IF (gi_genType <> GENTYPE_SCRIPT);
                 // STRPREPRC Header
                 FOR i = 1 to %elem(STRPREPRC);
                    srcLine = STRPREPRC(i);
                    SELECT;
                    WHEN %scan('%CMD': srcLine) > 0;
-                      IF gi_genType = '*CLP';
+                      IF gi_genType = GENTYPE_CLP;
                          tmpStr = 'CRTCLPGM';
                       ELSE;
                          tmpStr = 'CRTBNDCL';
@@ -862,6 +863,96 @@
 
           // Generate ENDIF compiler directive
           EXSR genEndDefineC;
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate DEFINE compiler directive, part 1
+       //*****************************************************
+       BEGSR genStartDefineRPG4;
+
+          IF (gi_isDefine = FALSE);
+             // User did not select generating the DEFINE compiler directive
+             LEAVESR;
+          ENDIF;
+
+          // /IF NOT DEFINED(UNDEFINE_ALL)
+          writeLine(IRPG(11));
+
+          // Produce name for DEFINE compiler directive
+          defineName = %trimr(gi_msgId) + '_MSG';
+
+          // /IF NOT DEFINED(msgid_MSG)
+          writeLine(%trimr(IRPG(8)) + defineName + ')');
+
+          // /DEFINE msgid_MSG
+          writeLine(%trimr(IRPG(9)) + ' ' + defineName);
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate DEFINE compiler directive, part 2
+       //*****************************************************
+       BEGSR genEndDefineRPG4;
+
+          IF (gi_isDefine = FALSE);
+             // User did not select generating the DEFINE compiler directive
+             LEAVESR;
+          ENDIF;
+
+          // /ENDIF
+          writeLine(IRPG(10));
+
+          // /ENDIF
+          writeLine(IRPG(10));
+
+          // Empty comment line
+          writeLine(IRPG(3));
+
+          // /IF DEFINED(UNDEFINE_ALL)
+          writeLine(IRPG(12));
+
+          // /UNDEFINE msgid_MSG
+          writeLine(%trimr(IRPG(13)) + ' ' + defineName);
+
+          // /ENDIF
+          writeLine(IRPG(10));
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate DEFINE compiler directive, part 1 (/free)
+       //*****************************************************
+       BEGSR genStartDefineFree;
+
+          IF (gi_isDefine = FALSE);
+             // User did not select generating the DEFINE compiler directive
+             LEAVESR;
+          ENDIF;
+
+          // Produce name for DEFINE compiler directive
+          defineName = %trimr(gi_msgId) + '_MSG';
+
+          // /IF NOT DEFINED(msgid_MSG)
+          writeLine(%trimr(FREE(8)) + defineName + ')');
+
+          // /DEFINE msgid_MSG
+          writeLine(%trimr(FREE(9)) + ' ' + defineName);
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate DEFINE compiler directive, part 2 (/free)
+       //*****************************************************
+       BEGSR genEndDefineFree;
+
+          IF (gi_isDefine = FALSE);
+             // User did not select generating the DEFINE compiler directive
+             LEAVESR;
+          ENDIF;
+
+          // /ENDIF
+          writeLine(FREE(10));
 
        ENDSR;
 
@@ -1090,6 +1181,153 @@
        ENDSR;
 
        //*****************************************************
+       // Generate sub-field, ILE-RPG /free.
+       //*****************************************************
+       BEGSR genStructFree;
+
+          // Line with struct name
+          writeLine(replace(FREE(4): DS_NAME: gi_msgId));
+
+          // Determine number of replacement variables
+          EXSR getRplVarCount;
+
+          IF (rplcVarCount <= 0);
+             // ... no replacement variables available
+             lenStruct = 0;
+             writeLine(IRPG(7));
+          ELSE;
+
+             rplcVarOffs = 1;
+             lenStruct = 0;
+             FOR rplcVarIdx = 1 TO rplcVarCount;
+
+                // Get replacement variable
+                EXSR getRplVar;
+
+                // Check data type
+                EXSR chkRplVarType;
+                IF (go_excId <> '');
+                   LEAVESR;
+                ENDIF;
+
+                // Produce field name
+       //         CLEAR field10;
+       //         field10.prfx = msgIdDS.prfx;
+       //         field10.nbr = msgIdDS.nbr;
+       //         field10.count = ORD(rplcVarIdx);
+                field10 = 'var' + ORD(rplcVarIdx);
+
+                // Get type and size
+                EXSR getVarType;
+
+                // Field has no length
+                IF (rplcVar.length = 0);
+                   srcLine = replace(FREE(12): FIELD_NAME: field10);
+                ELSE;
+                   srcLine = replace(FREE(5): FIELD_NAME: field10);
+
+                   // Adjust length for binary fields
+                   IF (rplcVar.type = 'B');
+                      SELECT;
+                      WHEN (rplcVar.length >= 10);
+                         rplcVar.length = 20;
+                      WHEN (rplcVar.length >= 5);
+                         rplcVar.length = 10;
+                      OTHER;
+                         rplcVar.length = 5;
+                      ENDSL;
+                   ENDIF;
+
+                   // Set 'length' and 'fraction'
+       //            srcLine = replace(srcLine:LENGTH:toChar4(rplcVar.length));
+                   SELECT;
+                   WHEN rplcVar.type = 'A';
+                      srcLine =
+                         replace(srcLine: TYPE
+                                 : 'char(' + %char(rplcVar.length) + ')');
+                   WHEN rplcVar.type = 'P';
+                      srcLine =
+                         replace(srcLine: TYPE
+                                 : 'packed(' +
+                                      %char(rplcVar.length) + ':' +
+                                      %char(rplcVar.fraction) +
+                                   ')');
+                   WHEN rplcVar.type = 'B';
+                      srcLine =
+                         replace(srcLine: TYPE
+                                 : 'int(' + %char(rplcVar.length) + ')');
+                   OTHER;
+                      srcLine =
+                         replace(srcLine: TYPE
+                                 : '*ERROR');
+                   ENDSL;
+
+                   // Set initial value
+       //            SELECT;
+       //            WHEN rplcVar.type = 'A';
+       //               srcLine = replace(srcLine: INIT_VALUE: '*BLANKS');
+       //            WHEN rplcVar.type = 'P';
+       //               srcLine = replace(srcLine: INIT_VALUE: '*ZEROS');
+       //            WHEN rplcVar.type = 'B';
+       //               srcLine = replace(srcLine: INIT_VALUE: '*ZEROS');
+       //            OTHER;
+       //               srcLine = replace(srcLine: INIT_VALUE: '*ERROR');
+       //            ENDSL;
+
+                   // Set data type
+       //            IF rplcVar.type = 'B';
+       //               srcLine = replace(srcLine: '?': 'I': 1);
+       //            ELSE;
+       //               srcLine = replace(srcLine: '?': rplcVar.type: 1);
+       //            ENDIF;
+
+                   // Set fraction
+       //            IF (rplcVar.type = 'P' OR rplcVar.type = 'B');
+       //               srcLine = replace(
+       //                           srcLine: '!!': toChar2(rplcVar.fraction): 2);
+       //            ELSE;
+       //               srcLine = replace(srcLine: '!!': ' ': 2);
+       //            ENDIF;
+
+                   // Count total length of structure
+                   lenStruct = lenStruct + rplcVar.packedLen;
+                ENDIF;
+
+                // Zeile wegschreiben
+                writeLine(srcLine);
+
+             ENDFOR;
+
+          ENDIF;
+
+          // End structure
+          writeLine(replace(FREE(6): DS_NAME: gi_msgId));
+
+       ENDSR;
+
+       //*****************************************************
+       // Generate field with total length of structure, ILE-RPG.
+       //*****************************************************
+       BEGSR genTotalLenRPG4;
+
+          // Produce field name
+          CLEAR field10;
+          field10.prfx = msgIdDS.prfx;
+          field10.nbr = msgIdDS.nbr;
+          field10.count = '_SIZE';
+
+          // Produce structure without a name
+          srcLine = replace(IRPG(6): FIELD_NAME: field10);
+
+          // Insert total length of structure
+          srcLine = replace(srcLine: INIT_VALUE: str(lenStruct));
+
+          writeLine(srcLine);
+
+       ENDSR;
+
+
+       //*****************************************************
        // Generate sub-field, ILE-RPG.
        //*****************************************************
        BEGSR genStructRPG4;
@@ -1188,28 +1426,6 @@
           ENDIF;
 
        ENDSR;
-
-       //*****************************************************
-       // Generate field with total length of structure, ILE-RPG.
-       //*****************************************************
-       BEGSR genTotalLenRPG4;
-
-          // Produce field name
-          CLEAR field10;
-          field10.prfx = msgIdDS.prfx;
-          field10.nbr = msgIdDS.nbr;
-          field10.count = '_SIZE';
-
-          // Produce structure without a name
-          srcLine = replace(IRPG(6): FIELD_NAME: field10);
-
-          // Insert total length of structure
-          srcLine = replace(srcLine: INIT_VALUE: str(lenStruct));
-
-          writeLine(srcLine);
-
-       ENDSR;
-
        //*****************************************************
        // Generate replacement variables, CLP source code.
        //*****************************************************
@@ -1361,7 +1577,7 @@
           // Empty line
           writeLine('');
 
-          IF (gi_isLastId = TRUE AND gi_genType <> '*SCRIPT');
+          IF (gi_isLastId = TRUE AND gi_genType <> GENTYPE_SCRIPT);
              // RCLRSC
              writeLine(CLP(12));
 
@@ -1811,6 +2027,19 @@
       /undefine
       //
       * %%FLDNME>>                 0000A   inz(*BLANKS)  Length = 0
+**  FREE
+**free
+// ---------------------------------------------------------------
+//  Data structure for message ID:
+dcl-ds %%DS qualified;
+  %%FLDNME  %%TYPE inz;
+end-ds;
+//  No replacement variables available!
+/if not defined(
+/define
+/endif
+//
+  // %%FLDNME ==> Length = 0
 **  CLP
      /*-------------------------------------------------------------*/
      /*   Cmd-ADDMSGD für Message-ID :   %%MSGID                    */

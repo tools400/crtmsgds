@@ -23,6 +23,8 @@
 .*                                                                     *
 .*  Datum       Name          Änderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
+.*  17.01.2021  Th.Raddatz    Added support for /free message data     *
+.*                            structures.                              *
 .*                                                                     *
 .*=====================================================================*
 .* >>PRE-COMPILER<<                                                    *
@@ -267,6 +269,8 @@ Specifies the type of source that is produced by the CRTMSGDS command.
 :PD.An ILE-RPG data structure is produced.
 :PT.:PV.*RPG:EPV.
 :PD.A RPG-III data structure is produced.
+:PT.:PV.*FREE:EPV.
+:PD.A ILE-RPG data structure for the **free format is produced.
 :PT.:PV.*C:EPV.
 :PD.A C data structure is produced.
 :PT.:PV.*CLP:EPV.

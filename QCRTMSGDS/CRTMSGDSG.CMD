@@ -81,6 +81,7 @@
                           RSTD(*YES)                                +
                           DFT(*ILERPG)                              +
                           SPCVAL(                                   +
+                                 (*FREE   7)                        +
                                  (*ILERPG 4)                        +
                                  (*RPG    3)                        +
                                  (*C      5)                        +
