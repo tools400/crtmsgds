@@ -1,143 +1,136 @@
-       // =================================================================== *
-       //                                                                     *
-       //  Kurzdokumentation :                                                *
-       //                                                                     *
-       //  Bereich . . . : CRTMSGDS                                           *
-       //  Objekt  . . . : CRTMSGDSR1                                         *
-       //  Beschreibung  : Create Message Data Structure                      *
-       //  Author  . . . : Thomas Raddatz   <thomas.raddatz@tools400.de>      *
-       //  Datum . . . . : ?                                                  *
-       //                                                                     *
-       //=====================================================================*
-       //                                                                     *
-       //  This software is free software, you can redistribute it and/or     *
-       //  modify it under the terms of the GNU General Public License (GPL)  *
-       //  as published by the Free Software Foundation.                      *
-       //                                                                     *
-       //  See GNU General Public License for details.                        *
-       //          http://www.opensource.org                                  *
-       //          http://www.opensource.org/licenses/gpl-license.html        *
-       //                                                                     *
-       //=====================================================================*
-       //  History:                                                           *
-       //                                                                     *
-       //  Datum       Name          Änderung                                 *
-       //  ----------  ------------  ---------------------------------------  *
-       //  10.01.2003  Th.Raddatz    Removed special character Ä from source. *
-       //                                                                     *
-       //  24.12.2018  Th.Raddatz    Converted source code to /free.          *
-       //                                                                     *
-       // =================================================================== *
-       // >>PRE-COMPILER<<                                                    *
-       //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +                         *
-       //                           SRCFILE(&SL/&SF) SRCMBR(&SM);             *
-       //   >>IMPORTANT<<                                                     *
-       //     >>PARM<< DBGVIEW(*LIST);                                        *
-       //     >>PARM<< TRUNCNBR(*NO);                                         *
-       //     >>PARM<< OPTION(*EVENTF);                                       *
-       //   >>END-IMPORTANT<<                                                 *
-       //   >>EXECUTE<<                                                       *
-       // >>END-PRE-COMPILER<<                                                *
-       // =================================================================== *
-     h nomain
-      /COPY QCRTMSGDS,H_SPEC
-      /COPY QCRTMSGDS,COPYRIGHT
-       // =================================================================== *
+**free
+// ===================================================================
+//
+//  Kurzdokumentation :
+//
+//  Bereich . . . : CRTMSGDS
+//  Objekt  . . . : CRTMSGDSR1
+//  Beschreibung  : Create Message Data Structure
+//  Author  . . . : Thomas Raddatz   <thomas.raddatz@tools400.de>
+//  Datum . . . . : ?
+//
+//=====================================================================
+//
+//  This software is free software, you can redistribute it and/or
+//  modify it under the terms of the GNU General Public License (GPL)
+//  as published by the Free Software Foundation.
+//
+//  See GNU General Public License for details.
+//          http://www.opensource.org
+//          http://www.opensource.org/licenses/gpl-license.html
+//
+//=====================================================================
+//  History:
+//
+//  Datum       Name          Änderung
+//  ----------  ------------  ---------------------------------------
+//  10.01.2003  Th.Raddatz    Removed special character Ä from source.
+//
+//  02.02.2022  Th.Raddatz    Converted source code to /free.
+//
+// ===================================================================
+// >>PRE-COMPILER<<
+//   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +
+//                           SRCFILE(&SL/&SF) SRCMBR(&SM);
+//   >>IMPORTANT<<
+//     >>PARM<< DBGVIEW(*LIST);
+//     >>PARM<< TRUNCNBR(*NO);
+//     >>PARM<< OPTION(*EVENTF);
+//   >>END-IMPORTANT<<
+//   >>EXECUTE<<
+// >>END-PRE-COMPILER<<
+// ===================================================================
+ctl-opt nomain;
+/COPY QCRTMSGDS,H_SPEC
+/COPY QCRTMSGDS,COPYRIGHT
+// ===================================================================
 
-       //  Qualified object name
-     d qObj_t          ds                  qualified based(pDummy)
-     d  name                         10a
-     d  lib                          10a
+//  Qualified object name
+dcl-ds qObj_t qualified based(pdummy);
+  name char(10);
+  lib char(10);
+end-ds;
 
-       //  Retrieve Message (QMHRTVM) API
-     d QMHRTVM...
-     d                 pr                  extpgm('QMHRTVM')
-     d  o_msgInf                  65535a          options(*varsize)
-     d  i_msgInfLen                  10i 0 const
-     d  i_format                      8a   const
-     d  i_msgID                       7a   const
-     d  i_qMsgF                            const  likeds(qObj_t)
-     d  i_rplData                 65535a   const  options(*varsize )
-     d  i_rpldataLen                 10i 0 const
-     d  i_rplVars                    10a   const
-     d  i_rtnCtrlChrs                10a   const
-     d  io_ErrCode                65535a          options(*varsize )
-     d  i_rtvOpt                     10a   const  options(*nopass  )            | OptGrp 1
-     d  i_toCcsid                    10i 0 const  options(*nopass  )            |
-     d  i_ccsidRplDta                10i 0 const  options(*nopass  )            |
+//  Retrieve Message (QMHRTVM) API
+dcl-pr QMHRTVM extpgm('QMHRTVM');
+  *n char(65535) options(*varsize); // o_msgInf
+  *n int(10) const; // i_msgInfLen
+  *n char(8) const; // i_format
+  *n char(7) const; // i_msgID
+  *n const  likeds(qobj_t); // i_qMsgF
+  *n char(65535) const  options(*varsize ); // i_rplData
+  *n int(10) const; // i_rpldataLen
+  *n char(10) const; // i_rplVars
+  *n char(10) const; // i_rtnCtrlChrs
+  *n char(65535) options(*varsize ); // io_ErrCode
+  *n char(10) const  options(*nopass  ); // i_rtvOpt  | OptGrp 1
+  *n int(10) const  options(*nopass  ); // i_toCcsid  |
+  *n int(10) const  options(*nopass  ); // i_ccsidRplDta  |
+end-pr;
 
-       //  Program entry point
-     D CRTMSGDSR1...
-     D                 pr
-     D  XMSGL                        10A   const                                Msg-Lib
-     D  XMSGF                        10A   const                                Msg-File
-     D  XMSGI                         7A   const                                Msg-Id
-     D  XRTVO                         7A   const                                Retrieve option
-     D  XMSGR                         7A                                        Msg-Id Returned
-     D  XERRID                        7A                                        Error-Id
-     D  XERRDT                       80A                                        Error-Data
+//  Program entry point
 
-       //****************************************************************
-       //  resolve message id
-       //****************************************************************
-     p CRTMSGDSR1...
-     P                 b                   export
-     D                 pi
-     D  XMSGL                        10A   const                                Msg-Lib
-     D  XMSGF                        10A   const                                Msg-File
-     D  XMSGI                         7A   const                                Msg-Id
-     D  XRTVO                         7A   const                                Retrieve option
-     D  XMSGR                         7A                                        Msg-Id Returned
-     D  XERRID                        7A                                        Error-Id
-     D  XERRDT                       80A                                        Error-Data
+//***************************************************************
+//  resolve message id
+//***************************************************************
+dcl-proc CRTMSGDSR1 export;
+  dcl-pi *n;
+    XMSGL char(10) const; // Msg-Lib
+    XMSGF char(10) const; // Msg-File
+    XMSGI char(7) const; // Msg-Id
+    XRTVO char(7) const; // Retrieve option
+    XMSGR char(7); // Msg-Id Returned
+    XERRID char(7); // Error-Id
+    XERRDT char(80); // Error-Data
+  end-pi;
 
 
-     D errCode         DS                  qualified
-     D  bytPrv                       10I 0 INZ
-     D  bytAvl                       10I 0 INZ
-     D  excID                         7A   INZ
-     D  reserved_1                    1A   INZ
-     D  excDta                       16A   INZ
+  dcl-ds errCode qualified;
+    bytPrv int(10) inz;
+    bytAvl int(10) inz;
+    excID char(7) inz;
+    reserved_1 char(1) inz;
+    excDta char(16) inz;
+  end-ds;
 
-     D qMsgF           ds                  likeds(qObj_t) inz
+  dcl-ds qMsgF likeds(qobj_t) inz;
 
-     D rtvm0300        DS                  qualified
-     D msgId                  27     33
-      /free
+  dcl-ds rtvm0300 qualified;
+    msgId char(7) pos(27);
+  end-ds;
 
-       // Initialize return values
-       XMSGR  = '';
-       XERRID = '';
-       XERRDT = '';
+  // Initialize return values
+  XMSGR  = '';
+  XERRID = '';
+  XERRDT = '';
 
-       // Call the retrieve message description API
-       clear errCode;
+  // Call the retrieve message description API
+  clear errCode;
 
-       qMsgF.name = XMSGF;
-       qMsgF.lib = XMSGL;
+  qMsgF.name = XMSGF;
+  qMsgF.lib = XMSGL;
 
-       callp(E) QMHRTVM(rtvm0300: %size(rtvm0300): 'RTVM0300'
-               : XMSGI: qMsgF: '': 0: '*NO'
-               : '*NO': errCode: XRTVO: 0
-               : 0);
+  callp(E) QMHRTVM(rtvm0300: %size(rtvm0300): 'RTVM0300'
+          : XMSGI: qMsgF: '': 0: '*NO'
+          : '*NO': errCode: XRTVO: 0
+          : 0);
 
-       // Check error indicator
-       if (%error());
-          XERRID = 'CPF9897';
-          XERRDT = 'Error: ' + %trim(qMsgF.lib) + '/' +
-                              %trim(qMsgF.name) +
-                  ' Id: ' + %trim(XMSGI) +
-                  ' Opt: ' + %trim(XRTVO);
-       else;
-          if (errCode.bytAvl > 0);
-             XERRID = errCode.excID;
-             XERRDT = errCode.excDta;
-          else;
-             XMSGR = rtvm0300.msgId;
-          endif;
-       endif;
+  // Check error indicator
+  if (%error());
+    XERRID = 'CPF9897';
+    XERRDT = 'Error: ' + %trim(qMsgF.lib) + '/' +
+                        %trim(qMsgF.name) +
+            ' Id: ' + %trim(XMSGI) +
+            ' Opt: ' + %trim(XRTVO);
+  else;
+    if (errCode.bytAvl > 0);
+      XERRID = errCode.excID;
+      XERRDT = errCode.excDta;
+    else;
+      XMSGR = rtvm0300.msgId;
+    endif;
+  endif;
 
-       return;
+  return;
 
-      /end-free
-     P                 e
+end-proc;

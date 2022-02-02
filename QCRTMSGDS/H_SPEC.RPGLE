@@ -1,3 +1,2 @@
-     H DEBUG
-     H OPTION(*SRCSTMT : *NODEBUGIO)
-     H DECEDIT('0,') DATEDIT(*DMY.)
+**free
+ctl-opt debug option(*srcstmt : *nodebugio) decedit('0,') datedit(*dmy.);

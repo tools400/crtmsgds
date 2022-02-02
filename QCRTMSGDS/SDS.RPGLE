@@ -1,44 +1,50 @@
-      /if not defined(SDS)
-      /define SDS
+**free
+/if not defined(SDS)
+/define SDS
 
-     d sds            SDS                  qualified
-     d  pgmName                1     10a
-     d  pgmStat               11     15s 0
-     d  prevStat              16     20s 0
-     d  lastSeq               21     28a
-     d  lastSubr              29     36a
-     d  nbrParm               37     39s 0
-     d  excType               40     42a
-     d  excNbr                43     46a
-     d  miInstruction         47     50a
-     d  workArea              51     80a
-      /if defined(SDS_EXTENDED)
-     d  pgmLib                81     90a
-     d  excData               91    170a
-     d  rnx9001Exc           171    174a
-     d  lastFileLong         175    184a
-     d  unused_1             185    190a
-     d  datFmt               191    198a
-     d  year                 199    200s 0
-     d  lastFileShort        201    208a
-     d  fileStat             209    243a
-     d  job                  244    253a
-     d  user                 254    263a
-     d  nbr                  264    269s 0
-     d  startDate            270    275s 0
-     d  runDate              276    281s 0
-     d  runTime              282    287s 0
-     d  compDate             288    293a
-     d  compTime             294    299a
-     d  compLevel            300    303a
-     d  srcFile              304    313a
-     d  srcLib               314    323a
-     d  srcMbr               324    333a
-     d  pgmContProc          334    343a
-     d  modContProc          344    353a
-     d  sourceID1            354    355i 0
-     d  sourceID2            356    357i 0
-     d  currUser             358    367a
-     d  unused_2             368    429a
-      /endif
-      /endif
+dcl-ds sds qualified psds;
+  pgmName         char(10)   pos(1);
+  pgmStat         zoned(5)   pos(11);
+  prevStat        zoned(5)   pos(16);
+  lastSeq         char(8)    pos(21);
+  lastSubr        char(8)    pos(29);
+  nbrParm         zoned(3)   pos(37);
+  excType         char(3)    pos(40);
+  excNbr          char(4)    pos(43);
+  miInstruction   char(4)    pos(47);
+  workArea        char(30)   pos(51);
+  /if defined(SDS_EXTENDED)
+  pgmLib          char(10)   pos(81);
+  excData         char(80)   pos(91);
+  rnx9001Exc      char(4)    pos(171);
+  lastFileLong    char(10)   pos(175);
+  unused_1        char(6)    pos(185);
+  datFmt          char(8)    pos(191);
+  year            zoned(2:0) pos(199);
+  lastFileShort   char(8)    pos(201);
+  fileStat        char(35)   pos(209);
+  job             char(10)   pos(244);
+  user            char(10)   pos(254);
+  nbr             zoned(6:0) pos(264);
+  startDate       zoned(6:0) pos(270);
+  runDate         zoned(6:0) pos(276);
+  runTime         zoned(6:0) pos(282);
+  compDate        char(6)    pos(288);
+  compTime        char(10)   pos(294);
+  compLevel       char(4)    pos(300);
+  srcFile         char(10)   pos(304);
+  srcLib          char(10)   pos(314);
+  srcMbr          char(10)   pos(324);
+  pgmContProc     char(10)   pos(334);
+  modContProc     char(10)   pos(344);
+  sourceID1       int(5)     pos(354);
+  sourceID2       int(5)     pos(356);
+  currUser        char(10)   pos(358);
+  extErrCode      int(10)    pos(368);
+  xmlElem_INTO    int(20)    pos(372); // Since 5.4
+  intJobID        char(16)   pos(380); // Since 7.3
+  sysName         char(6)    pos(396);
+  unused          char(50)   pos(404);
+end-ds;
+/endif
+/endif
