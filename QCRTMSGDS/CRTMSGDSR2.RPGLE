@@ -87,6 +87,9 @@
 //
 //  02.02.2022  Th.Raddatz    Converted source code to /free.
 //
+//  02.02.2022  Th.Raddatz    Removed empty lines from generated
+//                            data structures.
+//
 // ===================================================================
 // >>PRE-COMPILER<<
 //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +
@@ -490,14 +493,8 @@ dcl-proc CRTMSGDSR2 export;
     // Comment line with message ID
     writeLine(%trimr(RPG(2)) + ' ' + gi_msgId);
 
-    // Empty comment line
-    writeLine(RPG(3));
-
     // Comment line with message text
     writeLine(%trimr(RPG(3)) + ' ' + %subst(msgText: 1: 59));
-
-    // Empty comment line
-    writeLine(RPG(3));
 
     // Generate data structure
     EXSR genStructRPG3;
@@ -507,9 +504,6 @@ dcl-proc CRTMSGDSR2 export;
 
     // Add total length of data structure
     EXSR genTotalLenRPG3;
-
-    // Empty comment line
-    writeLine(RPG(3));
 
   ENDSR;
 
@@ -527,14 +521,8 @@ dcl-proc CRTMSGDSR2 export;
     // Comment line with message ID
     writeLine(%trimr(IRPG(2)) + ' ' + gi_msgId);
 
-    // Empty line
-    writeLine(IRPG(3));
-
     // Comment line with message text
     writeLine(%trimr(IRPG(14)) + '  ' + %subst(msgText: 1: 59));
-
-    // Empty line
-    writeLine('');
 
     // Generate data structure
     EXSR genStructRPG4;
@@ -544,9 +532,6 @@ dcl-proc CRTMSGDSR2 export;
 
     // Add total length of data structure
     EXSR genTotalLenRPG4;
-
-    // Empty line
-    writeLine(IRPG(3));
 
     // Generate ENDIF compiler directive
     EXSR genEndDefineRPG4;
@@ -573,17 +558,11 @@ dcl-proc CRTMSGDSR2 export;
     // Comment line with message text
     writeLine(%trimr(FREE(11)) + '  ' + %subst(msgText: 1: 59));
 
-    // Empty line
-    writeLine('');
-
     // Generate data structure
     EXSR genStructFree;
     IF (go_excId <> '');
       LEAVESR;
     ENDIF;
-
-    // Empty line
-    writeLine('');
 
     // Generate ENDIF compiler directive
     EXSR genEndDefineFree;
