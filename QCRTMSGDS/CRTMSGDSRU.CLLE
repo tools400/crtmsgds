@@ -1,0 +1,59 @@
+     /* =================================================================== */
+     /*                                                                     */
+     /*  Documentation:                                                     */
+     /*                                                                     */
+     /*  Utility . . . : CRTMSGDS                                           */
+     /*  Object  . . . : TESTMSGF                                           */
+     /*  Source member : TESTMSGF                                           */
+     /*  Source type . : CLLE                                               */
+     /*  Description   : Test Message File                                  */
+     /*  Author  . . . : Thomas Raddatz   <thomas.raddatz@tools400.de>      */
+     /*  Created . . . : 20.01.2024                                         */
+     /*                                                                     */
+     /* =================================================================== */
+     /*                                                                     */
+     /*  This software is free software, you can redistribute it and/or     */
+     /*  modify it under the terms of the GNU General Public License (GPL)  */
+     /*  as published by the Free Software Foundation.                      */
+     /*                                                                     */
+     /*  See GNU General Public License for details.                        */
+     /*          http://www.opensource.org                                  */
+     /*          http://www.opensource.org/licenses/gpl-license.html        */
+     /*                                                                     */
+     /* =================================================================== */
+     /*   >>PRE-COMPILER<<                                                  */
+     /*     >>CRTCMD<<    CRTBNDCL  PGM(QTEMP/&OB) +                        */
+     /*                             SRCFILE(&SL/&SF) SRCMBR(&SM);           */
+     /*     >>IMPORTANT<<                                                   */
+     /*       >>PARM<<    OPTION(*EVENTF);                                  */
+     /*     >>END-IMPORTANT<<                                               */
+     /*     >>EXECUTE<<                                                     */
+     /*     >>CMD<<       CALL   PGM(QTEMP/&OB) PARM('&LI' '&OB');          */
+     /*     >>CMD<<       DLTPGM PGM(QTEMP/&OB);                            */
+     /*   >>END-PRE-COMPILER<<                                              */
+     /* =================================================================== */
+             PGM        PARM(&TOLIB &MSGF)
+
+             DCL        VAR(&TOLIB    ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGF     ) TYPE(*CHAR) LEN(10)
+
+             DLTMSGF    MSGF(&TOLIB/&MSGF)
+             MONMSG     MSGID(CPF2105)
+
+             CRTMSGF    MSGF(&TOLIB/&MSGF) TEXT('CRTMSGDS - Message file for unit tests.')
+
+             ADDMSGD    MSGID(USR0001) MSGF(&TOLIB/&MSGF) MSG('A test message.') +
+                        FMT( +
+                          (*QTDCHAR 10  ) +
+                          (*CHAR    20  ) +
+                          (*HEX     12  ) +
+                          (*DEC     15 5) +
+                          (*BIN      8  ) +
+                          (*BIN      4  ) +
+                          (*BIN      2  ) +
+                          (*UBIN     8  ) +
+                          (*UBIN     4  ) +
+                          (*UBIN     2  ) +
+                        )
+
+             ENDPGM

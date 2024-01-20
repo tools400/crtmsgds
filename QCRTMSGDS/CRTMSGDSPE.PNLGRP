@@ -64,6 +64,21 @@ data fields of a message description. Also it is used to create a CL
 program or a CL script for a message description. The CL script
 then can be execute with the RUNCLSTM command in order to reproduce
 the message description.
+:P.
+Supported data types:
+:P.
+:LINES.
+   *QTDCHAR
+   *CHAR
+   *HEX
+   *DEC
+   *BIN
+   *UBIN
+:ELINES.
+:P.
+For RPG-III (:HP2.parameter TYPE(*RPG):EHP2.), data type
+:HP2.*UBIN:EHP2. is generated as a binary field, due to
+RPG-III lacking an unsigned integer type.
 .*
 :EHELP.
 .*

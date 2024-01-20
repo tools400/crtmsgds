@@ -94,6 +94,11 @@
                           XTOSRCF(QCRTMSGDS ) XOBJTYPE(*PGM    ) +
                           XGENCRT(*NO ) XPARAM(*BLANK)
 
+             XMLGENMBR  XMBR(RUNIT01   ) XMBRATR(RPGLE ) +
+                          XFROMSRCF(QCRTMSGDS ) XFROMSRCL(TOOLS400) +
+                          XTOSRCF(QCRTMSGDS ) XOBJTYPE(*PGM    ) +
+                          XGENCRT(*NO ) XPARAM(*BLANK)
+
              XMLGENMBR  XMBR(SDS       ) XMBRATR(RPGLE ) +
                           XFROMSRCF(QCRTMSGDS ) XFROMSRCL(TOOLS400) +
                           XTOSRCF(QCRTMSGDS ) XOBJTYPE(*PGM    ) +

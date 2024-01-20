@@ -90,6 +90,8 @@
 //  02.02.2022  Th.Raddatz    Removed empty lines from generated
 //                            data structures.
 //
+//  20.01.2024  Th.Raddatz    Added data type *UBIN.
+//
 // ===================================================================
 // >>PRE-COMPILER<<
 //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +
@@ -165,6 +167,8 @@ dcl-c INDENT_2 20;
 dcl-c FALSE *off;
 dcl-c TRUE *on;
 
+dcl-s isBinaryFieldWarning ind;
+
 dcl-c C_DELIM ';';
 dcl-c MSGID '%%MSGID';
 dcl-c MSGTXT '%%MSGTXT';
@@ -189,6 +193,11 @@ dcl-c PTF_OFFSET 1;
 
 // Exported Procedures
 dcl-pr getPrdLib char(10) extproc(*DCLCASE);
+end-pr;
+
+dcl-pr sndMsgToCmdLine;
+  i_msgId   char(7) const;
+  i_msgDta  char(512) options(*nopass) const;
 end-pr;
 
 /DEFINE SDS_EXTENDED
@@ -737,7 +746,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine('');
 
     // Generate replacement variables
-    EXSR genADDMSGD;
+    EXSR genCmdADDMSGD;
     IF (go_excId <> '');
       LEAVESR;
     ENDIF;
@@ -958,10 +967,23 @@ dcl-proc CRTMSGDSR2 export;
                  + ')';
         WHEN rplcVar.type = 'B';
           SELECT;
+          WHEN rplcVar.length = 18;
+            c_fldType = 'long long';
           WHEN rplcVar.length = 9;
             c_fldType = 'long';
           WHEN rplcVar.length = 4;
             c_fldType = 'short';
+          OTHER;
+            c_fldType = '*error';
+          ENDSL;
+        WHEN rplcVar.type = 'U';
+          SELECT;
+          WHEN rplcVar.length = 18;
+            c_fldType = 'unsigned long long';
+          WHEN rplcVar.length = 9;
+            c_fldType = 'unsigned long';
+          WHEN rplcVar.length = 4;
+            c_fldType = 'unsigned short';
           OTHER;
             c_fldType = '*error';
           ENDSL;
@@ -993,6 +1015,8 @@ dcl-proc CRTMSGDSR2 export;
   // Generate sub-field, RPG.
   //****************************************************
   BEGSR genStructRPG3;
+
+    isBinaryFieldWarning = FALSE;
 
     // Line with struct name
     writeLine(replace(RPG(11): DS_NAME: msgIdDS.prfx1ch + msgIdDS.nbr));
@@ -1040,22 +1064,32 @@ dcl-proc CRTMSGDSR2 export;
             rplcVar.type = '';
           ENDIF;
 
+          // Change unsigned binary to binary because
+          // RPG-III lacks an unsigned type
+          IF (rplcVar.type = 'U');
+            rplcVar.type = 'B';
+            isBinaryFieldWarning = TRUE;
+          ENDIF;
+
+          // Set type of variables (B or P)
           srcLine = replace(srcLine: '?': rplcVar.type: 1);
 
-          IF (rplcVar.type = 'P' OR rplcVar.type = 'B');
+          // Set fraction of variables of type 'packed' and 'binary'
+          IF (rplcVar.type = 'P' OR rplcVar.type = 'B' OR rplcVar.type = 'U');
             srcLine = replace(
                         srcLine: '!': toChar1(rplcVar.fraction): 1);
           ELSE;
+            // Clear fraction
             srcLine = replace(srcLine: '!': ' ': 1);
           ENDIF;
 
           // Set 'from' position
-          srcLine = replace(srcLine: FROM: toChar4(OD: '0'));
+          srcLine = replace(srcLine: FROM: toChar4(OD: ' '));
 
           OD = OD + rplcVar.packedLen;
 
           // Set 'to' position
-          srcLine = replace(srcLine: TO: toChar4(OD - 1: '0'));
+          srcLine = replace(srcLine: TO: toChar4(OD - 1: ' '));
 
           // Count total length of structure
           lenStruct = lenStruct + rplcVar.packedLen;
@@ -1066,6 +1100,10 @@ dcl-proc CRTMSGDSR2 export;
 
       ENDFOR;
 
+    ENDIF;
+
+    IF (isBinaryFieldWarning);
+      sndMsgToCmdLine('USR0003');
     ENDIF;
 
   ENDSR;
@@ -1079,7 +1117,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(replace(RPG(11): DS_NAME: ''));
 
     // Create sub-field with total length of strucure
-    srcLine = replace(RPG(13): INIT_VALUE: toChar4(lenStruct: '0'));
+    srcLine = replace(RPG(13): INIT_VALUE: toChar4(lenStruct: ' '));
 
     // Produce field name
     CLEAR field6;
@@ -1138,8 +1176,8 @@ dcl-proc CRTMSGDSR2 export;
         ELSE;
           srcLine = replace(FREE(5): FIELD_NAME: field10);
 
-          // Adjust length for binary fields
-          IF (rplcVar.type = 'B');
+          // Adjust length for binary and unsigned binary fields
+          IF (rplcVar.type = 'B' or rplcVar.type = 'U');
             SELECT;
             WHEN (rplcVar.length >= 10);
               rplcVar.length = 20;
@@ -1168,6 +1206,10 @@ dcl-proc CRTMSGDSR2 export;
             srcLine =
                replace(srcLine: TYPE
                        : 'int(' + %char(rplcVar.length) + ')');
+          WHEN rplcVar.type = 'U';
+            srcLine =
+               replace(srcLine: TYPE
+                       : 'uns(' + %char(rplcVar.length) + ')');
           OTHER;
             srcLine =
                replace(srcLine: TYPE
@@ -1284,8 +1326,8 @@ dcl-proc CRTMSGDSR2 export;
         ELSE;
           srcLine = replace(IRPG(5): FIELD_NAME: field10);
 
-          // Adjust length for binary fields
-          IF (rplcVar.type = 'B');
+          // Adjust length for binary and unsigned binary fields
+          IF (rplcVar.type = 'B' or rplcVar.type = 'U');
             SELECT;
             WHEN (rplcVar.length >= 10);
               rplcVar.length = 20;
@@ -1306,6 +1348,8 @@ dcl-proc CRTMSGDSR2 export;
           WHEN rplcVar.type = 'P';
             srcLine = replace(srcLine: INIT_VALUE: '*ZEROS');
           WHEN rplcVar.type = 'B';
+            srcLine = replace(srcLine: INIT_VALUE: '*ZEROS');
+          WHEN rplcVar.type = 'U';
             srcLine = replace(srcLine: INIT_VALUE: '*ZEROS');
           OTHER;
             srcLine = replace(srcLine: INIT_VALUE: '*ERROR');
@@ -1341,7 +1385,7 @@ dcl-proc CRTMSGDSR2 export;
   //****************************************************
   // Generate replacement variables, CLP source code.
   //****************************************************
-  BEGSR genADDMSGD;
+  BEGSR genCmdADDMSGD;
 
     // ADDMSGD
     writeLine(%trimr(CLP(11)) + ' +');
@@ -1434,9 +1478,15 @@ dcl-proc CRTMSGDSR2 export;
         // Get type and size
         EXSR getVarType;
 
-        SELECT;
-        WHEN rplcVar.type = 'B';
-          srcLine = %trimr(srcLine) + '*BIN';
+        IF (rplcVar.type = 'B' or rplcVar.type = 'U');
+
+          IF (rplcVar.type = 'B');
+            srcLine = %trimr(srcLine) + '*BIN';
+          ELSEIF (rplcVar.type = 'U');
+            srcLine = %trimr(srcLine) + '*UBIN';
+          ENDIF;
+
+        // Adjust length for binary and unsigned binary fields
           SELECT;
           WHEN rplcVar.length >= 10;
             rplcVar.length = 8;
@@ -1445,15 +1495,15 @@ dcl-proc CRTMSGDSR2 export;
           OTHER;
             rplcVar.length = 2;
           ENDSL;
-        OTHER;
+        ELSE;
           srcLine = %trimr(srcLine) + M3FTYP;
-        ENDSL;
+        ENDIF;
 
         // ... field length
         srcLine = %trimr(srcLine) + ' ' + str(rplcVar.length);
 
         // ... fraction
-        IF (rplcVar.type = 'P' OR rplcVar.type = 'B');
+        IF (rplcVar.type = 'P' OR rplcVar.type = 'B' OR rplcVar.type = 'U');
           srcLine = %trimr(srcLine) + ' ' + str(rplcVar.fraction);
         ENDIF;
 
@@ -1530,6 +1580,7 @@ dcl-proc CRTMSGDSR2 export;
        M3FTYP <> '*CHAR' and
        M3FTYP <> '*DEC' and
        M3FTYP <> '*HEX' and
+       M3FTYP <> '*UBIN' and
        M3FTYP <> '*BIN');
       go_excId = 'CPF9897';
       go_excDta = 'MSG-ID: ' + %trim(M3MGID) +
@@ -1602,6 +1653,18 @@ dcl-proc CRTMSGDSR2 export;
         rplcVar.length = 4;
       ENDSL;
       rplcVar.type = 'B';
+      rplcVar.fraction = 0;
+
+    WHEN (M3FTYP = '*UBIN');
+      SELECT;
+      WHEN (rplcVar.length = 8);
+        rplcVar.length = 18;
+      WHEN (rplcVar.length = 4);
+        rplcVar.length = 9;
+      OTHER;
+        rplcVar.length = 4;
+      ENDSL;
+      rplcVar.type = 'U';
       rplcVar.fraction = 0;
 
     ENDSL;
@@ -1879,6 +1942,69 @@ dcl-proc getPrdLib export;
   RETURN sds.pgmLib;
 
 end-proc;
+
+//***************************************************************
+//  sends a message to the command line.
+//***************************************************************
+dcl-proc sndMsgToCmdLine export;
+  dcl-pi *N;
+    i_msgId   char(7) const;
+    i_msgDta  char(512) options(*nopass) const;
+  end-pi;
+
+  //  Local fields
+  dcl-s msgkey      char(4);
+  dcl-s msgDta      like(i_msgDta);
+
+  dcl-ds qMsgF qualified inz;
+    name            char(10);
+    lib             char(10);
+  end-ds;
+
+  dcl-ds errCode qualified            inz;
+    bytPrv          int(10);
+    bytAvl          int(10);
+    excId           char(7);
+    reserved        char(1);
+    excDta          char(256);
+  end-ds;
+
+  dcl-pr qmhsndpm extpgm('QMHSNDPM');
+    i_msgId         char(7) const;
+    i_qMsgF         char(20) const;
+    i_msgData       char(32767) const  options(*varsize );
+    i_length        int(10) const;
+    i_msgType       char(10) const;
+    i_callStkE      char(256) const;
+    i_callStkC      int(10) const;
+    o_msgKey        char(4);
+    io_errCode      char(32767) options(*varsize);
+    i_lenStkE       int(10) const  options(*nopass);   // optGrp 1
+    i_callStkEQ     char(20) const  options(*nopass);  //
+    i_wait          int(10) const  options(*nopass);   //
+    i_callStkEDT    char(10) const  options(*nopass);  // optGrp 2
+    i_ccsid         int(10) const  options(*nopass);   //
+  end-pr;
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  if (%parms() >= %parmnum(i_msgDta));
+    msgDta = i_msgDta;
+  else;
+    msgDta = '';
+  endif;
+
+  clear qMsgF;
+  qMsgF.name = 'CRTMSGDS';
+  qMsgF.lib  = '*LIBL';
+
+  clear errCode;
+  errCode.bytPrv = %size(errCode);
+
+  qmhsndpm(i_msgId: qMsgF: msgDta: %size(msgDta): '*INFO'
+           : '*CTLBDY': 1: msgkey: errCode);
+
+end-proc;
+
 **  ORD
 123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
 **  RPG

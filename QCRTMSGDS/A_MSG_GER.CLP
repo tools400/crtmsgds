@@ -52,4 +52,25 @@
                 CCSID( 65535) +
                 /*  -EOF-  */
 
+     /* ----------------------------------------------------------- */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0003                    */
+     /* Warnung: Datentype *UBIN wurde als 'signed binary' generie  */
+     /* ----------------------------------------------------------- */
+
+             RMVMSGD MSGID(USR0003) MSGF(&LI/CRTMSGDS )
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0003) +
+                MSGF(&LI/CRTMSGDS ) +
+                MSG(+
+'Warnung: Datentype *UBIN wurde als ''signed binary'' generiert.'     +
+                ) +
+                SEV(00) +
+                FMT( +
+                ) +
+                ALROPT(*NO) +
+                CCSID( 65535) +
+                /*  -EOF-  */
+
              ENDPGM

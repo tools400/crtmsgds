@@ -64,6 +64,21 @@ Nachrichtenbeschreibung. Außerdem ist es möglich mit dem Befehl
 CRTMSGDS ein CL Programm, bzw. ein CL-Script für den Befehl RUNCLSTM
 zu erstellen, welches den oder die Erstellungsbefehl(e) für eine
 oder mehrere Nachrichtenbeschreibungen enthält.
+:P.
+Unterstützte Datentypen:
+:P.
+:LINES.
+   *QTDCHAR
+   *CHAR
+   *HEX
+   *DEC
+   *BIN
+   *UBIN
+:ELINES.
+:P.
+Für RPG-III (:HP2.Parameter TYPE(*RPG):EHP2.), wird der Typ
+:HP2.*UBIN:EHP2. als Feld vom Typ 'B' generiert, weil RPG-III
+keinen vorzeichenlosen Integer Typ kennt.
 .*
 :EHELP.
 .*
