@@ -314,6 +314,12 @@ LOOP:
              ENDDO
 
 /* CL-SRC  */
+             IF         COND(&TYP      *EQ '8'     ) THEN(DO)
+               CHGVAR     VAR(&SOURCETYPE) VALUE('*CL')
+               CHGVAR     VAR(&CPYTYP    ) VALUE('CLLE')
+             ENDDO
+
+/* CL-SRC  */
              IF         COND(&TYP      *EQ '1'     ) THEN(DO)
                CHGVAR     VAR(&SOURCETYPE) VALUE('*CLP')
                CHGVAR     VAR(&CPYTYP    ) VALUE('CLP')

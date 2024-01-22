@@ -288,6 +288,8 @@ Specifies the type of source that is produced by the CRTMSGDS command.
 :PD.A ILE-RPG data structure for the **free format is produced.
 :PT.:PV.*C:EPV.
 :PD.A C data structure is produced.
+:PT.:PV.*CL:EPV.
+:PD.A CL data structure is produced.
 :PT.:PV.*CLP:EPV.
 :PD.A CL program is produced.
 :PT.:PV.*CLLE:EPV.

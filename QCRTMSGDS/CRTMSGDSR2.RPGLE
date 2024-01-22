@@ -92,6 +92,8 @@
 //
 //  20.01.2024  Th.Raddatz    Added data type *UBIN.
 //
+//  22.01.2024  Th.Raddatz    Added support for CL data structures.
+//
 // ===================================================================
 // >>PRE-COMPILER<<
 //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +
@@ -141,6 +143,7 @@ dcl-s ORD char(1) dim(35) ctdata perrcd(35); // Num.f.Feldn.
 dcl-s RPG char(80) dim(15) ctdata perrcd(1); // Sourcezeilen
 dcl-s IRPG char(80) dim(15) ctdata perrcd(1); // Sourcezeilen
 dcl-s FREE char(80) dim(12) ctdata perrcd(1); // Sourcezeilen
+dcl-s CL char(100) dim(4) ctdata perrcd(1); // Sourcezeilen
 dcl-s CLP char(80) dim(33) ctdata perrcd(1); // Sourcezeilen
 dcl-s C char(80) dim(10) ctdata perrcd(1); // Sourcezeilen
 dcl-s STRPREPRC char(80) dim(11) ctdata perrcd(1); // Sourcezeilen
@@ -148,21 +151,31 @@ dcl-s STRPREPRC char(80) dim(11) ctdata perrcd(1); // Sourcezeilen
 dcl-s srcLine_t like(fsrc.srcdta);
 
 //  Qualified object name
-dcl-ds qObj_t qualified based(pdummy);
+dcl-ds qObj_t qualified template;
   name char(10);
   lib char(10);
+end-ds;
+
+dcl-ds rplcVar_t qualified template;
+  length int(10);
+  packedLen int(10);
+  fraction int(10);
+  type char(1);
 end-ds;
 
 dcl-c GENTYPE_FREE '*FREE';
 dcl-c GENTYPE_ILERPG '*ILERPG';
 dcl-c GENTYPE_RPG '*RPG';
 dcl-c GENTYPE_C '*C';
+dcl-c GENTYPE_CL '*CL';
 dcl-c GENTYPE_CLP '*CLP';
 dcl-c GENTYPE_CLLE '*CLLE';
 dcl-c GENTYPE_SCRIPT '*SCRIPT';
 
-dcl-c INDENT_1 16;
-dcl-c INDENT_2 20;
+dcl-c INDENT_CL_CMD 16;
+dcl-c INDENT_CL_RPLVAR 20;
+
+dcl-c INDENT_CL_STRUCT 0;
 
 dcl-c FALSE *off;
 dcl-c TRUE *on;
@@ -185,6 +198,8 @@ dcl-c FIELD_NAME '%%FLDNME';
 dcl-c FROM '%%FR';
 dcl-c TO '%%TO';
 dcl-c LENGTH '%%LN';
+dcl-c START_POSITION '%%POS';
+dcl-c FRACTION '%%DP';
 dcl-c TYPE '%%TYPE';
 
 //  Offset for SUBST
@@ -276,11 +291,11 @@ dcl-proc CRTMSGDSR2 export;
 
   // Format of replacement variable
   dcl-ds MS030F;
-    M3FLGD int(10);
-    M3FFSZ int(10);
-    M3FTYP char(10);
-    M3FRS1 char(238);
-    M3FRS2 char(256);
+    M3FLGD int(10);    // Length of replacement data for substitution variable
+    M3FFSZ int(10);    // Field size or decimal positions
+    M3FTYP char(10);   // Substitution variable type
+    M3FRS1 char(238);  // Reserved
+    M3FRS2 char(256);  // Reserved
   end-ds;
 
   // Generic API error structure
@@ -312,6 +327,10 @@ dcl-proc CRTMSGDSR2 export;
     nbr char(4);
     count char(5);
   end-ds;
+
+  // CL structure name
+  dcl-s cl_structName varchar(10);
+  dcl-s cl_fldName varchar(10);
 
   // C field name and type
   dcl-s c_fldName char(40);
@@ -350,12 +369,7 @@ dcl-proc CRTMSGDSR2 export;
   dcl-s rplcVarCount int(10);
 
   // Type and length of replacement variable
-  dcl-ds rplcVar qualified;
-    length int(10);
-    packedLen int(10);
-    fraction int(10);
-    type char(1);
-  end-ds;
+  dcl-ds rplcVar likeds(rplcVar_t) inz;
 
   // Buffer for generating message text and message help
   dcl-s buffer varchar(8192);
@@ -470,6 +484,11 @@ dcl-proc CRTMSGDSR2 export;
       qGenMsgF.name = gi_msgF;
       EXSR performFree;
 
+    WHEN gi_genType = GENTYPE_CL;
+      qGenMsgF.lib = gi_msgFLib;
+      qGenMsgF.name = gi_msgF;
+      EXSR performCL;
+
     WHEN gi_genType = GENTYPE_CLP
        OR gi_genType = GENTYPE_CLLE;
       qGenMsgF.lib = '&LIB';
@@ -575,6 +594,16 @@ dcl-proc CRTMSGDSR2 export;
 
     // Generate ENDIF compiler directive
     EXSR genEndDefineFree;
+
+  ENDSR;
+
+  //****************************************************
+  // Generate CL source code. CL data structure.
+  //****************************************************
+  BEGSR performCL;
+
+    // Generate data structure
+    EXSR genStructCL;
 
   ENDSR;
 
@@ -788,6 +817,142 @@ dcl-proc CRTMSGDSR2 export;
   ENDSR;
 
   //****************************************************
+  // Generates a CL data structure
+  //****************************************************
+  BEGSR genStructCL;
+
+    // Get total length of structure
+    EXSR getLenStruct;
+
+    // Start with a blank line
+    writeLine('');
+
+    // Display message text
+    srcLine = replace(CL(4): MSGTXT: msgText);
+    writeLine(spaces(INDENT_CL_STRUCT) + srcLine);
+
+    // Produce field name
+    CLEAR field10;
+    field10.prfx = msgIdDS.prfx;
+    field10.nbr = msgIdDS.nbr;
+    cl_structName = '&' + %trimr(field10);
+
+    srcLine = replace(CL(1): STRUCTNAME: cl_structName);
+    IF (lenStruct = 0);
+      srcLine = '/* ' + replace(srcLine: LENGTH: %char(lenStruct)) + ' */';
+    ELSE;
+      srcLine = replace(srcLine: LENGTH: %char(lenStruct));
+    ENDIF;
+
+    writeLine(spaces(INDENT_CL_STRUCT) + srcline);
+
+    // Determine number of replacement variables
+    EXSR getRplcVarCount;
+
+    // Generate structure
+    rplcVarOffs = 1;
+    OD = 1;
+    lenStruct = 0;
+
+    IF (rplcVarCount > 0);
+      FOR rplcVarIdx = 1 TO rplcVarCount;
+
+        // Get replacement variable
+        EXSR getRplVar;
+
+        // Check data type
+        EXSR chkRplVarType;
+        IF (go_excId <> '');
+          LEAVESR;
+        ENDIF;
+
+        // Get type and size
+        EXSR getVarType;
+
+        // Produce field name
+        CLEAR field10;
+        field10.prfx = msgIdDS.prfx;
+        field10.nbr = msgIdDS.nbr;
+        field10.count = ORD(rplcVarIdx);
+        cl_fldName = '&' + %trimr(field10);
+
+        // Set structure name and sub-field name
+        srcLine = replace(CL(2): STRUCTNAME: cl_structName);
+        srcLine = replace(srcLine: FIELD_NAME: cl_fldName);
+
+        // Set type
+        SELECT;
+        WHEN rplcVar.type = 'A';
+          srcLine = replace(srcLine: TYPE: '*CHAR': 5);
+        WHEN rplcVar.type = 'P';
+          srcLine = replace(srcLine: TYPE: '*DEC': 5);
+        WHEN rplcVar.type = 'B';
+          srcLine = replace(srcLine: TYPE: '*INT': 5);
+        WHEN rplcVar.type = 'U';
+          srcLine = replace(srcLine: TYPE: '*UINT': 5);
+        OTHER;
+          srcLine = replace(srcLine: TYPE: '*ERROR');
+        ENDSL;
+
+        // Set 'length' and 'fraction'
+        IF (rplcVar.type = 'P');
+          srcLine = replace(srcLine: LENGTH: toChar4(rplcVar.length: ''));
+          srcLine = replace(srcLine: FRACTION: toChar2(rplcVar.fraction: ''): 2);
+        ELSE;
+          IF (rplcVar.type = 'B');
+            srcLine = replace(srcLine: LENGTH: toChar4(getIntLengthCL(rplcVar): ''));
+          ELSEIF (rplcvar.type = 'U');
+            srcLine = replace(srcLine: LENGTH: toChar4(getIntLengthCL(rplcVar): ''));
+          ELSE;
+            srcLine = replace(srcLine: LENGTH: toChar4(rplcVar.length: ''));
+          ENDIF;
+          srcLine = replace(srcLine: FRACTION: '': 2);
+        ENDIF;
+
+        // Set start position
+        srcLine = replace(srcLine: START_POSITION: %char(OD));
+
+        writeLine(spaces(INDENT_CL_STRUCT) + srcline);
+
+        OD = OD + rplcVar.packedLen;
+
+      ENDFOR;
+    ELSE;
+      srcLine = CL(3);
+      writeLine(spaces(INDENT_CL_STRUCT) + srcline);
+    ENDIF;
+
+    // End with a blank line
+    writeLine('');
+
+  ENDSR;
+
+  //****************************************************
+  // Returns the total length of the structure.
+  //****************************************************
+  BEGSR getLenStruct;
+
+    // Determine number of replacement variables
+    EXSR getRplcVarCount;
+
+    IF (rplcVarCount <= 0);
+      // ... no replacement variables available
+      lenStruct = 0;
+    ELSE;
+
+      rplcVarOffs = 1;
+      lenStruct = 0;
+      FOR rplcVarIdx = 1 TO rplcVarCount;
+        EXSR getRplVar;
+        EXSR getVarType;
+        lenStruct = lenStruct + rplcVar.packedLen;
+      ENDFOR;
+
+    ENDIF;
+
+  ENDSR;
+
+  //****************************************************
   // Generate DEFINE compiler directive, part 1
   //****************************************************
   BEGSR genStartDefineRPG4;
@@ -919,7 +1084,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(c(5));
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -1022,7 +1187,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(replace(RPG(11): DS_NAME: msgIdDS.prfx1ch + msgIdDS.nbr));
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -1139,7 +1304,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(replace(FREE(4): DS_NAME: gi_msgId));
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -1290,7 +1455,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(replace(IRPG(4): DS_NAME: gi_msgId));
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -1391,14 +1556,14 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(%trimr(CLP(11)) + ' +');
 
     // MSGID()
-    srcLine = spaces(INDENT_1) + 'MSGID';
+    srcLine = spaces(INDENT_CL_CMD) + 'MSGID';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) + gi_msgId;
     EXSR addCloseBracket;
     writeLine(srcLine);
 
     // MSGF()
-    srcLine = spaces(INDENT_1) + 'MSGF';
+    srcLine = spaces(INDENT_CL_CMD) + 'MSGF';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) +
             %trim(qGenMsgF.lib) + '/' + %trim(qGenMsgF.name);
@@ -1407,7 +1572,7 @@ dcl-proc CRTMSGDSR2 export;
 
     // MSG()
     IF (M3LGMR > 0);
-      srcLine = spaces(INDENT_1) + 'MSG';
+      srcLine = spaces(INDENT_CL_CMD) + 'MSG';
       EXSR addOpenBracket;
       srcLine = %trimr(srcLine) + ' +';
       writeLine(srcLine);
@@ -1419,12 +1584,12 @@ dcl-proc CRTMSGDSR2 export;
 
       splittLine(buffer);
 
-      writeLine(spaces(INDENT_1) + ') +');
+      writeLine(spaces(INDENT_CL_CMD) + ') +');
     ENDIF;
 
     // SECLVL()
     IF (M3LGMH > 0);
-      srcLine = spaces(INDENT_1) + 'SECLVL';
+      srcLine = spaces(INDENT_CL_CMD) + 'SECLVL';
       EXSR addOpenBracket;
       srcLine = %trimr(srcLine) + ' +';
       writeLine(srcLine);
@@ -1436,18 +1601,18 @@ dcl-proc CRTMSGDSR2 export;
 
       splittLine(buffer);
 
-      writeLine(spaces(INDENT_1) + ') +');
+      writeLine(spaces(INDENT_CL_CMD) + ') +');
     ENDIF;
 
     // SEV()
-    srcLine = spaces(INDENT_1) + 'SEV';
+    srcLine = spaces(INDENT_CL_CMD) + 'SEV';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) + str(M3MSSV);
     EXSR addCloseBracket;
     writeLine(srcLine);
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -1455,7 +1620,7 @@ dcl-proc CRTMSGDSR2 export;
     ELSE;
 
       // FMT()
-      srcLine = spaces(INDENT_1) + 'FMT';
+      srcLine = spaces(INDENT_CL_CMD) + 'FMT';
       EXSR addOpenBracket;
       srcLine = %trimr(srcLine) + ' +';
       writeLine(srcLine);
@@ -1463,8 +1628,7 @@ dcl-proc CRTMSGDSR2 export;
       rplcVarOffs = 1;
       FOR rplcVarIdx = 1 TO rplcVarCount;
 
-        // %SUBST(SRCDTA: INDENT_2: 1) = '(';
-        srcLine = spaces(INDENT_2) + '(';
+        srcLine = spaces(INDENT_CL_RPLVAR) + '(';
 
         // Get replacement variable
         EXSR getRplVar;
@@ -1513,11 +1677,11 @@ dcl-proc CRTMSGDSR2 export;
 
       ENDFOR;
 
-      writeLine(spaces(INDENT_1) + ') +');
+      writeLine(spaces(INDENT_CL_CMD) + ') +');
     ENDIF;
 
     // ALROPT()
-    srcLine = spaces(INDENT_1) + 'ALROPT';
+    srcLine = spaces(INDENT_CL_CMD) + 'ALROPT';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) + M3ALOP;
     IF (M3ALID >= 1 AND M3ALID <= 99);
@@ -1527,14 +1691,14 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(srcLine);
 
     // CCSID()
-    srcLine = spaces(INDENT_1) + 'CCSID';
+    srcLine = spaces(INDENT_CL_CMD) + 'CCSID';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) + str(M3CCIT);
     EXSR addCloseBracket;
     writeLine(srcLine);
 
     // EOF
-    writeLine(spaces(INDENT_1) + '/*  -EOF-  */');
+    writeLine(spaces(INDENT_CL_CMD) + '/*  -EOF-  */');
 
     // Empty line
     writeLine('');
@@ -1593,7 +1757,7 @@ dcl-proc CRTMSGDSR2 export;
   //****************************************************
   // Returns the number of replacement variables
   //****************************************************
-  BEGSR getRplVarCount;
+  BEGSR getRplcVarCount;
 
     IF (M3LGVF > 0);
       rplcVarCount = M3LGVF / M3LVFE;
@@ -1765,6 +1929,30 @@ dcl-proc doubleHyphens;
   ENDDO;
 
   return buffer;
+
+end-proc;
+
+//***************************************************************
+//  returns the RPG/CLP length of binary/integer fields
+//***************************************************************
+dcl-proc getIntLengthCL;
+  dcl-pi *n int(10);
+    i_rplcVar likeds(rplcVar_t) const;
+  end-pi;
+
+  dcl-s intLen int(10);
+  //---------------------------------------------------------------
+
+  SELECT;
+  WHEN i_rplcVar.length >= 10;
+    intLen = 8;
+  WHEN i_rplcVar.length >= 5;
+    intLen = 4;
+  OTHER;
+    intLen = 2;
+  ENDSL;
+
+  RETURN intLen;
 
 end-proc;
 
@@ -2052,6 +2240,11 @@ end-ds;
 /endif
 //
   // %%FLDNME ==> Length = 0
+**  CL
+DCL VAR(%%STRUCTNAME) TYPE(*CHAR) LEN(%%LN)
+DCL   VAR(%%FLDNME) TYPE(%%TYPE) LEN(%%LN %%DP) STG(*DEFINED) DEFVAR(%%STRUCTNAME %%POS)
+/*  No replacement variables available!  */
+/*  %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  */
 **  CLP
      /*-------------------------------------------------------------*/
      /*   Cmd-ADDMSGD für Message-ID :   %%MSGID                    */

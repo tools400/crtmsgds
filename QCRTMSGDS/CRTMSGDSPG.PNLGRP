@@ -286,6 +286,8 @@ Angeben, welche Art von Quellcode generiert werden soll.
 :PD.Es wird eine Datenstruktur für RPG-IV und das **free Format erstellt.
 :PT.:PV.*C:EPV.
 :PD.Es wird eine Datenstruktur für C erstellt.
+:PT.:PV.*CL:EPV.
+:PD.Es wird eine Datenstruktur für CL erstellt.
 :PT.:PV.*CLP:EPV.
 :PD.Es wird ein CL-Programm erstellt.
 :PT.:PV.*CLLE:EPV.

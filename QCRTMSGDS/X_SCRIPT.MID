@@ -1,0 +1,51 @@
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /* A test message with replacement variables.                  */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0001) MSGF(&LI/&SF)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0001) +
+                MSGF(&LI/&SF) +
+                MSG( +
+'A test message with replacement variables.'                          +
+                ) +
+                SEV(0) +
+                FMT( +
+                    (*QTDCHAR 10) +
+                    (*CHAR 20) +
+                    (*HEX 12) +
+                    (*DEC 15 5) +
+                    (*BIN 8 0) +
+                    (*BIN 4 0) +
+                    (*BIN 2 0) +
+                    (*UBIN 8 0) +
+                    (*UBIN 4 0) +
+                    (*UBIN 2 0) +
+                ) +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /* A test message without replacement variables.               */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0002) MSGF(&LI/&SF)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0002) +
+                MSGF(&LI/&SF) +
+                MSG( +
+'A test message without replacement variables.'                       +
+                ) +
+                SEV(0) +
+     /*   No replacement variables defined!                         */ +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+

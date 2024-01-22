@@ -42,7 +42,8 @@
 
              CRTMSGF    MSGF(&TOLIB/&MSGF) TEXT('CRTMSGDS - Message file for unit tests.')
 
-             ADDMSGD    MSGID(USR0001) MSGF(&TOLIB/&MSGF) MSG('A test message.') +
+             ADDMSGD    MSGID(USR0001) MSGF(&TOLIB/&MSGF) +
+                        MSG('A test message with replacement variables.') +
                         FMT( +
                           (*QTDCHAR 10  ) +
                           (*CHAR    20  ) +
@@ -55,5 +56,33 @@
                           (*UBIN     4  ) +
                           (*UBIN     2  ) +
                         )
+
+             ADDMSGD    MSGID(USR0002) MSGF(&TOLIB/&MSGF) +
+                        MSG('A test message without replacement variables.')
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_FREE  ) REPLACE(*YES) TYPE(*FREE)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_ILERPG) REPLACE(*YES) TYPE(*ILERPG)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_RPG   ) REPLACE(*YES) TYPE(*RPG)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_C     ) REPLACE(*YES) TYPE(*C)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_CL    ) REPLACE(*YES) TYPE(*CL)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_CLP   ) REPLACE(*YES) TYPE(*CLP)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_CLLE  ) REPLACE(*YES) TYPE(*CLLE)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_SCRIPT) REPLACE(*YES) TYPE(*SCRIPT)
+
 
              ENDPGM

@@ -84,6 +84,7 @@
                                  (*FREE   7)                        +
                                  (*ILERPG 4)                        +
                                  (*RPG    3)                        +
+                                 (*CL     8)                        +
                                  (*C      5)                        +
                                  (*CLP    1)                        +
                                  (*CLLE   6)                        +

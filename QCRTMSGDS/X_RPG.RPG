@@ -1,0 +1,23 @@
+      *---------------------------------------------------------------
+      * Data structure for message ID: USR0001
+      * A test message with replacement variables.
+     IU0001       DS
+     I I                                      1  10 U00011
+     I I                                     11  30 U00012
+     I I                                     31  42 U00013
+     I I                                  P  43  505U00014
+     I I                                  B  51  580U00015
+     I I                                  B  59  620U00016
+     I I                                  B  63  640U00017
+     I I                                  B  65  720U00018
+     I I                                  B  73  760U00019
+     I I                                  B  77  780U0001A
+     I            DS
+     I I              78                  B   1   40U0001L
+      *---------------------------------------------------------------
+      * Data structure for message ID: USR0002
+      * A test message without replacement variables.
+     IU0002       DS
+      *   No replacement variables available!
+     I            DS
+     I I               0                  B   1   40U0002L

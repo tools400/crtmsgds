@@ -51,7 +51,7 @@
       appblddate CDATA #REQUIRED
      >
      ]>
-<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate=" 1/20/2024">
+<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate=" 1/22/2024">
 <install_instructions><![CDATA[
      *----------------------------------------------------------------      ------
      *  1. Upload entire XML to your AS/400 to a source file 112 long, into any mbr
@@ -1692,11 +1692,11 @@ srccssid=  "01141">
 <copysrc><![CDATA[
 **free
 /if not defined(COPYRIGHT_DSPEC)
-ctl-opt copyright('V1.17 - 20.01.2024 - mailto: thomas.raddatz@tools400.de');
+ctl-opt copyright('V1.18 - 22.01.2024 - mailto: thomas.raddatz@tools400.de');
 /eof
 /endif
-dcl-c CRTMSGDS_VERSION  '1.17';
-dcl-c CRTMSGDS_DATE     '20.01.2024';
+dcl-c CRTMSGDS_VERSION  '1.18';
+dcl-c CRTMSGDS_DATE     '22.01.2024';
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
@@ -1798,6 +1798,7 @@ srccssid=  "01141">
                                  (*FREE   7)                        +
                                  (*ILERPG 4)                        +
                                  (*RPG    3)                        +
+                                 (*CL     8)                        +
                                  (*C      5)                        +
                                  (*CLP    1)                        +
                                  (*CLLE   6)                        +
@@ -1980,6 +1981,7 @@ srccssid=  "01141">
                                  (*FREE   7)                        +
                                  (*ILERPG 4)                        +
                                  (*RPG    3)                        +
+                                 (*CL     8)                        +
                                  (*C      5)                        +
                                  (*CLP    1)                        +
                                  (*CLLE   6)                        +
@@ -2390,6 +2392,12 @@ LOOP:
              IF         COND(&TYP      *EQ '7'     ) THEN(DO)
                CHGVAR     VAR(&SOURCETYPE) VALUE('*FREE')
                CHGVAR     VAR(&CPYTYP    ) VALUE('RPGLE')
+             ENDDO
+
+/* CL-SRC  */
+             IF         COND(&TYP      *EQ '8'     ) THEN(DO)
+               CHGVAR     VAR(&SOURCETYPE) VALUE('*CL')
+               CHGVAR     VAR(&CPYTYP    ) VALUE('CLLE')
              ENDDO
 
 /* CL-SRC  */
@@ -2909,6 +2917,8 @@ Angeben, welche Art von Quellcode generiert werden soll.
 :PD.Es wird eine Datenstruktur für RPG-IV und das **free Format erstellt.
 :PT.:PV.*C:EPV.
 :PD.Es wird eine Datenstruktur für C erstellt.
+:PT.:PV.*CL:EPV.
+:PD.Es wird eine Datenstruktur für CL erstellt.
 :PT.:PV.*CLP:EPV.
 :PD.Es wird ein CL-Programm erstellt.
 :PT.:PV.*CLLE:EPV.
@@ -3304,6 +3314,8 @@ Specifies the type of source that is produced by the CRTMSGDS command.
 :PD.A ILE-RPG data structure for the **free format is produced.
 :PT.:PV.*C:EPV.
 :PD.A C data structure is produced.
+:PT.:PV.*CL:EPV.
+:PD.A CL data structure is produced.
 :PT.:PV.*CLP:EPV.
 :PD.A CL program is produced.
 :PT.:PV.*CLLE:EPV.
@@ -3652,6 +3664,8 @@ srccssid=  "01141">
 //
 //  20.01.2024  Th.Raddatz    Added data type *UBIN.
 //
+//  22.01.2024  Th.Raddatz    Added support for CL data structures.
+//
 // ===================================================================
 // >>PRE-COMPILER<<
 //   >>CRTCMD<< CRTRPGMOD    MODULE(&LI/&OB) +
@@ -3701,6 +3715,7 @@ dcl-s ORD char(1) dim(35) ctdata perrcd(35); // Num.f.Feldn.
 dcl-s RPG char(80) dim(15) ctdata perrcd(1); // Sourcezeilen
 dcl-s IRPG char(80) dim(15) ctdata perrcd(1); // Sourcezeilen
 dcl-s FREE char(80) dim(12) ctdata perrcd(1); // Sourcezeilen
+dcl-s CL char(100) dim(4) ctdata perrcd(1); // Sourcezeilen
 dcl-s CLP char(80) dim(33) ctdata perrcd(1); // Sourcezeilen
 dcl-s C char(80) dim(10) ctdata perrcd(1); // Sourcezeilen
 dcl-s STRPREPRC char(80) dim(11) ctdata perrcd(1); // Sourcezeilen
@@ -3708,21 +3723,31 @@ dcl-s STRPREPRC char(80) dim(11) ctdata perrcd(1); // Sourcezeilen
 dcl-s srcLine_t like(fsrc.srcdta);
 
 //  Qualified object name
-dcl-ds qObj_t qualified based(pdummy);
+dcl-ds qObj_t qualified template;
   name char(10);
   lib char(10);
+end-ds;
+
+dcl-ds rplcVar_t qualified template;
+  length int(10);
+  packedLen int(10);
+  fraction int(10);
+  type char(1);
 end-ds;
 
 dcl-c GENTYPE_FREE '*FREE';
 dcl-c GENTYPE_ILERPG '*ILERPG';
 dcl-c GENTYPE_RPG '*RPG';
 dcl-c GENTYPE_C '*C';
+dcl-c GENTYPE_CL '*CL';
 dcl-c GENTYPE_CLP '*CLP';
 dcl-c GENTYPE_CLLE '*CLLE';
 dcl-c GENTYPE_SCRIPT '*SCRIPT';
 
-dcl-c INDENT_1 16;
-dcl-c INDENT_2 20;
+dcl-c INDENT_CL_CMD 16;
+dcl-c INDENT_CL_RPLVAR 20;
+
+dcl-c INDENT_CL_STRUCT 0;
 
 dcl-c FALSE *off;
 dcl-c TRUE *on;
@@ -3745,6 +3770,8 @@ dcl-c FIELD_NAME '%%FLDNME';
 dcl-c FROM '%%FR';
 dcl-c TO '%%TO';
 dcl-c LENGTH '%%LN';
+dcl-c START_POSITION '%%POS';
+dcl-c FRACTION '%%DP';
 dcl-c TYPE '%%TYPE';
 
 //  Offset for SUBST
@@ -3836,11 +3863,11 @@ dcl-proc CRTMSGDSR2 export;
 
   // Format of replacement variable
   dcl-ds MS030F;
-    M3FLGD int(10);
-    M3FFSZ int(10);
-    M3FTYP char(10);
-    M3FRS1 char(238);
-    M3FRS2 char(256);
+    M3FLGD int(10);    // Length of replacement data for substitution variable
+    M3FFSZ int(10);    // Field size or decimal positions
+    M3FTYP char(10);   // Substitution variable type
+    M3FRS1 char(238);  // Reserved
+    M3FRS2 char(256);  // Reserved
   end-ds;
 
   // Generic API error structure
@@ -3872,6 +3899,10 @@ dcl-proc CRTMSGDSR2 export;
     nbr char(4);
     count char(5);
   end-ds;
+
+  // CL structure name
+  dcl-s cl_structName varchar(10);
+  dcl-s cl_fldName varchar(10);
 
   // C field name and type
   dcl-s c_fldName char(40);
@@ -3910,12 +3941,7 @@ dcl-proc CRTMSGDSR2 export;
   dcl-s rplcVarCount int(10);
 
   // Type and length of replacement variable
-  dcl-ds rplcVar qualified;
-    length int(10);
-    packedLen int(10);
-    fraction int(10);
-    type char(1);
-  end-ds;
+  dcl-ds rplcVar likeds(rplcVar_t) inz;
 
   // Buffer for generating message text and message help
   dcl-s buffer varchar(8192);
@@ -4030,6 +4056,11 @@ dcl-proc CRTMSGDSR2 export;
       qGenMsgF.name = gi_msgF;
       EXSR performFree;
 
+    WHEN gi_genType = GENTYPE_CL;
+      qGenMsgF.lib = gi_msgFLib;
+      qGenMsgF.name = gi_msgF;
+      EXSR performCL;
+
     WHEN gi_genType = GENTYPE_CLP
        OR gi_genType = GENTYPE_CLLE;
       qGenMsgF.lib = '&LIB';
@@ -4135,6 +4166,16 @@ dcl-proc CRTMSGDSR2 export;
 
     // Generate ENDIF compiler directive
     EXSR genEndDefineFree;
+
+  ENDSR;
+
+  //****************************************************
+  // Generate CL source code. CL data structure.
+  //****************************************************
+  BEGSR performCL;
+
+    // Generate data structure
+    EXSR genStructCL;
 
   ENDSR;
 
@@ -4348,6 +4389,142 @@ dcl-proc CRTMSGDSR2 export;
   ENDSR;
 
   //****************************************************
+  // Generates a CL data structure
+  //****************************************************
+  BEGSR genStructCL;
+
+    // Get total length of structure
+    EXSR getLenStruct;
+
+    // Start with a blank line
+    writeLine('');
+
+    // Display message text
+    srcLine = replace(CL(4): MSGTXT: msgText);
+    writeLine(spaces(INDENT_CL_STRUCT) + srcLine);
+
+    // Produce field name
+    CLEAR field10;
+    field10.prfx = msgIdDS.prfx;
+    field10.nbr = msgIdDS.nbr;
+    cl_structName = '&' + %trimr(field10);
+
+    srcLine = replace(CL(1): STRUCTNAME: cl_structName);
+    IF (lenStruct = 0);
+      srcLine = '/* ' + replace(srcLine: LENGTH: %char(lenStruct)) + ' */';
+    ELSE;
+      srcLine = replace(srcLine: LENGTH: %char(lenStruct));
+    ENDIF;
+
+    writeLine(spaces(INDENT_CL_STRUCT) + srcline);
+
+    // Determine number of replacement variables
+    EXSR getRplcVarCount;
+
+    // Generate structure
+    rplcVarOffs = 1;
+    OD = 1;
+    lenStruct = 0;
+
+    IF (rplcVarCount > 0);
+      FOR rplcVarIdx = 1 TO rplcVarCount;
+
+        // Get replacement variable
+        EXSR getRplVar;
+
+        // Check data type
+        EXSR chkRplVarType;
+        IF (go_excId <> '');
+          LEAVESR;
+        ENDIF;
+
+        // Get type and size
+        EXSR getVarType;
+
+        // Produce field name
+        CLEAR field10;
+        field10.prfx = msgIdDS.prfx;
+        field10.nbr = msgIdDS.nbr;
+        field10.count = ORD(rplcVarIdx);
+        cl_fldName = '&' + %trimr(field10);
+
+        // Set structure name and sub-field name
+        srcLine = replace(CL(2): STRUCTNAME: cl_structName);
+        srcLine = replace(srcLine: FIELD_NAME: cl_fldName);
+
+        // Set type
+        SELECT;
+        WHEN rplcVar.type = 'A';
+          srcLine = replace(srcLine: TYPE: '*CHAR': 5);
+        WHEN rplcVar.type = 'P';
+          srcLine = replace(srcLine: TYPE: '*DEC': 5);
+        WHEN rplcVar.type = 'B';
+          srcLine = replace(srcLine: TYPE: '*INT': 5);
+        WHEN rplcVar.type = 'U';
+          srcLine = replace(srcLine: TYPE: '*UINT': 5);
+        OTHER;
+          srcLine = replace(srcLine: TYPE: '*ERROR');
+        ENDSL;
+
+        // Set 'length' and 'fraction'
+        IF (rplcVar.type = 'P');
+          srcLine = replace(srcLine: LENGTH: toChar4(rplcVar.length: ''));
+          srcLine = replace(srcLine: FRACTION: toChar2(rplcVar.fraction: ''): 2);
+        ELSE;
+          IF (rplcVar.type = 'B');
+            srcLine = replace(srcLine: LENGTH: toChar4(getIntLengthCL(rplcVar): ''));
+          ELSEIF (rplcvar.type = 'U');
+            srcLine = replace(srcLine: LENGTH: toChar4(getIntLengthCL(rplcVar): ''));
+          ELSE;
+            srcLine = replace(srcLine: LENGTH: toChar4(rplcVar.length: ''));
+          ENDIF;
+          srcLine = replace(srcLine: FRACTION: '': 2);
+        ENDIF;
+
+        // Set start position
+        srcLine = replace(srcLine: START_POSITION: %char(OD));
+
+        writeLine(spaces(INDENT_CL_STRUCT) + srcline);
+
+        OD = OD + rplcVar.packedLen;
+
+      ENDFOR;
+    ELSE;
+      srcLine = CL(3);
+      writeLine(spaces(INDENT_CL_STRUCT) + srcline);
+    ENDIF;
+
+    // End with a blank line
+    writeLine('');
+
+  ENDSR;
+
+  //****************************************************
+  // Returns the total length of the structure.
+  //****************************************************
+  BEGSR getLenStruct;
+
+    // Determine number of replacement variables
+    EXSR getRplcVarCount;
+
+    IF (rplcVarCount <= 0);
+      // ... no replacement variables available
+      lenStruct = 0;
+    ELSE;
+
+      rplcVarOffs = 1;
+      lenStruct = 0;
+      FOR rplcVarIdx = 1 TO rplcVarCount;
+        EXSR getRplVar;
+        EXSR getVarType;
+        lenStruct = lenStruct + rplcVar.packedLen;
+      ENDFOR;
+
+    ENDIF;
+
+  ENDSR;
+
+  //****************************************************
   // Generate DEFINE compiler directive, part 1
   //****************************************************
   BEGSR genStartDefineRPG4;
@@ -4479,7 +4656,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(c(5));
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -4582,7 +4759,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(replace(RPG(11): DS_NAME: msgIdDS.prfx1ch + msgIdDS.nbr));
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -4699,7 +4876,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(replace(FREE(4): DS_NAME: gi_msgId));
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -4850,7 +5027,7 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(replace(IRPG(4): DS_NAME: gi_msgId));
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -4951,14 +5128,14 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(%trimr(CLP(11)) + ' +');
 
     // MSGID()
-    srcLine = spaces(INDENT_1) + 'MSGID';
+    srcLine = spaces(INDENT_CL_CMD) + 'MSGID';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) + gi_msgId;
     EXSR addCloseBracket;
     writeLine(srcLine);
 
     // MSGF()
-    srcLine = spaces(INDENT_1) + 'MSGF';
+    srcLine = spaces(INDENT_CL_CMD) + 'MSGF';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) +
             %trim(qGenMsgF.lib) + '/' + %trim(qGenMsgF.name);
@@ -4967,7 +5144,7 @@ dcl-proc CRTMSGDSR2 export;
 
     // MSG()
     IF (M3LGMR > 0);
-      srcLine = spaces(INDENT_1) + 'MSG';
+      srcLine = spaces(INDENT_CL_CMD) + 'MSG';
       EXSR addOpenBracket;
       srcLine = %trimr(srcLine) + ' +';
       writeLine(srcLine);
@@ -4979,12 +5156,12 @@ dcl-proc CRTMSGDSR2 export;
 
       splittLine(buffer);
 
-      writeLine(spaces(INDENT_1) + ') +');
+      writeLine(spaces(INDENT_CL_CMD) + ') +');
     ENDIF;
 
     // SECLVL()
     IF (M3LGMH > 0);
-      srcLine = spaces(INDENT_1) + 'SECLVL';
+      srcLine = spaces(INDENT_CL_CMD) + 'SECLVL';
       EXSR addOpenBracket;
       srcLine = %trimr(srcLine) + ' +';
       writeLine(srcLine);
@@ -4996,18 +5173,18 @@ dcl-proc CRTMSGDSR2 export;
 
       splittLine(buffer);
 
-      writeLine(spaces(INDENT_1) + ') +');
+      writeLine(spaces(INDENT_CL_CMD) + ') +');
     ENDIF;
 
     // SEV()
-    srcLine = spaces(INDENT_1) + 'SEV';
+    srcLine = spaces(INDENT_CL_CMD) + 'SEV';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) + str(M3MSSV);
     EXSR addCloseBracket;
     writeLine(srcLine);
 
     // Determine number of replacement variables
-    EXSR getRplVarCount;
+    EXSR getRplcVarCount;
 
     IF (rplcVarCount <= 0);
       // ... no replacement variables available
@@ -5015,7 +5192,7 @@ dcl-proc CRTMSGDSR2 export;
     ELSE;
 
       // FMT()
-      srcLine = spaces(INDENT_1) + 'FMT';
+      srcLine = spaces(INDENT_CL_CMD) + 'FMT';
       EXSR addOpenBracket;
       srcLine = %trimr(srcLine) + ' +';
       writeLine(srcLine);
@@ -5023,8 +5200,7 @@ dcl-proc CRTMSGDSR2 export;
       rplcVarOffs = 1;
       FOR rplcVarIdx = 1 TO rplcVarCount;
 
-        // %SUBST(SRCDTA: INDENT_2: 1) = '(';
-        srcLine = spaces(INDENT_2) + '(';
+        srcLine = spaces(INDENT_CL_RPLVAR) + '(';
 
         // Get replacement variable
         EXSR getRplVar;
@@ -5073,11 +5249,11 @@ dcl-proc CRTMSGDSR2 export;
 
       ENDFOR;
 
-      writeLine(spaces(INDENT_1) + ') +');
+      writeLine(spaces(INDENT_CL_CMD) + ') +');
     ENDIF;
 
     // ALROPT()
-    srcLine = spaces(INDENT_1) + 'ALROPT';
+    srcLine = spaces(INDENT_CL_CMD) + 'ALROPT';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) + M3ALOP;
     IF (M3ALID >= 1 AND M3ALID <= 99);
@@ -5087,14 +5263,14 @@ dcl-proc CRTMSGDSR2 export;
     writeLine(srcLine);
 
     // CCSID()
-    srcLine = spaces(INDENT_1) + 'CCSID';
+    srcLine = spaces(INDENT_CL_CMD) + 'CCSID';
     EXSR addOpenBracket;
     srcLine = %trimr(srcLine) + str(M3CCIT);
     EXSR addCloseBracket;
     writeLine(srcLine);
 
     // EOF
-    writeLine(spaces(INDENT_1) + '/*  -EOF-  */');
+    writeLine(spaces(INDENT_CL_CMD) + '/*  -EOF-  */');
 
     // Empty line
     writeLine('');
@@ -5153,7 +5329,7 @@ dcl-proc CRTMSGDSR2 export;
   //****************************************************
   // Returns the number of replacement variables
   //****************************************************
-  BEGSR getRplVarCount;
+  BEGSR getRplcVarCount;
 
     IF (M3LGVF > 0);
       rplcVarCount = M3LGVF / M3LVFE;
@@ -5325,6 +5501,30 @@ dcl-proc doubleHyphens;
   ENDDO;
 
   return buffer;
+
+end-proc;
+
+//***************************************************************
+//  returns the RPG/CLP length of binary/integer fields
+//***************************************************************
+dcl-proc getIntLengthCL;
+  dcl-pi *n int(10);
+    i_rplcVar likeds(rplcVar_t) const;
+  end-pi;
+
+  dcl-s intLen int(10);
+  //---------------------------------------------------------------
+
+  SELECT;
+  WHEN i_rplcVar.length >= 10;
+    intLen = 8;
+  WHEN i_rplcVar.length >= 5;
+    intLen = 4;
+  OTHER;
+    intLen = 2;
+  ENDSL;
+
+  RETURN intLen;
 
 end-proc;
 
@@ -5612,6 +5812,11 @@ end-ds;
 /endif
 //
   // %%FLDNME ==> Length = 0
+**  CL
+DCL VAR(%%STRUCTNAME) TYPE(*CHAR) LEN(%%LN)
+DCL   VAR(%%FLDNME) TYPE(%%TYPE) LEN(%%LN %%DP) STG(*DEFINED) DEFVAR(%%STRUCTNAME %%POS)
+/*  No replacement variables available!  */
+/*  %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  */
 **  CLP
      /*-------------------------------------------------------------*/
      /*   Cmd-ADDMSGD für Message-ID :   %%MSGID                    */
@@ -5672,6 +5877,109 @@ end-ds;
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing CRTMSGDSRU  type CLLE - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "CRTMSGDSRU"
+mbrtype =  "CLLE      "
+mbrtext =  "CRTMSGDS - Message file for unit tests.           "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+     /* =================================================================== */
+     /*                                                                     */
+     /*  Documentation:                                                     */
+     /*                                                                     */
+     /*  Utility . . . : CRTMSGDS                                           */
+     /*  Object  . . . : TESTMSGF                                           */
+     /*  Source member : TESTMSGF                                           */
+     /*  Source type . : CLLE                                               */
+     /*  Description   : Test Message File                                  */
+     /*  Author  . . . : Thomas Raddatz   <thomas.raddatz@tools400.de>      */
+     /*  Created . . . : 20.01.2024                                         */
+     /*                                                                     */
+     /* =================================================================== */
+     /*                                                                     */
+     /*  This software is free software, you can redistribute it and/or     */
+     /*  modify it under the terms of the GNU General Public License (GPL)  */
+     /*  as published by the Free Software Foundation.                      */
+     /*                                                                     */
+     /*  See GNU General Public License for details.                        */
+     /*          http://www.opensource.org                                  */
+     /*          http://www.opensource.org/licenses/gpl-license.html        */
+     /*                                                                     */
+     /* =================================================================== */
+     /*   >>PRE-COMPILER<<                                                  */
+     /*     >>CRTCMD<<    CRTBNDCL  PGM(QTEMP/&OB) +                        */
+     /*                             SRCFILE(&SL/&SF) SRCMBR(&SM);           */
+     /*     >>IMPORTANT<<                                                   */
+     /*       >>PARM<<    OPTION(*EVENTF);                                  */
+     /*     >>END-IMPORTANT<<                                               */
+     /*     >>EXECUTE<<                                                     */
+     /*     >>CMD<<       CALL   PGM(QTEMP/&OB) PARM('&LI' '&OB');          */
+     /*     >>CMD<<       DLTPGM PGM(QTEMP/&OB);                            */
+     /*   >>END-PRE-COMPILER<<                                              */
+     /* =================================================================== */
+             PGM        PARM(&TOLIB &MSGF)
+
+             DCL        VAR(&TOLIB    ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGF     ) TYPE(*CHAR) LEN(10)
+
+             DLTMSGF    MSGF(&TOLIB/&MSGF)
+             MONMSG     MSGID(CPF2105)
+
+             CRTMSGF    MSGF(&TOLIB/&MSGF) TEXT('CRTMSGDS - Message file for unit tests.')
+
+             ADDMSGD    MSGID(USR0001) MSGF(&TOLIB/&MSGF) +
+                        MSG('A test message with replacement variables.') +
+                        FMT( +
+                          (*QTDCHAR 10  ) +
+                          (*CHAR    20  ) +
+                          (*HEX     12  ) +
+                          (*DEC     15 5) +
+                          (*BIN      8  ) +
+                          (*BIN      4  ) +
+                          (*BIN      2  ) +
+                          (*UBIN     8  ) +
+                          (*UBIN     4  ) +
+                          (*UBIN     2  ) +
+                        )
+
+             ADDMSGD    MSGID(USR0002) MSGF(&TOLIB/&MSGF) +
+                        MSG('A test message without replacement variables.')
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_FREE  ) REPLACE(*YES) TYPE(*FREE)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_ILERPG) REPLACE(*YES) TYPE(*ILERPG)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_RPG   ) REPLACE(*YES) TYPE(*RPG)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_C     ) REPLACE(*YES) TYPE(*C)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_CL    ) REPLACE(*YES) TYPE(*CL)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_CLP   ) REPLACE(*YES) TYPE(*CLP)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_CLLE  ) REPLACE(*YES) TYPE(*CLLE)
+
+             CRTMSGDS RANGE(*ALL) MSGF(&TOLIB/&MSGF) FILE(QCRTMSGDS) +
+                      MBR(X_SCRIPT) REPLACE(*YES) TYPE(*SCRIPT)
+
+
+             ENDPGM
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
 Installing H_SPEC  type RPGLE - in progress.
 ]]>  </sendmsg>
 <!-- START OF MEMBER  -->
@@ -5686,30 +5994,6 @@ srccssid=  "01141">
 <copysrc><![CDATA[
 **free
 ctl-opt debug option(*srcstmt : *nodebugio) decedit('0,') datedit(*dmy.);
-]]>  </copysrc>
-</mbr>
-<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
-Installing RUNIT01  type RPGLE - in progress.
-]]>  </sendmsg>
-<!-- START OF MEMBER  -->
-<mbr
-mbrname =  "RUNIT01   "
-mbrtype =  "RPGLE     "
-mbrtext =  "CRTMSGDS - Unit Test                              "
-srcfile =  "QCRTMSGDS "
-srclib  =  "selected  "
-srclen  =  "00112"
-srccssid=  "01141">
-<copysrc><![CDATA[
-**free
-// CRTMSGDS MSGF(CRTMSGDSRU) FILE(QCRTMSGDS) MBR(X_FREE  ) REPLACE(*YES) TYPE(*FREE)
-// CRTMSGDS MSGF(CRTMSGDSRU) FILE(QCRTMSGDS) MBR(X_ILERPG) REPLACE(*YES) TYPE(*ILERPG)
-// CRTMSGDS MSGF(CRTMSGDSRU) FILE(QCRTMSGDS) MBR(X_RPG   ) REPLACE(*YES) TYPE(*RPG)
-// CRTMSGDS MSGF(CRTMSGDSRU) FILE(QCRTMSGDS) MBR(X_C     ) REPLACE(*YES) TYPE(*C)
-// CRTMSGDS MSGF(CRTMSGDSRU) FILE(QCRTMSGDS) MBR(X_CLP   ) REPLACE(*YES) TYPE(*CLP)
-// CRTMSGDS MSGF(CRTMSGDSRU) FILE(QCRTMSGDS) MBR(X_CLLE  ) REPLACE(*YES) TYPE(*CLLE)
-// CRTMSGDS MSGF(CRTMSGDSRU) FILE(QCRTMSGDS) MBR(X_SCRIPT) REPLACE(*YES) TYPE(*SCRIPT)
-
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
@@ -5775,6 +6059,462 @@ dcl-ds sds qualified psds;
 end-ds;
 /endif
 /endif
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing X_C  type H - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "X_C       "
+mbrtype =  "H         "
+mbrtext =  "MSG: USR0001 - USR0002                            "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+  /* --------------------------------------------------------------------- */
+  /*   Data structure for message-ID : USR0001                             */
+  /*   A test message with replacement variables.                          */
+  /* --------------------------------------------------------------------- */
+
+  typedef _Packed struct {
+    char                 d1[10];
+    char                 d2[20];
+    char                 d3[12];
+    decimal(15,5)        d4;
+    long long            d5;
+    long                 d6;
+    short                d7;
+    unsigned long long   d8;
+    unsigned long        d9;
+    unsigned short       dA;
+  } usr0001_t;
+  /* --------------------------------------------------------------------- */
+  /*   Data structure for message-ID : USR0002                             */
+  /*   A test message without replacement variables.                       */
+  /* --------------------------------------------------------------------- */
+
+  typedef _Packed struct {
+    char                 dummy;
+  } usr0002_t;
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing X_CL  type CLLE - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "X_CL      "
+mbrtype =  "CLLE      "
+mbrtext =  "MSG: USR0001 - USR0002                            "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+
+/*  A test message with replacement variables.                         */
+DCL VAR(&USR0001) TYPE(*CHAR) LEN(78)
+DCL   VAR(&USR00011) TYPE(*CHAR) LEN(  10   ) STG(*DEFINED) DEFVAR(&USR0001 1)
+DCL   VAR(&USR00012) TYPE(*CHAR) LEN(  20   ) STG(*DEFINED) DEFVAR(&USR0001 11)
+DCL   VAR(&USR00013) TYPE(*CHAR) LEN(  12   ) STG(*DEFINED) DEFVAR(&USR0001 31)
+DCL   VAR(&USR00014) TYPE(*DEC ) LEN(  15  5) STG(*DEFINED) DEFVAR(&USR0001 43)
+DCL   VAR(&USR00015) TYPE(*INT ) LEN(   8   ) STG(*DEFINED) DEFVAR(&USR0001 51)
+DCL   VAR(&USR00016) TYPE(*INT ) LEN(   4   ) STG(*DEFINED) DEFVAR(&USR0001 59)
+DCL   VAR(&USR00017) TYPE(*INT ) LEN(   2   ) STG(*DEFINED) DEFVAR(&USR0001 63)
+DCL   VAR(&USR00018) TYPE(*UINT) LEN(   8   ) STG(*DEFINED) DEFVAR(&USR0001 65)
+DCL   VAR(&USR00019) TYPE(*UINT) LEN(   4   ) STG(*DEFINED) DEFVAR(&USR0001 73)
+DCL   VAR(&USR0001A) TYPE(*UINT) LEN(   2   ) STG(*DEFINED) DEFVAR(&USR0001 77)
+
+
+/*  A test message without replacement variables.                      */
+/* DCL VAR(&USR0002) TYPE(*CHAR) LEN(0)
+/*  No replacement variables available!  */
+
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing X_CLLE  type CLLE - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "X_CLLE    "
+mbrtype =  "CLLE      "
+mbrtext =  "MSG: USR0001 - USR0002                            "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+     /*-----------------------------------------------------------------------*/
+     /* STRPREPRC Compile Options:                                            */
+     /* >>PRE-COMPILER<<                                                      */
+     /*   >>CRTCMD<<  CALL       PGM(QTEMP/&OB) PARM(&LI &OB);                */
+     /*   >>CMD<<     CRTBNDCL   PGM(QTEMP/&OB) +                             */
+     /*                          SRCFILE(&SL/&SF) SRCMBR(&SM) +               */
+     /*               TEXT('CRTMSGDS - Message file for unit tests.');        */
+     /*   >>EXECUTE<<                                                         */
+     /*   >>CMD<<     DLTPGM PGM(QTEMP/&OB);                                  */
+     /* >>END-PRE-COMPILER<<                                                  */
+     /*-----------------------------------------------------------------------*/
+             PGM        PARM(&I_LIB &I_OBJ)
+
+             DCL        VAR(&I_LIB     ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&I_OBJ     ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LIB       ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OBJ       ) TYPE(*CHAR) LEN(10)
+
+             CHGVAR     VAR(&LIB       ) VALUE(&I_LIB)
+             MONMSG     MSGID(MCH3601) EXEC(DO)
+               RMVMSG     PGMQ(*SAME (*)) CLEAR(*ALL)
+               SNDPGMMSG  MSGID(CPF9898) MSGF(*LIBL/QCPFMSG) +
+                            MSGDTA('Usage: CALL PGM(X_CLLE) +
+                                    PARM(libName [msgFName)') +
+                            TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*ESCAPE)
+             ENDDO
+
+             CHGVAR     VAR(&OBJ       ) VALUE(&I_OBJ)
+             MONMSG     MSGID(MCH3601) EXEC(DO)
+               RMVMSG     PGMQ(*SAME (*)) CLEAR(*ALL)
+               CHGVAR     VAR(&OBJ) VALUE('CRTMSGDSRU')
+             ENDDO
+
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /* A test message with replacement variables.                  */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0001) MSGF(&LIB/&OBJ)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0001) +
+                MSGF(&LIB/&OBJ) +
+                MSG( +
+'A test message with replacement variables.'                          +
+                ) +
+                SEV(0) +
+                FMT( +
+                    (*QTDCHAR 10) +
+                    (*CHAR 20) +
+                    (*HEX 12) +
+                    (*DEC 15 5) +
+                    (*BIN 8 0) +
+                    (*BIN 4 0) +
+                    (*BIN 2 0) +
+                    (*UBIN 8 0) +
+                    (*UBIN 4 0) +
+                    (*UBIN 2 0) +
+                ) +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /* A test message without replacement variables.               */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0002) MSGF(&LIB/&OBJ)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0002) +
+                MSGF(&LIB/&OBJ) +
+                MSG( +
+'A test message without replacement variables.'                       +
+                ) +
+                SEV(0) +
+     /*   No replacement variables defined!                         */ +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
+             RCLRSC LVL(*)
+
+             ENDPGM
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing X_CLP  type CLP - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "X_CLP     "
+mbrtype =  "CLP       "
+mbrtext =  "MSG: USR0001 - USR0002                            "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+     /*-----------------------------------------------------------------------*/
+     /* STRPREPRC Compile Options:                                            */
+     /* >>PRE-COMPILER<<                                                      */
+     /*   >>CRTCMD<<  CALL       PGM(QTEMP/&OB) PARM(&LI &OB);                */
+     /*   >>CMD<<     CRTCLPGM   PGM(QTEMP/&OB) +                             */
+     /*                          SRCFILE(&SL/&SF) SRCMBR(&SM) +               */
+     /*               TEXT('CRTMSGDS - Message file for unit tests.');        */
+     /*   >>EXECUTE<<                                                         */
+     /*   >>CMD<<     DLTPGM PGM(QTEMP/&OB);                                  */
+     /* >>END-PRE-COMPILER<<                                                  */
+     /*-----------------------------------------------------------------------*/
+             PGM        PARM(&I_LIB &I_OBJ)
+
+             DCL        VAR(&I_LIB     ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&I_OBJ     ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LIB       ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OBJ       ) TYPE(*CHAR) LEN(10)
+
+             CHGVAR     VAR(&LIB       ) VALUE(&I_LIB)
+             MONMSG     MSGID(MCH3601) EXEC(DO)
+               RMVMSG     PGMQ(*SAME (*)) CLEAR(*ALL)
+               SNDPGMMSG  MSGID(CPF9898) MSGF(*LIBL/QCPFMSG) +
+                            MSGDTA('Usage: CALL PGM(X_CLP) +
+                                    PARM(libName [msgFName)') +
+                            TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*ESCAPE)
+             ENDDO
+
+             CHGVAR     VAR(&OBJ       ) VALUE(&I_OBJ)
+             MONMSG     MSGID(MCH3601) EXEC(DO)
+               RMVMSG     PGMQ(*SAME (*)) CLEAR(*ALL)
+               CHGVAR     VAR(&OBJ) VALUE('CRTMSGDSRU')
+             ENDDO
+
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /* A test message with replacement variables.                  */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0001) MSGF(&LIB/&OBJ)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0001) +
+                MSGF(&LIB/&OBJ) +
+                MSG( +
+'A test message with replacement variables.'                          +
+                ) +
+                SEV(0) +
+                FMT( +
+                    (*QTDCHAR 10) +
+                    (*CHAR 20) +
+                    (*HEX 12) +
+                    (*DEC 15 5) +
+                    (*BIN 8 0) +
+                    (*BIN 4 0) +
+                    (*BIN 2 0) +
+                    (*UBIN 8 0) +
+                    (*UBIN 4 0) +
+                    (*UBIN 2 0) +
+                ) +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /* A test message without replacement variables.               */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0002) MSGF(&LIB/&OBJ)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0002) +
+                MSGF(&LIB/&OBJ) +
+                MSG( +
+'A test message without replacement variables.'                       +
+                ) +
+                SEV(0) +
+     /*   No replacement variables defined!                         */ +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
+             RCLRSC LVL(*)
+
+             ENDPGM
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing X_FREE  type FREE - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "X_FREE    "
+mbrtype =  "FREE      "
+mbrtext =  "MSG: USR0001 - USR0002                            "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+**free
+// ---------------------------------------------------------------
+//  Data structure for message ID: USR0001
+//  A test message with replacement variables.
+dcl-ds USR0001 qualified;
+  var1  char(10) inz;
+  var2  char(20) inz;
+  var3  char(12) inz;
+  var4  packed(15:5) inz;
+  var5  int(20) inz;
+  var6  int(10) inz;
+  var7  int(5) inz;
+  var8  uns(20) inz;
+  var9  uns(10) inz;
+  varA  uns(5) inz;
+end-ds;
+**free
+// ---------------------------------------------------------------
+//  Data structure for message ID: USR0002
+//  A test message without replacement variables.
+dcl-ds USR0002 qualified;
+      //  No replacement variables available!
+end-ds;
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing X_ILERPG  type ILERPG - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "X_ILERPG  "
+mbrtype =  "ILERPG    "
+mbrtext =  "MSG: USR0001 - USR0002                            "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+      // ---------------------------------------------------------------
+      //  Data structure for message ID: USR0001
+      //  A test message with replacement variables.
+     d USR0001         ds
+     d  USR00011                     10A   inz(*BLANKS)
+     d  USR00012                     20A   inz(*BLANKS)
+     d  USR00013                     12A   inz(*BLANKS)
+     d  USR00014                     15P 5 inz(*ZEROS )
+     d  USR00015                     20I 0 inz(*ZEROS )
+     d  USR00016                     10I 0 inz(*ZEROS )
+     d  USR00017                      5I 0 inz(*ZEROS )
+     d  USR00018                     20U   inz(*ZEROS )
+     d  USR00019                     10U   inz(*ZEROS )
+     d  USR0001A                      5U   inz(*ZEROS )
+     d USR0001_SIZE    s             10I 0 inz(78)
+      // ---------------------------------------------------------------
+      //  Data structure for message ID: USR0002
+      //  A test message without replacement variables.
+     d USR0002         ds
+      //  No replacement variables available!
+     d USR0002_SIZE    s             10I 0 inz(0)
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing X_RPG  type RPG - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "X_RPG     "
+mbrtype =  "RPG       "
+mbrtext =  "MSG: USR0001 - USR0002                            "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+      *---------------------------------------------------------------
+      * Data structure for message ID: USR0001
+      * A test message with replacement variables.
+     IU0001       DS
+     I I                                      1  10 U00011
+     I I                                     11  30 U00012
+     I I                                     31  42 U00013
+     I I                                  P  43  505U00014
+     I I                                  B  51  580U00015
+     I I                                  B  59  620U00016
+     I I                                  B  63  640U00017
+     I I                                  B  65  720U00018
+     I I                                  B  73  760U00019
+     I I                                  B  77  780U0001A
+     I            DS
+     I I              78                  B   1   40U0001L
+      *---------------------------------------------------------------
+      * Data structure for message ID: USR0002
+      * A test message without replacement variables.
+     IU0002       DS
+      *   No replacement variables available!
+     I            DS
+     I I               0                  B   1   40U0002L
+]]>  </copysrc>
+</mbr>
+<sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
+Installing X_SCRIPT  type SCRIPT - in progress.
+]]>  </sendmsg>
+<!-- START OF MEMBER  -->
+<mbr
+mbrname =  "X_SCRIPT  "
+mbrtype =  "SCRIPT    "
+mbrtext =  "MSG: USR0001 - USR0002                            "
+srcfile =  "QCRTMSGDS "
+srclib  =  "selected  "
+srclen  =  "00112"
+srccssid=  "01141">
+<copysrc><![CDATA[
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /* A test message with replacement variables.                  */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0001) MSGF(&LI/&SF)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0001) +
+                MSGF(&LI/&SF) +
+                MSG( +
+'A test message with replacement variables.'                          +
+                ) +
+                SEV(0) +
+                FMT( +
+                    (*QTDCHAR 10) +
+                    (*CHAR 20) +
+                    (*HEX 12) +
+                    (*DEC 15 5) +
+                    (*BIN 8 0) +
+                    (*BIN 4 0) +
+                    (*BIN 2 0) +
+                    (*UBIN 8 0) +
+                    (*UBIN 4 0) +
+                    (*UBIN 2 0) +
+                ) +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /* A test message without replacement variables.               */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0002) MSGF(&LI/&SF)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0002) +
+                MSGF(&LI/&SF) +
+                MSG( +
+'A test message without replacement variables.'                       +
+                ) +
+                SEV(0) +
+     /*   No replacement variables defined!                         */ +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
 ]]>  </copysrc>
 </mbr>
 <qcmdexc condition="*NONE" release="*CURRENT" dltsplf="A_INSTALL"><![CDATA[

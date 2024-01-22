@@ -1,0 +1,87 @@
+     /*-----------------------------------------------------------------------*/
+     /* STRPREPRC Compile Options:                                            */
+     /* >>PRE-COMPILER<<                                                      */
+     /*   >>CRTCMD<<  CALL       PGM(QTEMP/&OB) PARM(&LI &OB);                */
+     /*   >>CMD<<     CRTCLPGM   PGM(QTEMP/&OB) +                             */
+     /*                          SRCFILE(&SL/&SF) SRCMBR(&SM) +               */
+     /*               TEXT('CRTMSGDS - Message file for unit tests.');        */
+     /*   >>EXECUTE<<                                                         */
+     /*   >>CMD<<     DLTPGM PGM(QTEMP/&OB);                                  */
+     /* >>END-PRE-COMPILER<<                                                  */
+     /*-----------------------------------------------------------------------*/
+             PGM        PARM(&I_LIB &I_OBJ)
+
+             DCL        VAR(&I_LIB     ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&I_OBJ     ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LIB       ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OBJ       ) TYPE(*CHAR) LEN(10)
+
+             CHGVAR     VAR(&LIB       ) VALUE(&I_LIB)
+             MONMSG     MSGID(MCH3601) EXEC(DO)
+               RMVMSG     PGMQ(*SAME (*)) CLEAR(*ALL)
+               SNDPGMMSG  MSGID(CPF9898) MSGF(*LIBL/QCPFMSG) +
+                            MSGDTA('Usage: CALL PGM(X_CLP) +
+                                    PARM(libName [msgFName)') +
+                            TOPGMQ(*PRV (*PGMBDY)) MSGTYPE(*ESCAPE)
+             ENDDO
+
+             CHGVAR     VAR(&OBJ       ) VALUE(&I_OBJ)
+             MONMSG     MSGID(MCH3601) EXEC(DO)
+               RMVMSG     PGMQ(*SAME (*)) CLEAR(*ALL)
+               CHGVAR     VAR(&OBJ) VALUE('CRTMSGDSRU')
+             ENDDO
+
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /* A test message with replacement variables.                  */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0001) MSGF(&LIB/&OBJ)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0001) +
+                MSGF(&LIB/&OBJ) +
+                MSG( +
+'A test message with replacement variables.'                          +
+                ) +
+                SEV(0) +
+                FMT( +
+                    (*QTDCHAR 10) +
+                    (*CHAR 20) +
+                    (*HEX 12) +
+                    (*DEC 15 5) +
+                    (*BIN 8 0) +
+                    (*BIN 4 0) +
+                    (*BIN 2 0) +
+                    (*UBIN 8 0) +
+                    (*UBIN 4 0) +
+                    (*UBIN 2 0) +
+                ) +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
+     /*-------------------------------------------------------------*/
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /* A test message without replacement variables.               */
+     /*-------------------------------------------------------------*/
+
+             RMVMSGD MSGID(USR0002) MSGF(&LIB/&OBJ)
+             MONMSG  MSGID(CPF2419)     /* MsgID nicht gefunden */
+
+             ADDMSGD +
+                MSGID(USR0002) +
+                MSGF(&LIB/&OBJ) +
+                MSG( +
+'A test message without replacement variables.'                       +
+                ) +
+                SEV(0) +
+     /*   No replacement variables defined!                         */ +
+                ALROPT(*NO) +
+                CCSID(65535) +
+                /*  -EOF-  */
+
+             RCLRSC LVL(*)
+
+             ENDPGM
