@@ -22,9 +22,9 @@
 //=====================================================================
 //  History:
 //
-//  Datum       Name          Änderung
+//  Datum       Name          ï¿½nderung
 //  ----------  ------------  ---------------------------------------
-//  10.01.2003  Th.Raddatz    Removed special character Ä from source.
+//  10.01.2003  Th.Raddatz    Removed special character ï¿½ from source.
 //
 //  02.02.2022  Th.Raddatz    Converted source code to /free.
 //
@@ -41,14 +41,14 @@
 // >>END-PRE-COMPILER<<
 // ===================================================================
 ctl-opt nomain;
-/COPY QCRTMSGDS,H_SPEC
-/COPY QCRTMSGDS,COPYRIGHT
+/copy QCRTMSGDS,H_SPEC
+/copy QCRTMSGDS,COPYRIGHT
 // ===================================================================
 
 //  Qualified object name
 dcl-ds qObj_t qualified based(pdummy);
   name char(10);
-  lib char(10);
+  lib  char(10);
 end-ds;
 
 //  Retrieve Message (QMHRTVM) API
@@ -57,15 +57,15 @@ dcl-pr QMHRTVM extpgm('QMHRTVM');
   *n int(10) const; // i_msgInfLen
   *n char(8) const; // i_format
   *n char(7) const; // i_msgID
-  *n const  likeds(qobj_t); // i_qMsgF
-  *n char(65535) const  options(*varsize ); // i_rplData
+  *n likeds(qobj_t) const; // i_qMsgF
+  *n char(65535) options(*varsize) const; // i_rplData
   *n int(10) const; // i_rpldataLen
   *n char(10) const; // i_rplVars
   *n char(10) const; // i_rtnCtrlChrs
-  *n char(65535) options(*varsize ); // io_ErrCode
-  *n char(10) const  options(*nopass  ); // i_rtvOpt  | OptGrp 1
-  *n int(10) const  options(*nopass  ); // i_toCcsid  |
-  *n int(10) const  options(*nopass  ); // i_ccsidRplDta  |
+  *n char(65535) options(*varsize); // io_ErrCode
+  *n char(10) options(*nopass) const; // i_rtvOpt  | OptGrp 1
+  *n int(10) options(*nopass) const; // i_toCcsid  |
+  *n int(10) options(*nopass) const; // i_ccsidRplDta  |
 end-pr;
 
 //  Program entry point
@@ -75,22 +75,22 @@ end-pr;
 //***************************************************************
 dcl-proc CRTMSGDSR1 export;
   dcl-pi *n;
-    XMSGL char(10) const; // Msg-Lib
-    XMSGF char(10) const; // Msg-File
-    XMSGI char(7) const; // Msg-Id
-    XRTVO char(7) const; // Retrieve option
-    XMSGR char(7); // Msg-Id Returned
+    XMSGL  char(10) const; // Msg-Lib
+    XMSGF  char(10) const; // Msg-File
+    XMSGI  char(7) const; // Msg-Id
+    XRTVO  char(7) const; // Retrieve option
+    XMSGR  char(7); // Msg-Id Returned
     XERRID char(7); // Error-Id
     XERRDT char(80); // Error-Data
   end-pi;
 
 
   dcl-ds errCode qualified;
-    bytPrv int(10) inz;
-    bytAvl int(10) inz;
-    excID char(7) inz;
+    bytPrv     int(10) inz;
+    bytAvl     int(10) inz;
+    excID      char(7) inz;
     reserved_1 char(1) inz;
-    excDta char(16) inz;
+    excDta     char(16) inz;
   end-ds;
 
   dcl-ds qMsgF likeds(qobj_t) inz;

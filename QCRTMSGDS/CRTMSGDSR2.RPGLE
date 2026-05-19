@@ -22,11 +22,11 @@
 //=====================================================================
 //  History:
 //
-//  Datum       Name          Änderung
+//  Datum       Name          ï¿½nderung
 //  ----------  ------------  ---------------------------------------
 //  07.09.2001  Th.Raddatz    Fixed a bug when field length is *ZEROS.
 //
-//  10.01.2003  Th.Raddatz    Removed special character Ä from source.
+//  10.01.2003  Th.Raddatz    Removed special character ï¿½ from source.
 //
 //  08.03.2005  Th.Raddatz    Fixed problem that trailing blanks of
 //                            message help text were dropped.
@@ -37,11 +37,11 @@
 //                            that message text was truncated.
 //
 //  18.04.2008  Th.Raddatz    Datenstruktur MS0300 von 1024 auf 8192
-//                            Byte vergrößert.
+//                            Byte vergrï¿½ï¿½ert.
 //
 //  26.01.2009  Th.Raddatz    Code des generierten CLP Programms
-//                            geändert. Bibliothek kann jetzt als
-//                            optionaler Parameter übergeben werden.
+//                            geï¿½ndert. Bibliothek kann jetzt als
+//                            optionaler Parameter ï¿½bergeben werden.
 //                            Befehlsparameter TYPE um Auswahl
 //                            *CLLE erweitert.
 //
@@ -121,15 +121,15 @@
 //
 // ===================================================================
 ctl-opt nomain;
-/COPY QCRTMSGDS,H_SPEC
-/COPY QCRTMSGDS,COPYRIGHT
+/copy QCRTMSGDS,H_SPEC
+/copy QCRTMSGDS,COPYRIGHT
 // ===================================================================
-dcl-f SRC disk(256) usage(*output) usropn  infds(fileinfo);
+dcl-f SRC disk(256) usage(*output) usropn infds(fileinfo);
 
 dcl-ds fileInfo qualified;
-  name char(10) pos(83);
+  name    char(10) pos(83);
   library char(10);
-  member char(10) pos(129);
+  member  char(10) pos(129);
 end-ds;
 
 //  Record format of file SRC
@@ -153,14 +153,14 @@ dcl-s srcLine_t like(fsrc.srcdta);
 //  Qualified object name
 dcl-ds qObj_t qualified template;
   name char(10);
-  lib char(10);
+  lib  char(10);
 end-ds;
 
 dcl-ds rplcVar_t qualified template;
-  length int(10);
+  length    int(10);
   packedLen int(10);
-  fraction int(10);
-  type char(1);
+  fraction  int(10);
+  type      char(1);
 end-ds;
 
 dcl-c GENTYPE_FREE '*FREE';
@@ -207,36 +207,36 @@ dcl-c TYPE '%%TYPE';
 dcl-c PTF_OFFSET 1;
 
 // Exported Procedures
-dcl-pr getPrdLib char(10) extproc(*DCLCASE);
+dcl-pr getPrdLib char(10) extproc(*dclcase);
 end-pr;
 
 dcl-pr sndMsgToCmdLine;
-  i_msgId   char(7) const;
-  i_msgDta  char(512) options(*nopass) const;
+  i_msgId  char(7) const;
+  i_msgDta char(512) options(*nopass) const;
 end-pr;
 
-/DEFINE SDS_EXTENDED
-/COPY QCRTMSGDS,SDS
+/define SDS_EXTENDED
+/copy QCRTMSGDS,SDS
 
 //***************************************************************
 //  Main procedure
 //***************************************************************
 dcl-proc CRTMSGDSR2 export;
   dcl-pi *n;
-    gi_msgFLib char(10) const; // Msg-Lib
-    gi_msgF char(10) const; // Msg-File
-    gi_msgFText char(50) const; // Msg-File-Text
-    gi_msgId char(7) const; // Msg-ID
-    gi_copyFLib char(10) const; // Cpy-Lib
-    gi_copyF char(10) const; // Cpy-File
-    gi_genType char(10) const; // Gener.Art
-    gi_isDefine ind const; // Define-Best.
+    gi_msgFLib   char(10) const; // Msg-Lib
+    gi_msgF      char(10) const; // Msg-File
+    gi_msgFText  char(50) const; // Msg-File-Text
+    gi_msgId     char(7) const; // Msg-ID
+    gi_copyFLib  char(10) const; // Cpy-Lib
+    gi_copyF     char(10) const; // Cpy-File
+    gi_genType   char(10) const; // Gener.Art
+    gi_isDefine  ind const; // Define-Best.
     gi_isCrtMsgF ind const; // CrtMsgF-Befehl
     gi_isFirstId ind const; // 1. Msg-ID
-    gi_isLastId ind const; // Letzte Msg-ID
-    go_mbrText char(80); // MbrText
-    go_excId char(7); // Error-ID
-    go_excDta char(80); // Error-Data
+    gi_isLastId  ind const; // Letzte Msg-ID
+    go_mbrText   char(80); // MbrText
+    go_excId     char(7); // Error-ID
+    go_excDta    char(80); // Error-Data
   end-pi;
 
   dcl-s srcLine like(srcline_t);
@@ -247,15 +247,15 @@ dcl-proc CRTMSGDSR2 export;
     *n int(10) const; // i_msgInfLen
     *n char(8) const; // i_format
     *n char(7) const; // i_msgID
-    *n const  likeds(qobj_t); // i_qMsgF
-    *n char(65535) const  options(*varsize ); // i_rplData
+    *n likeds(qobj_t) const; // i_qMsgF
+    *n char(65535) options(*varsize) const; // i_rplData
     *n int(10) const; // i_rpldataLen
     *n char(10) const; // i_rplVars
     *n char(10) const; // i_rtnCtrlChrs
-    *n char(65535) options(*varsize ); // io_ErrCode
-    *n char(10) const  options(*nopass  ); // i_rtvOpt  | OptGrp 1
-    *n int(10) const  options(*nopass  ); // i_toCcsid  |
-    *n int(10) const  options(*nopass  ); // i_ccsidRplDta  |
+    *n char(65535) options(*varsize); // io_ErrCode
+    *n char(10) options(*nopass) const; // i_rtvOpt  | OptGrp 1
+    *n int(10) options(*nopass) const; // i_toCcsid  |
+    *n int(10) options(*nopass) const; // i_ccsidRplDta  |
   end-pr;
 
   //  Record format RTVM0300
@@ -291,40 +291,40 @@ dcl-proc CRTMSGDSR2 export;
 
   // Format of replacement variable
   dcl-ds MS030F;
-    M3FLGD int(10);    // Length of replacement data for substitution variable
-    M3FFSZ int(10);    // Field size or decimal positions
-    M3FTYP char(10);   // Substitution variable type
-    M3FRS1 char(238);  // Reserved
-    M3FRS2 char(256);  // Reserved
+    M3FLGD int(10); // Length of replacement data for substitution variable
+    M3FFSZ int(10); // Field size or decimal positions
+    M3FTYP char(10); // Substitution variable type
+    M3FRS1 char(238); // Reserved
+    M3FRS2 char(256); // Reserved
   end-ds;
 
   // Generic API error structure
   dcl-ds errCode qualified;
-    bytPrv int(10) inz;
-    bytAvl int(10) inz;
-    excID char(7) inz;
+    bytPrv     int(10) inz;
+    bytAvl     int(10) inz;
+    excID      char(7) inz;
     reserved_1 char(1) inz;
-    excDta char(16) inz;
+    excDta     char(16) inz;
   end-ds;
 
   // Message ID parts
   dcl-ds msgIdDS qualified;
-    prfx char(3) inz;
+    prfx    char(3) inz;
     prfx1ch char(1) inz overlay(prfx);
-    nbr char(4) inz;
+    nbr     char(4) inz;
   end-ds;
 
   // 6-char RPG field name
   dcl-ds field6 qualified;
-    prfx char(1);
-    nbr char(4);
+    prfx  char(1);
+    nbr   char(4);
     count char(3);
   end-ds;
 
   // 10-char ILE-RPG field name
   dcl-ds field10 qualified;
-    prfx char(3);
-    nbr char(4);
+    prfx  char(3);
+    nbr   char(4);
     count char(5);
   end-ds;
 
@@ -359,7 +359,7 @@ dcl-proc CRTMSGDSR2 export;
   // Sub-field counter
   dcl-s OD int(10);
 
-  // laufender Zähler Variablenverarbeitung
+  // laufender Zï¿½hler Variablenverarbeitung
   dcl-s rplcVarIdx int(10);
 
   // Total length of data structure
@@ -768,7 +768,7 @@ dcl-proc CRTMSGDSR2 export;
     // MONMSG (2)
     //******              MOVELCLP,9     SRCDTA    P
     //******              EXSR WRTLINE
-    //
+
     ENDIF;
 
     // Empty line
@@ -1650,7 +1650,7 @@ dcl-proc CRTMSGDSR2 export;
             srcLine = %trimr(srcLine) + '*UBIN';
           ENDIF;
 
-        // Adjust length for binary and unsigned binary fields
+          // Adjust length for binary and unsigned binary fields
           SELECT;
           WHEN rplcVar.length >= 10;
             rplcVar.length = 8;
@@ -1851,7 +1851,7 @@ end-proc;
 //****************************************************
 dcl-proc writeLine;
   dcl-pi *n;
-    io_srcLine const like(srcline_t);
+    io_srcLine like(srcline_t) const;
   end-pi;
 
   FSRC.SRCSEQ = FSRC.SRCSEQ + ,01;
@@ -1962,9 +1962,9 @@ end-proc;
 dcl-proc replace;
   dcl-pi *n char(256);
     i_string char(256) value;
-    i_var char(20) value;
-    i_value char(256) value;
-    i_length int(10) value options(*nopass);
+    i_var    char(20) value;
+    i_value  char(256) value;
+    i_length int(10) options(*nopass) value;
   end-pi;
 
   dcl-c p_length 4;
@@ -2015,8 +2015,8 @@ dcl-proc lcase;
     i_string char(256) value;
   end-pi;
 
-  dcl-c uc const('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-  dcl-c lc const('abcdefghijklmnopqrstuvwxyz');
+  dcl-c uc 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  dcl-c lc 'abcdefghijklmnopqrstuvwxyz';
   //---------------------------------------------------------------
 
   %SUBST(i_string:1:%SIZE(i_string)) =
@@ -2074,8 +2074,8 @@ end-proc;
 //***************************************************************
 dcl-proc toChar2;
   dcl-pi *n char(2);
-    i_integer int(10) const;
-    i_rplcSpace char(1) const options(*nopass);
+    i_integer   int(10) const;
+    i_rplcSpace char(1) options(*nopass) const;
   end-pi;
   //---------------------------------------------------------------
 
@@ -2092,8 +2092,8 @@ end-proc;
 //***************************************************************
 dcl-proc toChar4;
   dcl-pi *n char(4);
-    i_integer int(10) const;
-    i_rplcSpace char(1) const options(*nopass);
+    i_integer   int(10) const;
+    i_rplcSpace char(1) options(*nopass) const;
   end-pi;
   //---------------------------------------------------------------
 
@@ -2135,43 +2135,43 @@ end-proc;
 //  sends a message to the command line.
 //***************************************************************
 dcl-proc sndMsgToCmdLine export;
-  dcl-pi *N;
-    i_msgId   char(7) const;
-    i_msgDta  char(512) options(*nopass) const;
+  dcl-pi *n;
+    i_msgId  char(7) const;
+    i_msgDta char(512) options(*nopass) const;
   end-pi;
 
   //  Local fields
-  dcl-s msgkey      char(4);
-  dcl-s msgDta      like(i_msgDta);
+  dcl-s msgkey char(4);
+  dcl-s msgDta like(i_msgDta);
 
   dcl-ds qMsgF qualified inz;
-    name            char(10);
-    lib             char(10);
+    name char(10);
+    lib  char(10);
   end-ds;
 
-  dcl-ds errCode qualified            inz;
-    bytPrv          int(10);
-    bytAvl          int(10);
-    excId           char(7);
-    reserved        char(1);
-    excDta          char(256);
+  dcl-ds errCode qualified inz;
+    bytPrv   int(10);
+    bytAvl   int(10);
+    excId    char(7);
+    reserved char(1);
+    excDta   char(256);
   end-ds;
 
   dcl-pr qmhsndpm extpgm('QMHSNDPM');
-    i_msgId         char(7) const;
-    i_qMsgF         char(20) const;
-    i_msgData       char(32767) const  options(*varsize );
-    i_length        int(10) const;
-    i_msgType       char(10) const;
-    i_callStkE      char(256) const;
-    i_callStkC      int(10) const;
-    o_msgKey        char(4);
-    io_errCode      char(32767) options(*varsize);
-    i_lenStkE       int(10) const  options(*nopass);   // optGrp 1
-    i_callStkEQ     char(20) const  options(*nopass);  //
-    i_wait          int(10) const  options(*nopass);   //
-    i_callStkEDT    char(10) const  options(*nopass);  // optGrp 2
-    i_ccsid         int(10) const  options(*nopass);   //
+    i_msgId      char(7) const;
+    i_qMsgF      char(20) const;
+    i_msgData    char(32767) options(*varsize) const;
+    i_length     int(10) const;
+    i_msgType    char(10) const;
+    i_callStkE   char(256) const;
+    i_callStkC   int(10) const;
+    o_msgKey     char(4);
+    io_errCode   char(32767) options(*varsize);
+    i_lenStkE    int(10) options(*nopass) const; // optGrp 1
+    i_callStkEQ  char(20) options(*nopass) const; //
+    i_wait       int(10) options(*nopass) const; //
+    i_callStkEDT char(10) options(*nopass) const; // optGrp 2
+    i_ccsid      int(10) options(*nopass) const; //
   end-pr;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -2247,7 +2247,7 @@ DCL   VAR(%%FLDNME) TYPE(%%TYPE) LEN(%%LN %%DP) STG(*DEFINED) DEFVAR(%%STRUCTNAM
 /*  %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  */
 **  CLP
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   %%MSGID                    */
+     /*   Cmd-ADDMSGD fï¿½r Message-ID :   %%MSGID                    */
      /* %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
      /*-------------------------------------------------------------*/
              PGM        PARM(&I_LIB &I_OBJ)
