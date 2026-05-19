@@ -119,9 +119,9 @@ dcl-proc CRTMSGDSR1 export;
   if (%error());
     XERRID = 'CPF9897';
     XERRDT = 'Error: ' + %trim(qMsgF.lib) + '/' +
-                        %trim(qMsgF.name) +
-            ' Id: ' + %trim(XMSGI) +
-            ' Opt: ' + %trim(XRTVO);
+                         %trim(qMsgF.name) +
+             ' Id: ' + %trim(XMSGI) +
+             ' Opt: ' + %trim(XRTVO);
   else;
     if (errCode.bytAvl > 0);
       XERRID = errCode.excID;
