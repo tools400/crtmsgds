@@ -21,7 +21,7 @@
 .*=====================================================================*
 .*  History:                                                           *
 .*                                                                     *
-.*  Datum       Name          Änderung                                 *
+.*  Datum       Name          Ã„nderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
 .*  17.01.2021  Th.Raddatz    Added support for /free message data     *
 .*                            structures.                              *
@@ -54,7 +54,7 @@
 :IMHELP name='CRTMSGDS/CRTMSGF   '.
 :EHELP.
 .*--------------------------------------------------------------------
-.* Hilfetext für den Befehl
+.* Hilfetext fÃ¼r den Befehl
 .*--------------------------------------------------------------------
 :HELP NAME='CRTMSGDS'.
 Create Message Data Structure (CRTMSGDS) - Help
@@ -83,7 +83,7 @@ RPG-III lacking an unsigned integer type.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort RANGE
+.* Hilfetext fÃ¼r SchlÃ¼sselwort RANGE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/RANGE     '.
 Range of message identifiers - Help
@@ -150,7 +150,7 @@ element of this parameter.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort MSGF
+.* Hilfetext fÃ¼r SchlÃ¼sselwort MSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MSGF'.
 Message file - Help
@@ -187,7 +187,7 @@ the library list, QGPL is used.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort FILE
+.* Hilfetext fÃ¼r SchlÃ¼sselwort FILE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/FILE'.
 File - Help
@@ -223,7 +223,7 @@ the library list, QGPL is used.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort MBR
+.* Hilfetext fÃ¼r SchlÃ¼sselwort MBR
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MBR'.
 Member - Help
@@ -247,7 +247,7 @@ of the CRTMSGDS command.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort REPLACE
+.* Hilfetext fÃ¼r SchlÃ¼sselwort REPLACE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/REPLACE'.
 Replace member - Help
@@ -269,7 +269,7 @@ by the command instead.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort TYPE
+.* Hilfetext fÃ¼r SchlÃ¼sselwort TYPE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/TYPE'.
 Source type - Help
@@ -301,7 +301,7 @@ Specifies the type of source that is produced by the CRTMSGDS command.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort DEFINE
+.* Hilfetext fÃ¼r SchlÃ¼sselwort DEFINE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/DEFINE'.
 Add DEFINE specifications - Help
@@ -323,7 +323,7 @@ or not. The value for this parameter can only be specified if
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort CRTMSGF
+.* Hilfetext fÃ¼r SchlÃ¼sselwort CRTMSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/CRTMSGF'.
 Add CRTMSGF command - Help

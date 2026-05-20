@@ -32,7 +32,7 @@
              ENDDO
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0001                    */
      /* A test message with replacement variables.                  */
      /*-------------------------------------------------------------*/
 
@@ -63,7 +63,7 @@
                 /*  -EOF-  */
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0002                    */
      /* A test message without replacement variables.               */
      /*-------------------------------------------------------------*/
 

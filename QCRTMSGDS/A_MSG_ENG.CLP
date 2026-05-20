@@ -1,5 +1,5 @@
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0001                    */
      /* &4-Member &3 in File &2/&1 already exists.                  */
      /* ----------------------------------------------------------- */
 
@@ -28,7 +28,7 @@
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0002                    */
      /* &4-Member &3 in File &2/&1 created.                         */
      /* ----------------------------------------------------------- */
 
@@ -53,7 +53,7 @@
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0003                    */
+     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0003                    */
      /* Warning: Data type *UBIN generated as signed binary field.  */
      /* ----------------------------------------------------------- */
 

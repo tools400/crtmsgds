@@ -1,5 +1,5 @@
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0001                    */
      /* &4-Teildatei &3 in Datei &2/&1 existiert bereits.           */
      /* ----------------------------------------------------------- */
 
@@ -28,7 +28,7 @@
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0002                    */
      /* &4-Teildatei &3 in Datei &2/&1 erstellt.                    */
      /* ----------------------------------------------------------- */
 
@@ -53,7 +53,7 @@
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0003                    */
+     /*   Cmd-ADDMSGD fÃ¼r Message-ID :   USR0003                    */
      /* Warnung: Datentype *UBIN wurde als 'signed binary' generie  */
      /* ----------------------------------------------------------- */
 

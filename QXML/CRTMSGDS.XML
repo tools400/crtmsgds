@@ -51,7 +51,7 @@
       appblddate CDATA #REQUIRED
      >
      ]>
-<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate=" 1/22/2024">
+<upload  appname="CRTMSGDS"  appauthor="Thomas Raddatz"  appblddate=" 5/20/2026">
 <install_instructions><![CDATA[
      *----------------------------------------------------------------      ------
      *  1. Upload entire XML to your AS/400 to a source file 112 long, into any mbr
@@ -1316,7 +1316,7 @@ srccssid=  "01141">
      /* =================================================================== */
      /*  History:                                                           */
      /*                                                                     */
-     /*  Datum       Name          Änderung                                 */
+     /*  Datum       Name           nderung                                 */
      /*  ----------  ------------  ---------------------------------------  */
      /*                                                                     */
      /* =================================================================== */
@@ -1474,7 +1474,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
      /* &4-Member &3 in File &2/&1 already exists.                  */
      /* ----------------------------------------------------------- */
 
@@ -1503,7 +1503,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
      /* &4-Member &3 in File &2/&1 created.                         */
      /* ----------------------------------------------------------- */
 
@@ -1528,7 +1528,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0003                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0003                    */
      /* Warning: Data type *UBIN generated as signed binary field.  */
      /* ----------------------------------------------------------- */
 
@@ -1565,7 +1565,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
      /* &4-Teildatei &3 in Datei &2/&1 existiert bereits.           */
      /* ----------------------------------------------------------- */
 
@@ -1594,7 +1594,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
      /* &4-Teildatei &3 in Datei &2/&1 erstellt.                    */
      /* ----------------------------------------------------------- */
 
@@ -1619,7 +1619,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD für Message-ID :   USR0003                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0003                    */
      /* Warnung: Datentype *UBIN wurde als 'signed binary' generie  */
      /* ----------------------------------------------------------- */
 
@@ -1692,11 +1692,11 @@ srccssid=  "01141">
 <copysrc><![CDATA[
 **free
 /if not defined(COPYRIGHT_DSPEC)
-ctl-opt copyright('V1.18 - 22.01.2024 - mailto: thomas.raddatz@tools400.de');
+ctl-opt copyright('V1.19 - 19.05.2026 - mailto: thomas.raddatz@tools400.de');
 /eof
 /endif
-dcl-c CRTMSGDS_VERSION  '1.18';
-dcl-c CRTMSGDS_DATE     '22.01.2024';
+dcl-c CRTMSGDS_VERSION '1.19';
+dcl-c CRTMSGDS_DATE '19.05.2026';
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
@@ -1735,7 +1735,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name          Änderung                                 */
+/*  Datum       Name           nderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*                                                                     */
 /* =================================================================== */
@@ -1918,7 +1918,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name          Änderung                                 */
+/*  Datum       Name           nderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*                                                                     */
 /* =================================================================== */
@@ -2101,7 +2101,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name          Änderung                                 */
+/*  Datum       Name           nderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*  07.09.2001  Th.Raddatz    Fixed that REPLACE(*NO) appends source   */
 /*                            if member does already exist.            */
@@ -2202,7 +2202,7 @@ srccssid=  "01141">
              CHGVAR     VAR(&MSGFILE   ) VALUE(%SST(&MSGF  1 10))
 
 /* ---------------------------- */
-/* prüfen, Msg Datei vorhanden  */
+/* pr fen, Msg Datei vorhanden  */
 /* ---------------------------- */
              CHKOBJ     OBJ(&MSGLIB/&MSGFILE) OBJTYPE(*MSGF)
 
@@ -2228,7 +2228,7 @@ srccssid=  "01141">
                           RTNLIB(&CPYLIB)
 
 /* ---------------------------- */
-/* prüfen, Cpy Datei vorhanden  */
+/* pr fen, Cpy Datei vorhanden  */
 /* ---------------------------- */
              CHKOBJ     OBJ(&CPYLIB/&CPYFILE) OBJTYPE(*FILE)
 
@@ -2274,7 +2274,7 @@ srccssid=  "01141">
                ENDDO
 
 /* ---------------------------- */
-/* Prüfen, ob VON ein exis-     */
+/* Pr fen, ob VON ein exis-     */
 /* tierende MSGID ist, wenn     */
 /* nicht, die folgende er-      */
 /* mitteln                      */
@@ -2296,7 +2296,7 @@ srccssid=  "01141">
 
 /* ---------------------------- */
 /* Wenn BIS = '*LAST'           */
-/* dann den hächsten Sortier-   */
+/* dann den h chsten Sortier-   */
 /* begriff in BIS bringen       */
 /* ---------------------------- */
                IF         COND(&MSGIDBIS *EQ '*LAST') THEN(DO)
@@ -2310,7 +2310,7 @@ srccssid=  "01141">
 LOOP:
 
 /* ---------------------------- */
-/* Prüfen auf Schleifenende     */
+/* Pr fen auf Schleifenende     */
 /* ---------------------------- */
              IF         COND(&MSGID *NE '       ') THEN(DO)
                IF         COND(&MSGID *GT &MSGIDBIS) THEN(DO)
@@ -2323,7 +2323,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/*  Ermitteln der nächsten      */
+/*  Ermitteln der n chsten      */
 /*  Nachrichten-ID              */
 /* ---------------------------- */
              CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
@@ -2422,7 +2422,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/*  Prüfen, ob Member vorhanden */
+/*  Pr fen, ob Member vorhanden */
 /* ---------------------------- */
              CHGVAR     VAR(&MBREXIST  ) VALUE('*EXIST    ')
              CHKOBJ     OBJ(&CPYLIB/&CPYFILE) OBJTYPE(*FILE) +
@@ -2450,7 +2450,7 @@ LOOP:
                ENDDO
                ELSE       CMD(DO)
                /* Bei angegebener Teildatei,  */
-               /* nur beim ersten Mal löschen */
+               /* nur beim ersten Mal l schen */
                ENDDO
              ENDDO
              ELSE       CMD(DO)
@@ -2479,7 +2479,7 @@ LOOP:
                ENDDO
                ELSE       CMD(DO)
                /* Bei angegebener Teildatei,  */
-               /* nur beim ersten Mal prüfen  */
+               /* nur beim ersten Mal pr fen  */
                ENDDO
 
              ENDDO
@@ -2553,7 +2553,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/* Nächste MSG lesen            */
+/* N chste MSG lesen            */
 /* Wenn es kein weitere MSG     */
 /* gibt (EOF) dann ist der      */
 /* Wert in &MSGID = *BLANK      */
@@ -2652,7 +2652,7 @@ srccssid=  "01141">
 .*=====================================================================*
 .*  History:                                                           *
 .*                                                                     *
-.*  Datum       Name          Änderung                                 *
+.*  Datum       Name           nderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
 .*  17.01.2021  Th.Raddatz    Added support for /free message data     *
 .*                            structures.                              *
@@ -2685,18 +2685,18 @@ srccssid=  "01141">
 :IMHELP name='CRTMSGDS/CRTMSGF   '.
 :EHELP.
 .*--------------------------------------------------------------------
-.* Hilfetext für den Befehl
+.* Hilfetext f r den Befehl
 .*--------------------------------------------------------------------
 :HELP NAME='CRTMSGDS'.
 Nachrichten-DS erstellen (CRTMSGDS) - Hilfe
 :P.
-Der Befehl CRTMSGDS erstellt eine Datenstruktur für eine
-Nachrichtenbeschreibung. Außerdem ist es möglich mit dem Befehl
-CRTMSGDS ein CL Programm, bzw. ein CL-Script für den Befehl RUNCLSTM
-zu erstellen, welches den oder die Erstellungsbefehl(e) für eine
-oder mehrere Nachrichtenbeschreibungen enthält.
+Der Befehl CRTMSGDS erstellt eine Datenstruktur f r eine
+Nachrichtenbeschreibung. Au erdem ist es m glich mit dem Befehl
+CRTMSGDS ein CL Programm, bzw. ein CL-Script f r den Befehl RUNCLSTM
+zu erstellen, welches den oder die Erstellungsbefehl(e) f r eine
+oder mehrere Nachrichtenbeschreibungen enth lt.
 :P.
-Unterstützte Datentypen:
+Unterst tzte Datentypen:
 :P.
 :LINES.
    *QTDCHAR
@@ -2707,14 +2707,14 @@ Unterstützte Datentypen:
    *UBIN
 :ELINES.
 :P.
-Für RPG-III (:HP2.Parameter TYPE(*RPG):EHP2.), wird der Typ
+F r RPG-III (:HP2.Parameter TYPE(*RPG):EHP2.), wird der Typ
 :HP2.*UBIN:EHP2. als Feld vom Typ 'B' generiert, weil RPG-III
 keinen vorzeichenlosen Integer Typ kennt.
 .*
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort RANGE
+.* Hilfetext f r Schl sselwort RANGE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/RANGE     '.
 Bereich der Nachrichten-IDs - Hilfe
@@ -2723,7 +2723,7 @@ Bereich der Nachrichten-IDs - Hilfe
 Gibt den Bereich der Nachrichten-IDs in der angegebenen Nachrichtendatei
 an, die verarbeitet werden. Alle Nachrichtenbeschreibungen
 in der bei :HP2.Nachrichtendatei:EHP2. (Parameter MSGF) angebenen
-Nachrichtendatei können durch die Angabe *ALL bei
+Nachrichtendatei k nnen durch die Angabe *ALL bei
 diesem Parameter verarbeitet werden.
 :P.
 Ist keine Anfangsnachrichten-ID angegeben, beginnt die Verarbeitung
@@ -2778,7 +2778,7 @@ Parameters angegeben werden.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort MSGF
+.* Hilfetext f r Schl sselwort MSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MSGF'.
 Nachrichtendatei - Hilfe
@@ -2798,15 +2798,15 @@ QCPFMSG.
 Nachrichtenbeschreibungen stammen.
 :EPARML.
 :P.
-Gültige Bibliothekswerte sind:
+G ltige Bibliothekswerte sind:
 :P.
 :PARML.
 :PT.:PK DEF.*LIBL:EPK.
 :PD.Alle Bibliotheken in der Bibliotheksliste des Jobs werden
-durchsucht, bis die erste Übereinstimmung gefunden wird.
+durchsucht, bis die erste  bereinstimmung gefunden wird.
 :PT.:PV.*CURLIB:EPV.
-:PD.Die Nachrichtendatei wird in der aktuellen Bibliothek für den Job
-gesucht. Enthält die Bibliotheksliste keinen aktuellen
+:PD.Die Nachrichtendatei wird in der aktuellen Bibliothek f r den Job
+gesucht. Enth lt die Bibliotheksliste keinen aktuellen
 Bibliothekseintrag, wird QGPL benutzt.
 :PT.:PV.Bibliotheksname:EPV.
 :PD.Bibliothek angeben, in der sich die Nachrichtendatei befindet.
@@ -2815,7 +2815,7 @@ Bibliothekseintrag, wird QGPL benutzt.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort FILE
+.* Hilfetext f r Schl sselwort FILE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/FILE'.
 Datei - Hilfe
@@ -2835,15 +2835,15 @@ abgelegt.
 werden soll.
 :EPARML.
 :P.
-Gültige Bibliothekswerte sind:
+G ltige Bibliothekswerte sind:
 :P.
 :PARML.
 :PT.:PK DEF.*LIBL:EPK.
 :PD.Alle Bibliotheken in der Bibliotheksliste des Jobs werden
-durchsucht, bis die erste Übereinstimmung gefunden wird.
+durchsucht, bis die erste  bereinstimmung gefunden wird.
 :PT.:PV.*CURLIB:EPV.
-:PD.Die Quellendatei wird in der aktuellen Bibliothek für den Job
-gesucht. Enthält die Bibliotheksliste keinen aktuellen
+:PD.Die Quellendatei wird in der aktuellen Bibliothek f r den Job
+gesucht. Enth lt die Bibliotheksliste keinen aktuellen
 Bibliothekseintrag, wird QGPL benutzt.
 :PT.:PV.Bibliotheksname:EPV.
 :PD.Bibliothek angeben, in der sich die Quellendatei befindet.
@@ -2852,15 +2852,15 @@ Bibliothekseintrag, wird QGPL benutzt.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort MBR
+.* Hilfetext f r Schl sselwort MBR
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MBR'.
 Teildatei - Hilfe
 :XH3.Teildatei (MBR)
 :P.
-Angeben, wie die Quellenteildatei heißen soll. Wird in diesem Parameter
-*GEN angegeben, so wird für jede verarbeitete Nachrichten-ID eine
-separate Quellenteildatei erstellt. Wird hingegen ein Name für die
+Angeben, wie die Quellenteildatei hei en soll. Wird in diesem Parameter
+*GEN angegeben, so wird f r jede verarbeitete Nachrichten-ID eine
+separate Quellenteildatei erstellt. Wird hingegen ein Name f r die
 Quellenteildatei vorgegeben, so werden alle verarbeiteten Nachrichten-IDs
 in diese Quellenteildatei abgelegt.
 .*
@@ -2877,7 +2877,7 @@ generiert.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort REPLACE
+.* Hilfetext f r Schl sselwort REPLACE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/REPLACE'.
 Bestehende Teildatei ersetzen - Hilfe
@@ -2898,7 +2898,7 @@ vorhanden ist. Der Inhalt der Quellenteildatei geht verloren.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort TYPE
+.* Hilfetext f r Schl sselwort TYPE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/TYPE'.
 Zu generierende Sourceart - Hilfe
@@ -2910,15 +2910,15 @@ Angeben, welche Art von Quellcode generiert werden soll.
 .*
 :PARML.
 :PT.:PK DEF.*ILERPG:EPK.
-:PD.Es wird eine Datenstruktur für RPG-IV erstellt.
+:PD.Es wird eine Datenstruktur f r RPG-IV erstellt.
 :PT.:PV.*RPG:EPV.
-:PD.Es wird eine Datenstruktur für RPG-III erstellt.
+:PD.Es wird eine Datenstruktur f r RPG-III erstellt.
 :PT.:PV.*FREE:EPV.
-:PD.Es wird eine Datenstruktur für RPG-IV und das **free Format erstellt.
+:PD.Es wird eine Datenstruktur f r RPG-IV und das **free Format erstellt.
 :PT.:PV.*C:EPV.
-:PD.Es wird eine Datenstruktur für C erstellt.
+:PD.Es wird eine Datenstruktur f r C erstellt.
 :PT.:PV.*CL:EPV.
-:PD.Es wird eine Datenstruktur für CL erstellt.
+:PD.Es wird eine Datenstruktur f r CL erstellt.
 :PT.:PV.*CLP:EPV.
 :PD.Es wird ein CL-Programm erstellt.
 :PT.:PV.*CLLE:EPV.
@@ -2930,7 +2930,7 @@ Angeben, welche Art von Quellcode generiert werden soll.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort DEFINE
+.* Hilfetext f r Schl sselwort DEFINE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/DEFINE'.
 DEFINE-Bestimmungen generieren - Hilfe
@@ -2953,7 +2953,7 @@ Parameter kann nur dann angegeben werden, wenn bei
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort CRTMSGF
+.* Hilfetext f r Schl sselwort CRTMSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/CRTMSGF'.
 CRTMSGF-Befehl generieren - Hilfe
@@ -3005,7 +3005,7 @@ Dieser Parameter ist optional.
 .*=====================================
 :HELP NAME='COM/VALUES'.
 :P.
-Mögliche Werte sind:
+M gliche Werte sind:
 :EHELP.
 .*
 :EPNLGRP.
@@ -3047,7 +3047,7 @@ srccssid=  "01141">
 .*=====================================================================*
 .*  History:                                                           *
 .*                                                                     *
-.*  Datum       Name          Änderung                                 *
+.*  Datum       Name           nderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
 .*  17.01.2021  Th.Raddatz    Added support for /free message data     *
 .*                            structures.                              *
@@ -3080,7 +3080,7 @@ srccssid=  "01141">
 :IMHELP name='CRTMSGDS/CRTMSGF   '.
 :EHELP.
 .*--------------------------------------------------------------------
-.* Hilfetext für den Befehl
+.* Hilfetext f r den Befehl
 .*--------------------------------------------------------------------
 :HELP NAME='CRTMSGDS'.
 Create Message Data Structure (CRTMSGDS) - Help
@@ -3109,7 +3109,7 @@ RPG-III lacking an unsigned integer type.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort RANGE
+.* Hilfetext f r Schl sselwort RANGE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/RANGE     '.
 Range of message identifiers - Help
@@ -3176,7 +3176,7 @@ element of this parameter.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort MSGF
+.* Hilfetext f r Schl sselwort MSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MSGF'.
 Message file - Help
@@ -3213,7 +3213,7 @@ the library list, QGPL is used.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort FILE
+.* Hilfetext f r Schl sselwort FILE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/FILE'.
 File - Help
@@ -3249,7 +3249,7 @@ the library list, QGPL is used.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort MBR
+.* Hilfetext f r Schl sselwort MBR
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MBR'.
 Member - Help
@@ -3273,7 +3273,7 @@ of the CRTMSGDS command.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort REPLACE
+.* Hilfetext f r Schl sselwort REPLACE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/REPLACE'.
 Replace member - Help
@@ -3295,7 +3295,7 @@ by the command instead.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort TYPE
+.* Hilfetext f r Schl sselwort TYPE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/TYPE'.
 Source type - Help
@@ -3327,7 +3327,7 @@ Specifies the type of source that is produced by the CRTMSGDS command.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort DEFINE
+.* Hilfetext f r Schl sselwort DEFINE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/DEFINE'.
 Add DEFINE specifications - Help
@@ -3349,7 +3349,7 @@ or not. The value for this parameter can only be specified if
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext für Schlüsselwort CRTMSGF
+.* Hilfetext f r Schl sselwort CRTMSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/CRTMSGF'.
 Add CRTMSGF command - Help
@@ -3443,9 +3443,9 @@ srccssid=  "01141">
 //=====================================================================
 //  History:
 //
-//  Datum       Name          Änderung
+//  Datum       Name           nderung
 //  ----------  ------------  ---------------------------------------
-//  10.01.2003  Th.Raddatz    Removed special character Ä from source.
+//  10.01.2003  Th.Raddatz    Removed special character   from source.
 //
 //  02.02.2022  Th.Raddatz    Converted source code to /free.
 //
@@ -3462,14 +3462,14 @@ srccssid=  "01141">
 // >>END-PRE-COMPILER<<
 // ===================================================================
 ctl-opt nomain;
-/COPY QCRTMSGDS,H_SPEC
-/COPY QCRTMSGDS,COPYRIGHT
+/copy QCRTMSGDS,H_SPEC
+/copy QCRTMSGDS,COPYRIGHT
 // ===================================================================
 
 //  Qualified object name
 dcl-ds qObj_t qualified based(pdummy);
   name char(10);
-  lib char(10);
+  lib  char(10);
 end-ds;
 
 //  Retrieve Message (QMHRTVM) API
@@ -3478,15 +3478,15 @@ dcl-pr QMHRTVM extpgm('QMHRTVM');
   *n int(10) const; // i_msgInfLen
   *n char(8) const; // i_format
   *n char(7) const; // i_msgID
-  *n const  likeds(qobj_t); // i_qMsgF
-  *n char(65535) const  options(*varsize ); // i_rplData
+  *n likeds(qobj_t) const; // i_qMsgF
+  *n char(65535) options(*varsize) const; // i_rplData
   *n int(10) const; // i_rpldataLen
   *n char(10) const; // i_rplVars
   *n char(10) const; // i_rtnCtrlChrs
-  *n char(65535) options(*varsize ); // io_ErrCode
-  *n char(10) const  options(*nopass  ); // i_rtvOpt  | OptGrp 1
-  *n int(10) const  options(*nopass  ); // i_toCcsid  |
-  *n int(10) const  options(*nopass  ); // i_ccsidRplDta  |
+  *n char(65535) options(*varsize); // io_ErrCode
+  *n char(10) options(*nopass) const; // i_rtvOpt  | OptGrp 1
+  *n int(10) options(*nopass) const; // i_toCcsid  |
+  *n int(10) options(*nopass) const; // i_ccsidRplDta  |
 end-pr;
 
 //  Program entry point
@@ -3496,22 +3496,22 @@ end-pr;
 //***************************************************************
 dcl-proc CRTMSGDSR1 export;
   dcl-pi *n;
-    XMSGL char(10) const; // Msg-Lib
-    XMSGF char(10) const; // Msg-File
-    XMSGI char(7) const; // Msg-Id
-    XRTVO char(7) const; // Retrieve option
-    XMSGR char(7); // Msg-Id Returned
+    XMSGL  char(10) const; // Msg-Lib
+    XMSGF  char(10) const; // Msg-File
+    XMSGI  char(7) const; // Msg-Id
+    XRTVO  char(7) const; // Retrieve option
+    XMSGR  char(7); // Msg-Id Returned
     XERRID char(7); // Error-Id
     XERRDT char(80); // Error-Data
   end-pi;
 
 
   dcl-ds errCode qualified;
-    bytPrv int(10) inz;
-    bytAvl int(10) inz;
-    excID char(7) inz;
+    bytPrv     int(10) inz;
+    bytAvl     int(10) inz;
+    excID      char(7) inz;
     reserved_1 char(1) inz;
-    excDta char(16) inz;
+    excDta     char(16) inz;
   end-ds;
 
   dcl-ds qMsgF likeds(qobj_t) inz;
@@ -3594,11 +3594,11 @@ srccssid=  "01141">
 //=====================================================================
 //  History:
 //
-//  Datum       Name          Änderung
+//  Datum       Name           nderung
 //  ----------  ------------  ---------------------------------------
 //  07.09.2001  Th.Raddatz    Fixed a bug when field length is *ZEROS.
 //
-//  10.01.2003  Th.Raddatz    Removed special character Ä from source.
+//  10.01.2003  Th.Raddatz    Removed special character   from source.
 //
 //  08.03.2005  Th.Raddatz    Fixed problem that trailing blanks of
 //                            message help text were dropped.
@@ -3609,11 +3609,11 @@ srccssid=  "01141">
 //                            that message text was truncated.
 //
 //  18.04.2008  Th.Raddatz    Datenstruktur MS0300 von 1024 auf 8192
-//                            Byte vergrößert.
+//                            Byte vergr  ert.
 //
 //  26.01.2009  Th.Raddatz    Code des generierten CLP Programms
-//                            geändert. Bibliothek kann jetzt als
-//                            optionaler Parameter übergeben werden.
+//                            ge ndert. Bibliothek kann jetzt als
+//                            optionaler Parameter  bergeben werden.
 //                            Befehlsparameter TYPE um Auswahl
 //                            *CLLE erweitert.
 //
@@ -3693,15 +3693,15 @@ srccssid=  "01141">
 //
 // ===================================================================
 ctl-opt nomain;
-/COPY QCRTMSGDS,H_SPEC
-/COPY QCRTMSGDS,COPYRIGHT
+/copy QCRTMSGDS,H_SPEC
+/copy QCRTMSGDS,COPYRIGHT
 // ===================================================================
-dcl-f SRC disk(256) usage(*output) usropn  infds(fileinfo);
+dcl-f SRC disk(256) usage(*output) usropn infds(fileinfo);
 
 dcl-ds fileInfo qualified;
-  name char(10) pos(83);
+  name    char(10) pos(83);
   library char(10);
-  member char(10) pos(129);
+  member  char(10) pos(129);
 end-ds;
 
 //  Record format of file SRC
@@ -3725,14 +3725,14 @@ dcl-s srcLine_t like(fsrc.srcdta);
 //  Qualified object name
 dcl-ds qObj_t qualified template;
   name char(10);
-  lib char(10);
+  lib  char(10);
 end-ds;
 
 dcl-ds rplcVar_t qualified template;
-  length int(10);
+  length    int(10);
   packedLen int(10);
-  fraction int(10);
-  type char(1);
+  fraction  int(10);
+  type      char(1);
 end-ds;
 
 dcl-c GENTYPE_FREE '*FREE';
@@ -3779,36 +3779,36 @@ dcl-c TYPE '%%TYPE';
 dcl-c PTF_OFFSET 1;
 
 // Exported Procedures
-dcl-pr getPrdLib char(10) extproc(*DCLCASE);
+dcl-pr getPrdLib char(10) extproc(*dclcase);
 end-pr;
 
 dcl-pr sndMsgToCmdLine;
-  i_msgId   char(7) const;
-  i_msgDta  char(512) options(*nopass) const;
+  i_msgId  char(7) const;
+  i_msgDta char(512) options(*nopass) const;
 end-pr;
 
-/DEFINE SDS_EXTENDED
-/COPY QCRTMSGDS,SDS
+/define SDS_EXTENDED
+/copy QCRTMSGDS,SDS
 
 //***************************************************************
 //  Main procedure
 //***************************************************************
 dcl-proc CRTMSGDSR2 export;
   dcl-pi *n;
-    gi_msgFLib char(10) const; // Msg-Lib
-    gi_msgF char(10) const; // Msg-File
-    gi_msgFText char(50) const; // Msg-File-Text
-    gi_msgId char(7) const; // Msg-ID
-    gi_copyFLib char(10) const; // Cpy-Lib
-    gi_copyF char(10) const; // Cpy-File
-    gi_genType char(10) const; // Gener.Art
-    gi_isDefine ind const; // Define-Best.
+    gi_msgFLib   char(10) const; // Msg-Lib
+    gi_msgF      char(10) const; // Msg-File
+    gi_msgFText  char(50) const; // Msg-File-Text
+    gi_msgId     char(7) const; // Msg-ID
+    gi_copyFLib  char(10) const; // Cpy-Lib
+    gi_copyF     char(10) const; // Cpy-File
+    gi_genType   char(10) const; // Gener.Art
+    gi_isDefine  ind const; // Define-Best.
     gi_isCrtMsgF ind const; // CrtMsgF-Befehl
     gi_isFirstId ind const; // 1. Msg-ID
-    gi_isLastId ind const; // Letzte Msg-ID
-    go_mbrText char(80); // MbrText
-    go_excId char(7); // Error-ID
-    go_excDta char(80); // Error-Data
+    gi_isLastId  ind const; // Letzte Msg-ID
+    go_mbrText   char(80); // MbrText
+    go_excId     char(7); // Error-ID
+    go_excDta    char(80); // Error-Data
   end-pi;
 
   dcl-s srcLine like(srcline_t);
@@ -3819,15 +3819,15 @@ dcl-proc CRTMSGDSR2 export;
     *n int(10) const; // i_msgInfLen
     *n char(8) const; // i_format
     *n char(7) const; // i_msgID
-    *n const  likeds(qobj_t); // i_qMsgF
-    *n char(65535) const  options(*varsize ); // i_rplData
+    *n likeds(qobj_t) const; // i_qMsgF
+    *n char(65535) options(*varsize) const; // i_rplData
     *n int(10) const; // i_rpldataLen
     *n char(10) const; // i_rplVars
     *n char(10) const; // i_rtnCtrlChrs
-    *n char(65535) options(*varsize ); // io_ErrCode
-    *n char(10) const  options(*nopass  ); // i_rtvOpt  | OptGrp 1
-    *n int(10) const  options(*nopass  ); // i_toCcsid  |
-    *n int(10) const  options(*nopass  ); // i_ccsidRplDta  |
+    *n char(65535) options(*varsize); // io_ErrCode
+    *n char(10) options(*nopass) const; // i_rtvOpt  | OptGrp 1
+    *n int(10) options(*nopass) const; // i_toCcsid  |
+    *n int(10) options(*nopass) const; // i_ccsidRplDta  |
   end-pr;
 
   //  Record format RTVM0300
@@ -3863,40 +3863,40 @@ dcl-proc CRTMSGDSR2 export;
 
   // Format of replacement variable
   dcl-ds MS030F;
-    M3FLGD int(10);    // Length of replacement data for substitution variable
-    M3FFSZ int(10);    // Field size or decimal positions
-    M3FTYP char(10);   // Substitution variable type
-    M3FRS1 char(238);  // Reserved
-    M3FRS2 char(256);  // Reserved
+    M3FLGD int(10); // Length of replacement data for substitution variable
+    M3FFSZ int(10); // Field size or decimal positions
+    M3FTYP char(10); // Substitution variable type
+    M3FRS1 char(238); // Reserved
+    M3FRS2 char(256); // Reserved
   end-ds;
 
   // Generic API error structure
   dcl-ds errCode qualified;
-    bytPrv int(10) inz;
-    bytAvl int(10) inz;
-    excID char(7) inz;
+    bytPrv     int(10) inz;
+    bytAvl     int(10) inz;
+    excID      char(7) inz;
     reserved_1 char(1) inz;
-    excDta char(16) inz;
+    excDta     char(16) inz;
   end-ds;
 
   // Message ID parts
   dcl-ds msgIdDS qualified;
-    prfx char(3) inz;
+    prfx    char(3) inz;
     prfx1ch char(1) inz overlay(prfx);
-    nbr char(4) inz;
+    nbr     char(4) inz;
   end-ds;
 
   // 6-char RPG field name
   dcl-ds field6 qualified;
-    prfx char(1);
-    nbr char(4);
+    prfx  char(1);
+    nbr   char(4);
     count char(3);
   end-ds;
 
   // 10-char ILE-RPG field name
   dcl-ds field10 qualified;
-    prfx char(3);
-    nbr char(4);
+    prfx  char(3);
+    nbr   char(4);
     count char(5);
   end-ds;
 
@@ -3931,7 +3931,7 @@ dcl-proc CRTMSGDSR2 export;
   // Sub-field counter
   dcl-s OD int(10);
 
-  // laufender Zähler Variablenverarbeitung
+  // laufender Z hler Variablenverarbeitung
   dcl-s rplcVarIdx int(10);
 
   // Total length of data structure
@@ -4340,7 +4340,7 @@ dcl-proc CRTMSGDSR2 export;
     // MONMSG (2)
     //******              MOVELCLP,9     SRCDTA    P
     //******              EXSR WRTLINE
-    //
+
     ENDIF;
 
     // Empty line
@@ -5222,7 +5222,7 @@ dcl-proc CRTMSGDSR2 export;
             srcLine = %trimr(srcLine) + '*UBIN';
           ENDIF;
 
-        // Adjust length for binary and unsigned binary fields
+          // Adjust length for binary and unsigned binary fields
           SELECT;
           WHEN rplcVar.length >= 10;
             rplcVar.length = 8;
@@ -5423,7 +5423,7 @@ end-proc;
 //****************************************************
 dcl-proc writeLine;
   dcl-pi *n;
-    io_srcLine const like(srcline_t);
+    io_srcLine like(srcline_t) const;
   end-pi;
 
   FSRC.SRCSEQ = FSRC.SRCSEQ + ,01;
@@ -5534,9 +5534,9 @@ end-proc;
 dcl-proc replace;
   dcl-pi *n char(256);
     i_string char(256) value;
-    i_var char(20) value;
-    i_value char(256) value;
-    i_length int(10) value options(*nopass);
+    i_var    char(20) value;
+    i_value  char(256) value;
+    i_length int(10) options(*nopass) value;
   end-pi;
 
   dcl-c p_length 4;
@@ -5587,8 +5587,8 @@ dcl-proc lcase;
     i_string char(256) value;
   end-pi;
 
-  dcl-c uc const('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-  dcl-c lc const('abcdefghijklmnopqrstuvwxyz');
+  dcl-c uc 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  dcl-c lc 'abcdefghijklmnopqrstuvwxyz';
   //---------------------------------------------------------------
 
   %SUBST(i_string:1:%SIZE(i_string)) =
@@ -5646,8 +5646,8 @@ end-proc;
 //***************************************************************
 dcl-proc toChar2;
   dcl-pi *n char(2);
-    i_integer int(10) const;
-    i_rplcSpace char(1) const options(*nopass);
+    i_integer   int(10) const;
+    i_rplcSpace char(1) options(*nopass) const;
   end-pi;
   //---------------------------------------------------------------
 
@@ -5664,8 +5664,8 @@ end-proc;
 //***************************************************************
 dcl-proc toChar4;
   dcl-pi *n char(4);
-    i_integer int(10) const;
-    i_rplcSpace char(1) const options(*nopass);
+    i_integer   int(10) const;
+    i_rplcSpace char(1) options(*nopass) const;
   end-pi;
   //---------------------------------------------------------------
 
@@ -5707,43 +5707,43 @@ end-proc;
 //  sends a message to the command line.
 //***************************************************************
 dcl-proc sndMsgToCmdLine export;
-  dcl-pi *N;
-    i_msgId   char(7) const;
-    i_msgDta  char(512) options(*nopass) const;
+  dcl-pi *n;
+    i_msgId  char(7) const;
+    i_msgDta char(512) options(*nopass) const;
   end-pi;
 
   //  Local fields
-  dcl-s msgkey      char(4);
-  dcl-s msgDta      like(i_msgDta);
+  dcl-s msgkey char(4);
+  dcl-s msgDta like(i_msgDta);
 
   dcl-ds qMsgF qualified inz;
-    name            char(10);
-    lib             char(10);
+    name char(10);
+    lib  char(10);
   end-ds;
 
-  dcl-ds errCode qualified            inz;
-    bytPrv          int(10);
-    bytAvl          int(10);
-    excId           char(7);
-    reserved        char(1);
-    excDta          char(256);
+  dcl-ds errCode qualified inz;
+    bytPrv   int(10);
+    bytAvl   int(10);
+    excId    char(7);
+    reserved char(1);
+    excDta   char(256);
   end-ds;
 
   dcl-pr qmhsndpm extpgm('QMHSNDPM');
-    i_msgId         char(7) const;
-    i_qMsgF         char(20) const;
-    i_msgData       char(32767) const  options(*varsize );
-    i_length        int(10) const;
-    i_msgType       char(10) const;
-    i_callStkE      char(256) const;
-    i_callStkC      int(10) const;
-    o_msgKey        char(4);
-    io_errCode      char(32767) options(*varsize);
-    i_lenStkE       int(10) const  options(*nopass);   // optGrp 1
-    i_callStkEQ     char(20) const  options(*nopass);  //
-    i_wait          int(10) const  options(*nopass);   //
-    i_callStkEDT    char(10) const  options(*nopass);  // optGrp 2
-    i_ccsid         int(10) const  options(*nopass);   //
+    i_msgId      char(7) const;
+    i_qMsgF      char(20) const;
+    i_msgData    char(32767) options(*varsize) const;
+    i_length     int(10) const;
+    i_msgType    char(10) const;
+    i_callStkE   char(256) const;
+    i_callStkC   int(10) const;
+    o_msgKey     char(4);
+    io_errCode   char(32767) options(*varsize);
+    i_lenStkE    int(10) options(*nopass) const; // optGrp 1
+    i_callStkEQ  char(20) options(*nopass) const; //
+    i_wait       int(10) options(*nopass) const; //
+    i_callStkEDT char(10) options(*nopass) const; // optGrp 2
+    i_ccsid      int(10) options(*nopass) const; //
   end-pr;
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -5819,7 +5819,7 @@ DCL   VAR(%%FLDNME) TYPE(%%TYPE) LEN(%%LN %%DP) STG(*DEFINED) DEFVAR(%%STRUCTNAM
 /*  %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  */
 **  CLP
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   %%MSGID                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   %%MSGID                    */
      /* %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
      /*-------------------------------------------------------------*/
              PGM        PARM(&I_LIB &I_OBJ)
@@ -5993,7 +5993,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
 **free
-ctl-opt debug option(*srcstmt : *nodebugio) decedit('0,') datedit(*dmy.);
+ctl-opt debug option(*srcstmt: *nodebugio) decedit('0,') datedit(*dmy.);
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
@@ -6014,48 +6014,48 @@ srccssid=  "01141">
 /define SDS
 
 dcl-ds sds qualified psds;
-  pgmName         char(10)   pos(1);
-  pgmStat         zoned(5)   pos(11);
-  prevStat        zoned(5)   pos(16);
-  lastSeq         char(8)    pos(21);
-  lastSubr        char(8)    pos(29);
-  nbrParm         zoned(3)   pos(37);
-  excType         char(3)    pos(40);
-  excNbr          char(4)    pos(43);
-  miInstruction   char(4)    pos(47);
-  workArea        char(30)   pos(51);
-  /if defined(SDS_EXTENDED)
-  pgmLib          char(10)   pos(81);
-  excData         char(80)   pos(91);
-  rnx9001Exc      char(4)    pos(171);
-  lastFileLong    char(10)   pos(175);
-  unused_1        char(6)    pos(185);
-  datFmt          char(8)    pos(191);
-  year            zoned(2:0) pos(199);
-  lastFileShort   char(8)    pos(201);
-  fileStat        char(35)   pos(209);
-  job             char(10)   pos(244);
-  user            char(10)   pos(254);
-  nbr             zoned(6:0) pos(264);
-  startDate       zoned(6:0) pos(270);
-  runDate         zoned(6:0) pos(276);
-  runTime         zoned(6:0) pos(282);
-  compDate        char(6)    pos(288);
-  compTime        char(10)   pos(294);
-  compLevel       char(4)    pos(300);
-  srcFile         char(10)   pos(304);
-  srcLib          char(10)   pos(314);
-  srcMbr          char(10)   pos(324);
-  pgmContProc     char(10)   pos(334);
-  modContProc     char(10)   pos(344);
-  sourceID1       int(5)     pos(354);
-  sourceID2       int(5)     pos(356);
-  currUser        char(10)   pos(358);
-  extErrCode      int(10)    pos(368);
-  xmlElem_INTO    int(20)    pos(372); // Since 5.4
-  intJobID        char(16)   pos(380); // Since 7.3
-  sysName         char(6)    pos(396);
-  unused          char(50)   pos(404);
+  pgmName       char(10) pos(1);
+  pgmStat       zoned(5) pos(11);
+  prevStat      zoned(5) pos(16);
+  lastSeq       char(8) pos(21);
+  lastSubr      char(8) pos(29);
+  nbrParm       zoned(3) pos(37);
+  excType       char(3) pos(40);
+  excNbr        char(4) pos(43);
+  miInstruction char(4) pos(47);
+  workArea      char(30) pos(51);
+/if defined(SDS_EXTENDED)
+  pgmLib        char(10) pos(81);
+  excData       char(80) pos(91);
+  rnx9001Exc    char(4) pos(171);
+  lastFileLong  char(10) pos(175);
+  unused_1      char(6) pos(185);
+  datFmt        char(8) pos(191);
+  year          zoned(2: 0) pos(199);
+  lastFileShort char(8) pos(201);
+  fileStat      char(35) pos(209);
+  job           char(10) pos(244);
+  user          char(10) pos(254);
+  nbr           zoned(6: 0) pos(264);
+  startDate     zoned(6: 0) pos(270);
+  runDate       zoned(6: 0) pos(276);
+  runTime       zoned(6: 0) pos(282);
+  compDate      char(6) pos(288);
+  compTime      char(10) pos(294);
+  compLevel     char(4) pos(300);
+  srcFile       char(10) pos(304);
+  srcLib        char(10) pos(314);
+  srcMbr        char(10) pos(324);
+  pgmContProc   char(10) pos(334);
+  modContProc   char(10) pos(344);
+  sourceID1     int(5) pos(354);
+  sourceID2     int(5) pos(356);
+  currUser      char(10) pos(358);
+  extErrCode    int(10) pos(368);
+  xmlElem_INTO  int(20) pos(372); // Since 5.4
+  intJobID      char(16) pos(380); // Since 7.3
+  sysName       char(6) pos(396);
+  unused        char(50) pos(404);
 end-ds;
 /endif
 /endif
@@ -6182,7 +6182,7 @@ srccssid=  "01141">
              ENDDO
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
      /* A test message with replacement variables.                  */
      /*-------------------------------------------------------------*/
 
@@ -6213,7 +6213,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
      /* A test message without replacement variables.               */
      /*-------------------------------------------------------------*/
 
@@ -6284,7 +6284,7 @@ srccssid=  "01141">
              ENDDO
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
      /* A test message with replacement variables.                  */
      /*-------------------------------------------------------------*/
 
@@ -6315,7 +6315,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
      /* A test message without replacement variables.               */
      /*-------------------------------------------------------------*/
 
@@ -6390,27 +6390,30 @@ srclib  =  "selected  "
 srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
-      // ---------------------------------------------------------------
-      //  Data structure for message ID: USR0001
-      //  A test message with replacement variables.
-     d USR0001         ds
-     d  USR00011                     10A   inz(*BLANKS)
-     d  USR00012                     20A   inz(*BLANKS)
-     d  USR00013                     12A   inz(*BLANKS)
-     d  USR00014                     15P 5 inz(*ZEROS )
-     d  USR00015                     20I 0 inz(*ZEROS )
-     d  USR00016                     10I 0 inz(*ZEROS )
-     d  USR00017                      5I 0 inz(*ZEROS )
-     d  USR00018                     20U   inz(*ZEROS )
-     d  USR00019                     10U   inz(*ZEROS )
-     d  USR0001A                      5U   inz(*ZEROS )
-     d USR0001_SIZE    s             10I 0 inz(78)
-      // ---------------------------------------------------------------
-      //  Data structure for message ID: USR0002
-      //  A test message without replacement variables.
-     d USR0002         ds
-      //  No replacement variables available!
-     d USR0002_SIZE    s             10I 0 inz(0)
+**FREE
+// ---------------------------------------------------------------
+//  Data structure for message ID: USR0001
+//  A test message with replacement variables.
+dcl-ds USR0001;
+  USR00011        char(10) inz(*BLANKS);
+  USR00012        char(20) inz(*BLANKS);
+  USR00013        char(12) inz(*BLANKS);
+  USR00014        packed(15:5) inz(*ZEROS );
+  USR00015        int(20) inz(*ZEROS );
+  USR00016        int(10) inz(*ZEROS );
+  USR00017        int(5) inz(*ZEROS );
+  USR00018        uns(20) inz(*ZEROS );
+  USR00019        uns(10) inz(*ZEROS );
+  USR0001A        uns(5) inz(*ZEROS );
+end-ds;
+dcl-s USR0001_SIZE    int(10) inz(78);
+// ---------------------------------------------------------------
+//  Data structure for message ID: USR0002
+//  A test message without replacement variables.
+dcl-ds USR0002;
+end-ds;
+//  No replacement variables available!
+dcl-s USR0002_SIZE    int(10) inz(0);
 ]]>  </copysrc>
 </mbr>
 <sendmsg  sendmsgid="CPF9897" sendmsgtype = "*STATUS   "><![CDATA[
@@ -6465,7 +6468,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
      /* A test message with replacement variables.                  */
      /*-------------------------------------------------------------*/
 
@@ -6496,7 +6499,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
      /* A test message without replacement variables.               */
      /*-------------------------------------------------------------*/
 

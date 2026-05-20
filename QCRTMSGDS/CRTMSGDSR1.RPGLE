@@ -22,9 +22,9 @@
 //=====================================================================
 //  History:
 //
-//  Datum       Name          �nderung
+//  Datum       Name          Änderung
 //  ----------  ------------  ---------------------------------------
-//  10.01.2003  Th.Raddatz    Removed special character � from source.
+//  10.01.2003  Th.Raddatz    Removed special character § from source.
 //
 //  02.02.2022  Th.Raddatz    Converted source code to /free.
 //

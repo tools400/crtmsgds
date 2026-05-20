@@ -22,11 +22,11 @@
 //=====================================================================
 //  History:
 //
-//  Datum       Name          �nderung
+//  Datum       Name          Änderung
 //  ----------  ------------  ---------------------------------------
 //  07.09.2001  Th.Raddatz    Fixed a bug when field length is *ZEROS.
 //
-//  10.01.2003  Th.Raddatz    Removed special character � from source.
+//  10.01.2003  Th.Raddatz    Removed special character § from source.
 //
 //  08.03.2005  Th.Raddatz    Fixed problem that trailing blanks of
 //                            message help text were dropped.
@@ -37,11 +37,11 @@
 //                            that message text was truncated.
 //
 //  18.04.2008  Th.Raddatz    Datenstruktur MS0300 von 1024 auf 8192
-//                            Byte vergr��ert.
+//                            Byte vergrößert.
 //
 //  26.01.2009  Th.Raddatz    Code des generierten CLP Programms
-//                            ge�ndert. Bibliothek kann jetzt als
-//                            optionaler Parameter �bergeben werden.
+//                            geändert. Bibliothek kann jetzt als
+//                            optionaler Parameter übergeben werden.
 //                            Befehlsparameter TYPE um Auswahl
 //                            *CLLE erweitert.
 //
@@ -359,7 +359,7 @@ dcl-proc CRTMSGDSR2 export;
   // Sub-field counter
   dcl-s OD int(10);
 
-  // laufender Z�hler Variablenverarbeitung
+  // laufender Zähler Variablenverarbeitung
   dcl-s rplcVarIdx int(10);
 
   // Total length of data structure
@@ -2247,7 +2247,7 @@ DCL   VAR(%%FLDNME) TYPE(%%TYPE) LEN(%%LN %%DP) STG(*DEFINED) DEFVAR(%%STRUCTNAM
 /*  %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  */
 **  CLP
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD f�r Message-ID :   %%MSGID                    */
+     /*   Cmd-ADDMSGD für Message-ID :   %%MSGID                    */
      /* %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
      /*-------------------------------------------------------------*/
              PGM        PARM(&I_LIB &I_OBJ)
