@@ -45,6 +45,6 @@ dcl-ds sds qualified psds;
   intJobID      char(16) pos(380); // Since 7.3
   sysName       char(6) pos(396);
   unused        char(50) pos(404);
-end-ds;
 /endif
+end-ds;
 /endif

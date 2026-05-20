@@ -1316,7 +1316,7 @@ srccssid=  "01141">
      /* =================================================================== */
      /*  History:                                                           */
      /*                                                                     */
-     /*  Datum       Name           nderung                                 */
+     /*  Datum       Name          Änderung                                 */
      /*  ----------  ------------  ---------------------------------------  */
      /*                                                                     */
      /* =================================================================== */
@@ -1474,7 +1474,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
      /* &4-Member &3 in File &2/&1 already exists.                  */
      /* ----------------------------------------------------------- */
 
@@ -1503,7 +1503,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
      /* &4-Member &3 in File &2/&1 created.                         */
      /* ----------------------------------------------------------- */
 
@@ -1528,7 +1528,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0003                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0003                    */
      /* Warning: Data type *UBIN generated as signed binary field.  */
      /* ----------------------------------------------------------- */
 
@@ -1565,7 +1565,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
      /* &4-Teildatei &3 in Datei &2/&1 existiert bereits.           */
      /* ----------------------------------------------------------- */
 
@@ -1594,7 +1594,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
      /* &4-Teildatei &3 in Datei &2/&1 erstellt.                    */
      /* ----------------------------------------------------------- */
 
@@ -1619,7 +1619,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /* ----------------------------------------------------------- */
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0003                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0003                    */
      /* Warnung: Datentype *UBIN wurde als 'signed binary' generie  */
      /* ----------------------------------------------------------- */
 
@@ -1735,7 +1735,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name           nderung                                 */
+/*  Datum       Name          Änderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*                                                                     */
 /* =================================================================== */
@@ -1918,7 +1918,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name           nderung                                 */
+/*  Datum       Name          Änderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*                                                                     */
 /* =================================================================== */
@@ -2101,7 +2101,7 @@ srccssid=  "01141">
 /* =================================================================== */
 /*  History:                                                           */
 /*                                                                     */
-/*  Datum       Name           nderung                                 */
+/*  Datum       Name          Änderung                                 */
 /*  ----------  ------------  ---------------------------------------  */
 /*  07.09.2001  Th.Raddatz    Fixed that REPLACE(*NO) appends source   */
 /*                            if member does already exist.            */
@@ -2202,7 +2202,7 @@ srccssid=  "01141">
              CHGVAR     VAR(&MSGFILE   ) VALUE(%SST(&MSGF  1 10))
 
 /* ---------------------------- */
-/* pr fen, Msg Datei vorhanden  */
+/* prüfen, Msg Datei vorhanden  */
 /* ---------------------------- */
              CHKOBJ     OBJ(&MSGLIB/&MSGFILE) OBJTYPE(*MSGF)
 
@@ -2228,7 +2228,7 @@ srccssid=  "01141">
                           RTNLIB(&CPYLIB)
 
 /* ---------------------------- */
-/* pr fen, Cpy Datei vorhanden  */
+/* prüfen, Cpy Datei vorhanden  */
 /* ---------------------------- */
              CHKOBJ     OBJ(&CPYLIB/&CPYFILE) OBJTYPE(*FILE)
 
@@ -2274,7 +2274,7 @@ srccssid=  "01141">
                ENDDO
 
 /* ---------------------------- */
-/* Pr fen, ob VON ein exis-     */
+/* Prüfen, ob VON ein exis-     */
 /* tierende MSGID ist, wenn     */
 /* nicht, die folgende er-      */
 /* mitteln                      */
@@ -2296,7 +2296,7 @@ srccssid=  "01141">
 
 /* ---------------------------- */
 /* Wenn BIS = '*LAST'           */
-/* dann den h chsten Sortier-   */
+/* dann den höchsten Sortier-   */
 /* begriff in BIS bringen       */
 /* ---------------------------- */
                IF         COND(&MSGIDBIS *EQ '*LAST') THEN(DO)
@@ -2310,7 +2310,7 @@ srccssid=  "01141">
 LOOP:
 
 /* ---------------------------- */
-/* Pr fen auf Schleifenende     */
+/* Prüfen auf Schleifenende     */
 /* ---------------------------- */
              IF         COND(&MSGID *NE '       ') THEN(DO)
                IF         COND(&MSGID *GT &MSGIDBIS) THEN(DO)
@@ -2323,7 +2323,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/*  Ermitteln der n chsten      */
+/*  Ermitteln der nächsten      */
 /*  Nachrichten-ID              */
 /* ---------------------------- */
              CHGVAR     VAR(&RETRIEVEOP) VALUE('*NEXT  ')
@@ -2422,7 +2422,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/*  Pr fen, ob Member vorhanden */
+/*  Prüfen, ob Member vorhanden */
 /* ---------------------------- */
              CHGVAR     VAR(&MBREXIST  ) VALUE('*EXIST    ')
              CHKOBJ     OBJ(&CPYLIB/&CPYFILE) OBJTYPE(*FILE) +
@@ -2450,7 +2450,7 @@ LOOP:
                ENDDO
                ELSE       CMD(DO)
                /* Bei angegebener Teildatei,  */
-               /* nur beim ersten Mal l schen */
+               /* nur beim ersten Mal löschen */
                ENDDO
              ENDDO
              ELSE       CMD(DO)
@@ -2479,7 +2479,7 @@ LOOP:
                ENDDO
                ELSE       CMD(DO)
                /* Bei angegebener Teildatei,  */
-               /* nur beim ersten Mal pr fen  */
+               /* nur beim ersten Mal prüfen  */
                ENDDO
 
              ENDDO
@@ -2553,7 +2553,7 @@ LOOP:
              ENDDO
 
 /* ---------------------------- */
-/* N chste MSG lesen            */
+/* Nächste MSG lesen            */
 /* Wenn es kein weitere MSG     */
 /* gibt (EOF) dann ist der      */
 /* Wert in &MSGID = *BLANK      */
@@ -2652,7 +2652,7 @@ srccssid=  "01141">
 .*=====================================================================*
 .*  History:                                                           *
 .*                                                                     *
-.*  Datum       Name           nderung                                 *
+.*  Datum       Name          Änderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
 .*  17.01.2021  Th.Raddatz    Added support for /free message data     *
 .*                            structures.                              *
@@ -2685,18 +2685,18 @@ srccssid=  "01141">
 :IMHELP name='CRTMSGDS/CRTMSGF   '.
 :EHELP.
 .*--------------------------------------------------------------------
-.* Hilfetext f r den Befehl
+.* Hilfetext für den Befehl
 .*--------------------------------------------------------------------
 :HELP NAME='CRTMSGDS'.
 Nachrichten-DS erstellen (CRTMSGDS) - Hilfe
 :P.
-Der Befehl CRTMSGDS erstellt eine Datenstruktur f r eine
-Nachrichtenbeschreibung. Au erdem ist es m glich mit dem Befehl
-CRTMSGDS ein CL Programm, bzw. ein CL-Script f r den Befehl RUNCLSTM
-zu erstellen, welches den oder die Erstellungsbefehl(e) f r eine
-oder mehrere Nachrichtenbeschreibungen enth lt.
+Der Befehl CRTMSGDS erstellt eine Datenstruktur für eine
+Nachrichtenbeschreibung. Außerdem ist es möglich mit dem Befehl
+CRTMSGDS ein CL Programm, bzw. ein CL-Script für den Befehl RUNCLSTM
+zu erstellen, welches den oder die Erstellungsbefehl(e) für eine
+oder mehrere Nachrichtenbeschreibungen Enthält.
 :P.
-Unterst tzte Datentypen:
+Unterstützte Datentypen:
 :P.
 :LINES.
    *QTDCHAR
@@ -2707,14 +2707,14 @@ Unterst tzte Datentypen:
    *UBIN
 :ELINES.
 :P.
-F r RPG-III (:HP2.Parameter TYPE(*RPG):EHP2.), wird der Typ
+für RPG-III (:HP2.Parameter TYPE(*RPG):EHP2.), wird der Typ
 :HP2.*UBIN:EHP2. als Feld vom Typ 'B' generiert, weil RPG-III
 keinen vorzeichenlosen Integer Typ kennt.
 .*
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort RANGE
+.* Hilfetext für Schlüsselwort RANGE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/RANGE     '.
 Bereich der Nachrichten-IDs - Hilfe
@@ -2723,7 +2723,7 @@ Bereich der Nachrichten-IDs - Hilfe
 Gibt den Bereich der Nachrichten-IDs in der angegebenen Nachrichtendatei
 an, die verarbeitet werden. Alle Nachrichtenbeschreibungen
 in der bei :HP2.Nachrichtendatei:EHP2. (Parameter MSGF) angebenen
-Nachrichtendatei k nnen durch die Angabe *ALL bei
+Nachrichtendatei können durch die Angabe *ALL bei
 diesem Parameter verarbeitet werden.
 :P.
 Ist keine Anfangsnachrichten-ID angegeben, beginnt die Verarbeitung
@@ -2778,7 +2778,7 @@ Parameters angegeben werden.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort MSGF
+.* Hilfetext für Schlüsselwort MSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MSGF'.
 Nachrichtendatei - Hilfe
@@ -2798,15 +2798,15 @@ QCPFMSG.
 Nachrichtenbeschreibungen stammen.
 :EPARML.
 :P.
-G ltige Bibliothekswerte sind:
+Gültige Bibliothekswerte sind:
 :P.
 :PARML.
 :PT.:PK DEF.*LIBL:EPK.
 :PD.Alle Bibliotheken in der Bibliotheksliste des Jobs werden
-durchsucht, bis die erste  bereinstimmung gefunden wird.
+durchsucht, bis die erste Übereinstimmung gefunden wird.
 :PT.:PV.*CURLIB:EPV.
-:PD.Die Nachrichtendatei wird in der aktuellen Bibliothek f r den Job
-gesucht. Enth lt die Bibliotheksliste keinen aktuellen
+:PD.Die Nachrichtendatei wird in der aktuellen Bibliothek für den Job
+gesucht. Enthält die Bibliotheksliste keinen aktuellen
 Bibliothekseintrag, wird QGPL benutzt.
 :PT.:PV.Bibliotheksname:EPV.
 :PD.Bibliothek angeben, in der sich die Nachrichtendatei befindet.
@@ -2815,7 +2815,7 @@ Bibliothekseintrag, wird QGPL benutzt.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort FILE
+.* Hilfetext für Schlüsselwort FILE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/FILE'.
 Datei - Hilfe
@@ -2835,15 +2835,15 @@ abgelegt.
 werden soll.
 :EPARML.
 :P.
-G ltige Bibliothekswerte sind:
+Gültige Bibliothekswerte sind:
 :P.
 :PARML.
 :PT.:PK DEF.*LIBL:EPK.
 :PD.Alle Bibliotheken in der Bibliotheksliste des Jobs werden
-durchsucht, bis die erste  bereinstimmung gefunden wird.
+durchsucht, bis die erste Übereinstimmung gefunden wird.
 :PT.:PV.*CURLIB:EPV.
-:PD.Die Quellendatei wird in der aktuellen Bibliothek f r den Job
-gesucht. Enth lt die Bibliotheksliste keinen aktuellen
+:PD.Die Quellendatei wird in der aktuellen Bibliothek für den Job
+gesucht. Enthält die Bibliotheksliste keinen aktuellen
 Bibliothekseintrag, wird QGPL benutzt.
 :PT.:PV.Bibliotheksname:EPV.
 :PD.Bibliothek angeben, in der sich die Quellendatei befindet.
@@ -2852,15 +2852,15 @@ Bibliothekseintrag, wird QGPL benutzt.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort MBR
+.* Hilfetext für Schlüsselwort MBR
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MBR'.
 Teildatei - Hilfe
 :XH3.Teildatei (MBR)
 :P.
-Angeben, wie die Quellenteildatei hei en soll. Wird in diesem Parameter
-*GEN angegeben, so wird f r jede verarbeitete Nachrichten-ID eine
-separate Quellenteildatei erstellt. Wird hingegen ein Name f r die
+Angeben, wie die Quellenteildatei heißen soll. Wird in diesem Parameter
+*GEN angegeben, so wird für jede verarbeitete Nachrichten-ID eine
+separate Quellenteildatei erstellt. Wird hingegen ein Name für die
 Quellenteildatei vorgegeben, so werden alle verarbeiteten Nachrichten-IDs
 in diese Quellenteildatei abgelegt.
 .*
@@ -2877,7 +2877,7 @@ generiert.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort REPLACE
+.* Hilfetext für Schlüsselwort REPLACE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/REPLACE'.
 Bestehende Teildatei ersetzen - Hilfe
@@ -2898,7 +2898,7 @@ vorhanden ist. Der Inhalt der Quellenteildatei geht verloren.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort TYPE
+.* Hilfetext für Schlüsselwort TYPE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/TYPE'.
 Zu generierende Sourceart - Hilfe
@@ -2910,15 +2910,15 @@ Angeben, welche Art von Quellcode generiert werden soll.
 .*
 :PARML.
 :PT.:PK DEF.*ILERPG:EPK.
-:PD.Es wird eine Datenstruktur f r RPG-IV erstellt.
+:PD.Es wird eine Datenstruktur für RPG-IV erstellt.
 :PT.:PV.*RPG:EPV.
-:PD.Es wird eine Datenstruktur f r RPG-III erstellt.
+:PD.Es wird eine Datenstruktur für RPG-III erstellt.
 :PT.:PV.*FREE:EPV.
-:PD.Es wird eine Datenstruktur f r RPG-IV und das **free Format erstellt.
+:PD.Es wird eine Datenstruktur für RPG-IV und das **free Format erstellt.
 :PT.:PV.*C:EPV.
-:PD.Es wird eine Datenstruktur f r C erstellt.
+:PD.Es wird eine Datenstruktur für C erstellt.
 :PT.:PV.*CL:EPV.
-:PD.Es wird eine Datenstruktur f r CL erstellt.
+:PD.Es wird eine Datenstruktur für CL erstellt.
 :PT.:PV.*CLP:EPV.
 :PD.Es wird ein CL-Programm erstellt.
 :PT.:PV.*CLLE:EPV.
@@ -2930,7 +2930,7 @@ Angeben, welche Art von Quellcode generiert werden soll.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort DEFINE
+.* Hilfetext für Schlüsselwort DEFINE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/DEFINE'.
 DEFINE-Bestimmungen generieren - Hilfe
@@ -2953,7 +2953,7 @@ Parameter kann nur dann angegeben werden, wenn bei
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort CRTMSGF
+.* Hilfetext für Schlüsselwort CRTMSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/CRTMSGF'.
 CRTMSGF-Befehl generieren - Hilfe
@@ -3005,7 +3005,7 @@ Dieser Parameter ist optional.
 .*=====================================
 :HELP NAME='COM/VALUES'.
 :P.
-M gliche Werte sind:
+mögliche Werte sind:
 :EHELP.
 .*
 :EPNLGRP.
@@ -3047,7 +3047,7 @@ srccssid=  "01141">
 .*=====================================================================*
 .*  History:                                                           *
 .*                                                                     *
-.*  Datum       Name           nderung                                 *
+.*  Datum       Name          Änderung                                 *
 .*  ----------  ------------  ---------------------------------------  *
 .*  17.01.2021  Th.Raddatz    Added support for /free message data     *
 .*                            structures.                              *
@@ -3080,7 +3080,7 @@ srccssid=  "01141">
 :IMHELP name='CRTMSGDS/CRTMSGF   '.
 :EHELP.
 .*--------------------------------------------------------------------
-.* Hilfetext f r den Befehl
+.* Hilfetext für den Befehl
 .*--------------------------------------------------------------------
 :HELP NAME='CRTMSGDS'.
 Create Message Data Structure (CRTMSGDS) - Help
@@ -3109,7 +3109,7 @@ RPG-III lacking an unsigned integer type.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort RANGE
+.* Hilfetext für Schlüsselwort RANGE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/RANGE     '.
 Range of message identifiers - Help
@@ -3176,7 +3176,7 @@ element of this parameter.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort MSGF
+.* Hilfetext für Schlüsselwort MSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MSGF'.
 Message file - Help
@@ -3213,7 +3213,7 @@ the library list, QGPL is used.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort FILE
+.* Hilfetext für Schlüsselwort FILE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/FILE'.
 File - Help
@@ -3249,7 +3249,7 @@ the library list, QGPL is used.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort MBR
+.* Hilfetext für Schlüsselwort MBR
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/MBR'.
 Member - Help
@@ -3273,7 +3273,7 @@ of the CRTMSGDS command.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort REPLACE
+.* Hilfetext für Schlüsselwort REPLACE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/REPLACE'.
 Replace member - Help
@@ -3295,7 +3295,7 @@ by the command instead.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort TYPE
+.* Hilfetext für Schlüsselwort TYPE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/TYPE'.
 Source type - Help
@@ -3327,7 +3327,7 @@ Specifies the type of source that is produced by the CRTMSGDS command.
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort DEFINE
+.* Hilfetext für Schlüsselwort DEFINE
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/DEFINE'.
 Add DEFINE specifications - Help
@@ -3349,7 +3349,7 @@ or not. The value for this parameter can only be specified if
 :EHELP.
 .*
 .*--------------------------------------------------------------------
-.* Hilfetext f r Schl sselwort CRTMSGF
+.* Hilfetext für Schlüsselwort CRTMSGF
 .*--------------------------------------------------------------------
 :HELP name='CRTMSGDS/CRTMSGF'.
 Add CRTMSGF command - Help
@@ -3443,9 +3443,9 @@ srccssid=  "01141">
 //=====================================================================
 //  History:
 //
-//  Datum       Name           nderung
+//  Datum       Name          Änderung
 //  ----------  ------------  ---------------------------------------
-//  10.01.2003  Th.Raddatz    Removed special character   from source.
+//  10.01.2003  Th.Raddatz    Removed special character § from source.
 //
 //  02.02.2022  Th.Raddatz    Converted source code to /free.
 //
@@ -3540,9 +3540,9 @@ dcl-proc CRTMSGDSR1 export;
   if (%error());
     XERRID = 'CPF9897';
     XERRDT = 'Error: ' + %trim(qMsgF.lib) + '/' +
-                        %trim(qMsgF.name) +
-            ' Id: ' + %trim(XMSGI) +
-            ' Opt: ' + %trim(XRTVO);
+                         %trim(qMsgF.name) +
+             ' Id: ' + %trim(XMSGI) +
+             ' Opt: ' + %trim(XRTVO);
   else;
     if (errCode.bytAvl > 0);
       XERRID = errCode.excID;
@@ -3594,11 +3594,11 @@ srccssid=  "01141">
 //=====================================================================
 //  History:
 //
-//  Datum       Name           nderung
+//  Datum       Name          Änderung
 //  ----------  ------------  ---------------------------------------
 //  07.09.2001  Th.Raddatz    Fixed a bug when field length is *ZEROS.
 //
-//  10.01.2003  Th.Raddatz    Removed special character   from source.
+//  10.01.2003  Th.Raddatz    Removed special character § from source.
 //
 //  08.03.2005  Th.Raddatz    Fixed problem that trailing blanks of
 //                            message help text were dropped.
@@ -3609,11 +3609,11 @@ srccssid=  "01141">
 //                            that message text was truncated.
 //
 //  18.04.2008  Th.Raddatz    Datenstruktur MS0300 von 1024 auf 8192
-//                            Byte vergr  ert.
+//                            Byte vergrößert.
 //
 //  26.01.2009  Th.Raddatz    Code des generierten CLP Programms
-//                            ge ndert. Bibliothek kann jetzt als
-//                            optionaler Parameter  bergeben werden.
+//                            geändert. Bibliothek kann jetzt als
+//                            optionaler Parameter übergeben werden.
 //                            Befehlsparameter TYPE um Auswahl
 //                            *CLLE erweitert.
 //
@@ -3931,7 +3931,7 @@ dcl-proc CRTMSGDSR2 export;
   // Sub-field counter
   dcl-s OD int(10);
 
-  // laufender Z hler Variablenverarbeitung
+  // laufender Zähler Variablenverarbeitung
   dcl-s rplcVarIdx int(10);
 
   // Total length of data structure
@@ -5819,7 +5819,7 @@ DCL   VAR(%%FLDNME) TYPE(%%TYPE) LEN(%%LN %%DP) STG(*DEFINED) DEFVAR(%%STRUCTNAM
 /*  %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  */
 **  CLP
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD f r Message-ID :   %%MSGID                    */
+     /*   Cmd-ADDMSGD für Message-ID :   %%MSGID                    */
      /* %%MSGTXT>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
      /*-------------------------------------------------------------*/
              PGM        PARM(&I_LIB &I_OBJ)
@@ -6056,8 +6056,8 @@ dcl-ds sds qualified psds;
   intJobID      char(16) pos(380); // Since 7.3
   sysName       char(6) pos(396);
   unused        char(50) pos(404);
-end-ds;
 /endif
+end-ds;
 /endif
 ]]>  </copysrc>
 </mbr>
@@ -6182,7 +6182,7 @@ srccssid=  "01141">
              ENDDO
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
      /* A test message with replacement variables.                  */
      /*-------------------------------------------------------------*/
 
@@ -6213,7 +6213,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
      /* A test message without replacement variables.               */
      /*-------------------------------------------------------------*/
 
@@ -6284,7 +6284,7 @@ srccssid=  "01141">
              ENDDO
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
      /* A test message with replacement variables.                  */
      /*-------------------------------------------------------------*/
 
@@ -6315,7 +6315,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
      /* A test message without replacement variables.               */
      /*-------------------------------------------------------------*/
 
@@ -6468,7 +6468,7 @@ srclen  =  "00112"
 srccssid=  "01141">
 <copysrc><![CDATA[
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0001                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0001                    */
      /* A test message with replacement variables.                  */
      /*-------------------------------------------------------------*/
 
@@ -6499,7 +6499,7 @@ srccssid=  "01141">
                 /*  -EOF-  */
 
      /*-------------------------------------------------------------*/
-     /*   Cmd-ADDMSGD f r Message-ID :   USR0002                    */
+     /*   Cmd-ADDMSGD für Message-ID :   USR0002                    */
      /* A test message without replacement variables.               */
      /*-------------------------------------------------------------*/
 
